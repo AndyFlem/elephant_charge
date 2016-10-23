@@ -1,0 +1,26 @@
+
+<div class="heading-bar"><h3>Charges</h3></div>
+
+<table class="table">
+  <thead class="thead-inverse">
+  <tr>
+    <th>Name</th>
+    <th>Location</th>
+    <th>Date</th>
+    <th>Teams</th>
+
+  </tr>
+  </thead>
+
+  <% @charges.each do |charge| %>
+      <tr class="<%= charge.state_ref=='NOT_SETUP' ? 'table-danger' : '' %>">
+        <td><%= link_to charge.name, charge_path(charge) %></td>
+
+        <td><%= charge.location %></td>
+        <td><%= charge.charge_date.strftime("%-d %b %Y") %></td>
+        <td><%= charge.entries_count %></td>
+      </tr>
+  <% end %>
+</table>
+
+<%= link_to 'New charge', new_charge_path,class: "btn btn-primary"  %>

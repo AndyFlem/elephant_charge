@@ -1,0 +1,44 @@
+<%= form_for @car do |f| %>
+    <% if @car.errors.any? %>
+        <% @car.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger" role="alert">
+              <%= msg %>
+            </div>
+        <% end %>
+    <% end %>
+
+    <div class="form-group row">
+      <%= f.label "Name", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_field :name, {class: 'form-control'} %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label "Make", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_field :make, {class: 'form-control'} %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label "Model", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_field :car_model, {class: 'form-control'} %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label "Colour", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_field :colour, {class: 'form-control'} %>
+      </div>
+    </div>
+    <div class="form-group row">
+      <%= f.label "Year", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_field :year, {class: 'form-control'} %>
+      </div>
+    </div>
+
+    <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+    <%= link_to 'Cancel', cars_path, class: "btn btn-primary" %>
+
+<% end %>

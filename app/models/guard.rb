@@ -1,0 +1,38 @@
+class Guard < ApplicationRecord
+  attr_accessor :location_latitude
+
+  belongs_to :guard_sponsor
+  belongs_to :charge,touch: true
+  has_many :starters, {:class_name=>'Entry', :foreign_key=>'start_guard_id'}
+  has_many :checkins
+
+  validates :radius_m, numericality: { only_integer: true, greater_than:0 }
+  validates :charge, presence: true
+  validates :guard_sponsor, presence: true
+
+
+  def name
+    if self.guard_sponsor.short_name.nil?
+      self.guard_sponsor.name
+    else
+      self.guard_sponsor.short_name
+    end
+  end
+  def location_latitude
+    if location.nil?
+      nil
+    else
+      location.y
+    end
+  end
+  def location_longitude
+    if location.nil?
+      nil
+    else
+        location.x
+    end
+  end
+  def is_located?
+    not self.location_latitude.nil? and not self.location_longitude.nil?
+  end
+end

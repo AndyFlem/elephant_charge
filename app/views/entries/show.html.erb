@@ -1,0 +1,170 @@
+<div class="col-sm-8">
+  <div class="heading-bar"><h3><%= @entry.car_no %> - <%= @entry.team.name %></h3></div>
+
+  <div class="card">
+    <div class="card-block">
+      <table class="table table-sm">
+        <thead class="thead-inverse">
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>Out</th>
+          <th>In</th>
+          <th>Distance</th>
+        </tr>
+        </thead>
+        <% @legs.each do |entry_leg| %>
+            <tr>
+
+              <td><%= entry_leg.checkin1.guard.name %></td>
+              <td><%= entry_leg.checkin2.guard.name %></td>
+              <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
+              <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
+              <td><%= entry_leg.distance_m %></td>
+              <td></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-block">
+      <table class="table table-sm">
+        <thead class="thead-inverse">
+        <tr>
+          <th>No.</th>
+          <th>Checkpoint</th>
+          <th>Time</th>
+          <th>Processed</th>
+        </tr>
+        </thead>
+        <% @checkins.each do |checkin| %>
+            <tr>
+              <td><%= checkin.checkin_number %></td>
+              <td><%= checkin.guard.name %></td>
+              <td><%= formattime(checkin.checkin_timestamp) %></td>
+              <td><%= checkin.processed ? 'yes' : 'no'%></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+  <div id='entrymap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0 : @charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0 : @charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
+
+</div>
+
+<div class="col-sm-4">
+  <div class="card <%= @entry.state_ref.nil? ? 'card-outline-danger' : @entry.state_ref=='RAW' ? 'card-outline-warning' : 'card-outline-success' %>">
+
+    <% if @entry.state_ref.nil? %>
+        <div class="card-block text-danger">
+          <h3 class="card-title">State</h3>
+          <p>No Track Data
+    <% end %>
+    <% if @entry.state_ref=='RAW' %>
+        <div class="card-block text-warning">
+          <h3 class="card-title">State</h3>
+        <p>Raw Track
+    <% end %>
+    <% if @entry.state_ref=='CLEAN' %>
+        <div class="card-block text-success">
+          <h3 class="card-title">State</h3>
+        <p>Clean Track
+    <% end %>
+
+    <ul>
+      <% unless @entry.state_messages.nil? %>
+          <% @entry.state_messages.each do |msg| %>
+              <li><%= msg %></li>
+          <% end %>
+      <% end %>
+      <% unless @entry.result_messages.nil? %>
+          <% @entry.result_messages.each do |msg| %>
+              <li><%= msg %></li>
+          <% end %>
+      <% end %>
+
+    </ul>
+    </p>
+    <p class="list-group-item-text">
+      <%= @entry.entry_geom.raws_count.nil? ? 0 : @entry.entry_geom.raws_count %> raw points
+      <% unless @entry.entry_geom.raws_from.nil? or @entry.entry_geom.raws_count==0 %>
+          from <%= formattime(@entry.entry_geom.raws_from) %>
+          to <%= formattime(@entry.entry_geom.raws_to) %>
+      <% end %>
+    </p>
+    <p class="list-group-item-text">
+      <%= @entry.entry_geom.cleans_count.nil? ? 0 : @entry.entry_geom.cleans_count %> clean points.
+      <%= @entry.entry_geom.stops_count.nil? ? 0 : @entry.entry_geom.stops_count %> stops.
+    </p>
+
+    </div>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <em>Starting Checkpoint: </em><%= @entry.start_guard.nil? ? 'not set' : @entry.start_guard.name %></li>
+    <li class="list-group-item"><em>Team Type: </em><%= @entry.types_description %></li>
+    <li class="list-group-item">
+      <em>Pledge: </em>K<%= @entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(@entry.raised_kwacha) %></li>
+
+  </ul>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Actions</h3>
+    </div>
+    <div class="card-block">
+
+      <div style="padding-left: 10px">
+        <%= form_tag({action: :import}, multipart: true) do %>
+            <h4>Import</h4>
+            <div class="form-group">
+              <%= file_field_tag 'gpxfile' %>
+              <%= select_tag "historic_team", options_for_select(@historicteams), {:style => 'width:200px;', :class => 'form-control', :include_blank => '-- select --'} %>
+            </div>
+            <div class="form-group">
+              <%= submit_tag "Import", class: "btn btn-primary btn-sm" %>
+            </div>
+        <% end %>
+      </div>
+
+      <% if @entry.state_ref=='RAW' or @entry.state_ref=='CLEAN' %>
+          <div style="padding-left: 10px">
+            <h4>Process</h4>
+            <%= form_tag({action: :process_clean}) do %>
+                <div class="form-group">
+                  <%= submit_tag "Clean Track", class: "btn btn-primary btn-sm" %>
+                </div>
+            <% end %>
+
+            <% if @entry.state_ref=='CLEAN' %>
+                <%= form_tag({action: :guess_checkins}) do %>
+                    <div class="form-group">
+                      <%= submit_tag "Guess CPs", class: "btn btn-primary btn-sm" %>
+                    </div>
+                <% end %>
+            <% end %>
+            <%= form_tag({action: :process_result}) do %>
+                <div class="form-group">
+                  <%= submit_tag "Get Result", class: "btn btn-primary btn-sm" %>
+                </div>
+            <% end %>
+
+          </div>
+      <% end %>
+
+      <div style="padding-left: 10px">
+        <h4>Entry</h4>
+        <div class="form-group">
+          <%= link_to 'Edit', edit_charge_entry_path(@charge, @entry), class: "btn btn-primary btn-sm" %>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+
+          <%= link_to 'Del', charge_entry_path(@charge, @entry), method: :delete, class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

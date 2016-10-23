@@ -1,0 +1,20 @@
+// Place all the styles related to the charge controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+//= require leaflet
+
+#cpmap { height: 300px;}
+
+.cp_tooltip {
+  padding: 1px;
+  font-size: 0.675rem;
+}
+.cp_tooltip_gt {
+  padding: 1px;
+  font-size: 0.675rem;
+  color: #df5409;
+}
+
+
+

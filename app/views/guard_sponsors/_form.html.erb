@@ -1,0 +1,17 @@
+<%= form_for @guard_sponsor, builder: LabellingFormBuilder  do |f| %>
+    <% if @guard_sponsor.errors.any? %>
+        <% @guard_sponsor.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger" role="alert">
+              <%= msg %>
+            </div>
+        <% end %>
+    <% end %>
+
+    <%= f.label_text_field "Name",:name, {} %>
+
+    <%= f.label_text_field "Short Name",:short_name, {} %>
+
+    <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+    <%= link_to 'Cancel', guard_sponsors_path, class: "btn btn-primary" %>
+
+<% end %>

@@ -1,0 +1,23 @@
+
+
+<table class="table">
+  <thead class="thead-inverse">
+  <tr>
+    <th></th>
+    <%@charge.guards.each do |guard|%>
+        <th><%=guard.name%></th>
+    <%end%>
+
+  </tr>
+  </thead>
+
+  <% @charge.entries.each do |entry|%>
+  <tr>
+    <td><%=entry.team.name%></td>
+    <% @charge.guards.each do |guard| %>
+      <td><%= time_field_tag(entry.id.to_s+'_'+guard.id.to_s)%></td>
+    <% end %>
+  </tr>
+  <% end %>
+
+  </table>

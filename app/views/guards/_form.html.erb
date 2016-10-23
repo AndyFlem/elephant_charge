@@ -1,0 +1,35 @@
+
+<%= form_for [@charge,@guard], builder: LabellingFormBuilder do |f| %>
+    <% if @guard.errors.any? %>
+        <% @guard.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger" role="alert">
+              <%= msg %>
+            </div>
+        <% end %>
+    <% end %>
+
+    <%= f.label_select("Sponsor",:guard_sponsor_id, @guard_sponsors,{}) %>
+
+    <%= f.label_check_box("Gauntlet?",:is_gauntlet, {}) %>
+
+    <%= f.label_location "Location",:location, {} %>
+
+    <div class="form-group row">
+      <%= f.label "Location", {class: 'col-sm-2 col-form-label'} %>
+      <div class="col-sm-4">
+        <%= select_tag "help_point", options_for_select(@help_points), {:class => 'form-control',:include_blank=>'-- select --'} %>
+      </div>
+    </div>
+
+    <%= f.label_text_field "Radius (m)",:radius_m, {} %>
+
+    <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+    <%= link_to 'Cancel', charge_path(@charge), class: "btn btn-primary" %>
+
+    <br/>
+
+    <% unless f.object.new_record? %>
+    <div id='guardmap' class='col-sm-12' data-center-lat="<%= @guard.location.y %>" data-center-lon="<%= @guard.location.x %>" data-scale="16"></div>
+    <%end%>
+
+<% end %>

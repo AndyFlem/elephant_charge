@@ -1,0 +1,28 @@
+<%= form_for(@charge,builder: LabellingFormBuilder) do |f| %>
+    <% if @charge.errors.any? %>
+        <% @charge.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger" role="alert">
+              <%= msg %>
+            </div>
+        <% end %>
+    <% end %>
+
+    <%= f.label_text_field "Name",:name, {} %>
+
+
+    <%= f.label_text_field "Location",:location, {} %>
+
+    <%= f.label_date_field "Date",:charge_date, {} %>
+
+    <%= f.label_text_field "Map Scale",:map_scale, {} %>
+
+    <%= f.label_time_field "Start Time",:start_time, {} %>
+
+    <%= f.label_time_field "End Time",:end_time, {} %>
+
+    <%= f.label_text_field "Entries Expected",:entries_expected, {} %>
+
+    <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+    <%= link_to 'Cancel', charges_path, class: "btn btn-primary" %>
+
+<% end %>

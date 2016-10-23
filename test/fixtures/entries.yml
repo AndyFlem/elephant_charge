@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  car_no: 1
+  raised_kwacha: 1
+
+two:
+  car_no: 1
+  raised_kwacha: 1

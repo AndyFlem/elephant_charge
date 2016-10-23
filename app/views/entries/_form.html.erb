@@ -1,0 +1,33 @@
+
+
+<%= form_for [@charge, @entry], builder: LabellingFormBuilder do |f| %>
+
+    <% if @entry.errors.any? %>
+        <% @entry.errors.full_messages.each do |msg| %>
+            <div class="alert alert-danger" role="alert">
+              <%= msg %>
+            </div>
+        <% end %>
+    <% end %>
+
+    <%= f.label_text_field "Team No",:car_no, {} %>
+
+    <%= f.label_select("Team",:team_id, @teams,{}) %>
+
+    <%= f.label_select("Car",:car_id, @cars,{}) %>
+
+    <%= f.label_select("Starting Checkpoint",:start_guard_id, @start_guards,{:include_blank=>'-- select --'}) %>
+
+    <%= f.label_check_box("Ladies",:is_ladies,{}) %>
+
+    <%= f.label_check_box("New Team",:is_newcomer,{}) %>
+
+    <%= f.label_check_box("International",:is_international,{}) %>
+
+    <%= f.label_check_box("Bikes",:is_bikes,{}) %>
+
+
+    <%= f.submit (f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+    <%= link_to 'Cancel', charge_entry_path(@charge,@entry), class: "btn btn-primary" %>
+
+<% end %>

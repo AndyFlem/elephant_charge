@@ -1,0 +1,33 @@
+<nav class="navbar navbar-dark bg-primary" style="margin-bottom: 20px;">
+  <% if @charge and @charge.id %>
+      <%= link_to @charge.name, charge_path(@charge), class: "navbar-brand" %>
+      <ul class="nav navbar-nav pull-xs-right">
+        <li class="nav-item">
+          <a class="nav-link" href="<%=edit_charge_path(@charge)%>">Edit</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/charges">Charges</a>
+        </li>
+
+
+
+      </ul>
+  <%else%>
+      <%= link_to "Elephant Charge", root_path, class: "navbar-brand" %>
+      <ul class="nav navbar-nav pull-xs-right">
+        <li class="nav-item">
+          <a class="nav-link" href="/guard_sponsors">CP Sponsors</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/cars">Cars</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/teams">Teams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/charges">Charges</a>
+        </li>
+      </ul>
+
+  <%end%>
+</nav>

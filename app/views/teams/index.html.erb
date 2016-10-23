@@ -1,0 +1,28 @@
+<% if flash[:error] %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:error] %>
+    </div>
+<% end %>
+
+<div class="heading-bar"><h3>Teams</h3></div>
+
+<table class="table table-sm">
+  <thead class="thead-inverse">
+  <tr>
+    <th>Name</th>
+    <th>Captain</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <% @teams.each do |team| %>
+      <tr>
+        <td><%= team.name %></td>
+        <td><%= team.captain %></td>
+        <td><%= link_to 'Edit', edit_team_path(team) %></td>
+        <td><%= link_to 'Delete', team_path(team), method: :delete%></td>
+      </tr>
+  <% end %>
+</table>
+<%= link_to 'New team', new_team_path,class: "btn btn-primary" %>
