@@ -32,6 +32,15 @@ class EntriesController < ApplicationController
     render 'kml/entry.kml',{type: :builder,formats: [:xml],layout: false}
   end
 
+  def clear_result
+    @charge = Charge.find(params[:charge_id])
+    @entry = @charge.entries.find(params[:id])
+
+    @entry.reset_result!
+
+    redirect_to charge_entry_path @entry.charge,@entry
+  end
+
   def process_result
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
@@ -73,17 +82,12 @@ class EntriesController < ApplicationController
     redirect_to charge_entry_path @entry.charge,@entry
   end
 
-  def index
-    @charge = Charge.find(params[:charge_id])
-    @entries = Entry.order(:car_no).includes(:car).includes(:team).where(charge_id: @charge.id)
-  end
-
   def show
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
 
     @checkins=@entry.checkins.includes(:guard).order(:checkin_number)
-    @legs=@entry.entry_legs.includes(:leg)
+    @legs=@entry.entry_legs.includes(:leg).order(:leg_number)
 
     teams=ActiveRecord::Base.connection.exec_query("SELECT DISTINCT teamname FROM gps_historic WHERE charge=#{@charge.ref}")
     @historicteams=teams.rows.collect{|p| [p[0],p[0]]}
@@ -155,6 +159,6 @@ class EntriesController < ApplicationController
 
   private
   def entry_params
-    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id)
+    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :gauntlet_penalty_m, :other_penalty_m, :raised_kwacha)
   end
 end

@@ -26,8 +26,16 @@
 
     <%= f.label_check_box("Bikes",:is_bikes,{}) %>
 
+    <%= f.label_text_field "Kwacha Raised",:raised_kwacha, {} %>
+
+    <%= f.label_text_field "Gauntlet Pen m",:gauntlet_penalty_m, {} %>
+
+    <%= f.label_text_field "Other Pen m",:other_penalty_m, {} %>
 
     <%= f.submit (f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
-    <%= link_to 'Cancel', charge_entry_path(@charge,@entry), class: "btn btn-primary" %>
-
+    <% if f.object.new_record? %>
+      <%= link_to 'Cancel', charge_path(@charge), class: "btn btn-primary" %>
+    <% else %>
+        <%= link_to 'Cancel', charge_entry_path(@charge,@entry), class: "btn btn-primary" %>
+    <% end %>
 <% end %>

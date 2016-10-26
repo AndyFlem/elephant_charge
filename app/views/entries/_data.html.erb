@@ -1,0 +1,69 @@
+
+<div class="card <%= @entry.state_ref.nil? ? 'card-outline-danger' : @entry.state_ref=='RAW' ? 'card-outline-warning' : 'card-outline-success' %>">
+
+  <% if @entry.state_ref.nil? %>
+      <div class="card-block text-danger">
+        <h3 class="card-title">State</h3>
+        <p>No Track Data
+  <% end %>
+  <% if @entry.state_ref=='RAW' %>
+      <div class="card-block text-warning">
+        <h3 class="card-title">State</h3>
+      <p>Raw Track
+  <% end %>
+  <% if @entry.state_ref=='CLEAN' %>
+      <div class="card-block text-success">
+        <h3 class="card-title">State</h3>
+      <p>Clean Track
+  <% end %>
+
+  <ul>
+    <% unless @entry.state_messages.nil? %>
+        <% @entry.state_messages.each do |msg| %>
+            <li><%= msg %></li>
+        <% end %>
+    <% end %>
+    <% unless @entry.is_ready_for_result_processing %>
+        <% @entry.is_ready_for_result_processing.each do |msg| %>
+            <li><%= msg %></li>
+        <% end %>
+    <% end %>
+
+  </ul>
+  </p>
+  <p class="list-group-item-text">
+    <%= @entry.entry_geom.raws_count.nil? ? 0 : @entry.entry_geom.raws_count %> raw points
+    <% unless @entry.entry_geom.raws_from.nil? or @entry.entry_geom.raws_count==0 %>
+        from <%= formattime(@entry.entry_geom.raws_from) %>
+        to <%= formattime(@entry.entry_geom.raws_to) %>
+    <% end %>
+  </p>
+  <p class="list-group-item-text">
+    <%= @entry.entry_geom.cleans_count.nil? ? 0 : @entry.entry_geom.cleans_count %> clean points.
+    <%= @entry.entry_geom.stops_count.nil? ? 0 : @entry.entry_geom.stops_count %> stops.
+  </p>
+
+  <p>
+  <%= form_tag({action: :import}, multipart: true) do %>
+      <div class="form-group">
+        <%= file_field_tag 'gpxfile' %>
+        <%= select_tag "historic_team", options_for_select(@historicteams), {:style => 'width:200px;', :class => 'form-control', :include_blank => '-- select --'} %>
+      </div>
+      <div class="form-group">
+        <%= submit_tag "Import", class: "btn btn-primary btn-sm" %>
+      </div>
+  <% end %>
+
+  <% if @entry.state_ref=='RAW' or @entry.state_ref=='CLEAN' %>
+    <%= form_tag({action: :process_clean}) do %>
+        <div class="form-group">
+          <%= submit_tag "Clean Track", class: "btn btn-primary btn-sm" %>
+        </div>
+    <% end %>
+  <% end %>
+
+  </p>
+  </div>
+
+
+</div>

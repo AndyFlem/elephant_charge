@@ -1,0 +1,56 @@
+<div class="col-sm-12 heading-bar"><h3>Entries (<%= @charge.entries_count %>)</h3></div>
+
+
+<%= form_for @charge,as: :post,url: entriesbulk_charge_path do |fc| %>
+<table class="table table-sm">
+  <thead class="thead-inverse">
+  <tr>
+    <th>No.</th>
+    <th>Car</th>
+    <th>Team</th>
+
+    <th>Lady</th>
+    <th>New</th>
+    <th>Int</th>
+    <th>Bike</th>
+    <th>Start</th>
+    <th>ZMK Raised</th>
+    <th>Gaunt Pen m</th>
+    <th>Other Pen m</th>
+  </tr>
+  </thead>
+  <% @entries.each do |entry| %>
+      <%= fc.fields_for entry, index: entry.car_no do |f|%>
+        <tr>
+          <td><%= entry.car_no%></td>
+          <td><%= entry.car.name%></td>
+          <td><%= entry.team.name%></td>
+          <td><%= f.check_box(:is_ladies) %></td>
+          <td><%= f.check_box(:is_newcomer) %></td>
+          <td><%= f.check_box(:is_international) %></td>
+          <td><%= f.check_box(:is_bikes) %></td>
+          <td><%= f.select(:start_guard_id, @start_guards,{:include_blank=>'-- select --'}) %></td>
+          <td><%= f.text_field(:raised_kwacha,:size=>"8") %></td>
+          <td><%= f.text_field(:gauntlet_penalty_m,:size=>"8") %></td>
+          <td><%= f.text_field(:other_penalty_m,:size=>"8") %></td>
+        </tr>
+      <% end %>
+  <% end %>
+  <tr>
+    <%= fc.fields_for @newentry, index: -1 do |f|%>
+        <td><%= f.text_field(:car_no,:size=>"4") %></td>
+        <td><%= f.select(:team_id, @teams,{:include_blank=>'-- select --'}) %></td>
+        <td><%= f.select(:car_id, @cars,{:include_blank=>'-- select --'}) %></td>
+        <td><%= f.check_box(:is_ladies) %></td>
+        <td><%= f.check_box(:is_newcomer) %></td>
+        <td><%= f.check_box(:is_international) %></td>
+        <td><%= f.check_box(:is_bikes) %></td>
+        <td><%= f.select(:start_guard_id, @start_guards,{:include_blank=>'-- select --'}) %></td>
+        <td><%= f.text_field(:raised_kwacha,:size=>"8") %></td>
+        <td><%= f.text_field(:gauntlet_penalty_m,:size=>"8") %></td>
+        <td><%= f.text_field(:other_penalty_m,:size=>"8") %></td>
+    <% end %>
+  </tr>
+</table>
+<%= submit_tag("Update") %>
+<% end %>

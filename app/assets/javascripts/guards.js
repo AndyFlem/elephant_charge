@@ -59,15 +59,18 @@ $( document ).ready(function() {
                     radius: 2
                 }).addTo(guardmap);
             }
-        })
+        });
+
+        var tracks={};
         $.getJSON(window.location.pathname + '/../', function (data) {
-            console.log(JSON.stringify(data))
             for (i=0; i<data.length;i++){
-                L.geoJSON(data[i],{style:{
+                trck=L.geoJSON(data[i],{style:{
                     "color": "black",
                     "weight": 1,
                     "opacity": 1
-                }}).addTo(guardmap);
+                }});
+                trck.addTo(guardmap);
+                //tracks[data[i].properties.name]=trck
             }
         })
     }

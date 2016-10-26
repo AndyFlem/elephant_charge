@@ -25,8 +25,8 @@ class GuardsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json {
-        lines=ActiveRecord::Base.connection.exec_query("SELECT ec_rawlinesnearguard(#{@guard.id})").rows
-        res=lines.collect {|p| {type: 'Feature',properties:{name:''}, geometry:JSON.parse(p[0])}}
+        lines=ActiveRecord::Base.connection.exec_query("SELECT * FROM ec_rawlinesnearguard(#{@guard.id})").rows
+        res=lines.collect {|p| {type: 'Feature',properties:{name:p[1]}, geometry:JSON.parse(p[0])}}
 
         render json: res
       }
@@ -67,6 +67,21 @@ class GuardsController < ApplicationController
     @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
     @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
+
+    guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
+    nxt=false
+    guards.each do |gd|
+      if nxt
+        @nextguard=gd
+        nxt=false
+      end
+      if @guard.id==gd.id
+        nxt=true
+      end
+    end
+    if nxt
+      @nextguard=guards.first
+    end
   end
 
   def update

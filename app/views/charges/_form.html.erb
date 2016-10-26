@@ -22,7 +22,13 @@
 
     <%= f.label_text_field "Entries Expected",:entries_expected, {} %>
 
+    <%= f.label_text_field "Gauntlet Multiplier",:gauntlet_multiplier, {} %>
+
+    <%= f.label_text_field "K per $",:exchange_rate, {} %>
+
+
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <%= link_to 'Cancel', charges_path, class: "btn btn-primary" %>
+
 
 <% end %>

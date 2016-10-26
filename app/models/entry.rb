@@ -21,6 +21,9 @@ class Entry < ApplicationRecord
   validates :charge, presence: true
   validates :team, presence: true
   validates :car, presence: true
+  validates :gauntlet_penalty_m, numericality: { only_integer: true,allow_nil: true }
+  validates :other_penalty_m, numericality: { only_integer: true,allow_nil: true }
+  validates :raised_kwacha, numericality: { only_integer: true,allow_nil: true }
 
 
   def types_description
@@ -29,9 +32,87 @@ class Entry < ApplicationRecord
     type << 'New Entry' if self.is_newcomer
     type << 'International' if self.is_international
     type << 'Bikes' if self.is_bikes
-    type << 'standard' if type.count==0
+    type << '' if type.count==0
     type.join(', ')
+  end
 
+  def check_duplicate_checkins
+    checks={}
+    self.checkins.each do |checkin|
+      if !checks[checkin.guard.id].nil? and checkin.guard.id!=self.start_guard.id
+        checkin.is_duplicate=true;
+        checkin.save!
+        checks[checkin.guard.id].is_duplicate=true;
+        checks[checkin.guard.id].save!
+      else
+        if checkin.is_duplicate
+          checkin.is_duplicate=false;
+          checkin.save!
+        end
+      end
+      checks[checkin.guard.id]=checkin
+    end
+  end
+
+  def is_result_processed
+    if self.distance_competition_m.nil?
+      false
+    else
+      true
+    end
+  end
+
+  def is_ready_for_result_processing
+    res=[]
+    if self.checkins.count>11
+      res<<"Too many checkpoints #{self.checkins.count}"
+    end
+
+    unless self.start_guard.nil?
+      if self.checkins.count>0
+        unless self.checkins.first.guard.id==self.start_guard.id
+          res<<"Unexpected first checkpoint #{self.checkins.first.guard.name}"
+        end
+      end
+      checks={}
+      self.checkins.each do |checkin|
+        if !checks[checkin.guard.id].nil? and checkin.guard.id!=self.start_guard.id
+          res<<"Checkpoint #{checkin.guard.name} listed twice"
+        end
+        checks[checkin.guard.id]=true
+      end
+      if res==[]
+        true
+      else
+        res
+      end
+    else
+      res<<"Starting checkpoint not defined"
+    end
+  end
+
+  def reset_result!
+    self.entry_legs.each do |eleg|
+      leg=eleg.leg
+      del_leg=false;
+      if eleg.leg.entries.count==1
+        del_leg=true
+      end
+      eleg.destroy
+      if del_leg
+        leg.destroy
+      end
+    end
+    self.update_column(:result_guards,nil)
+    #self.update_column(:result_process_ref,nil)
+    self.update_column(:distance_real_m,nil)
+    self.update_column(:distance_competition_m,nil)
+  end
+
+  def reset_checkins!
+    reset_result!
+    entry.entry_legs.destroy_all
+    entry.checkins.destroy_all
   end
 
   def reset_raw!
@@ -47,6 +128,7 @@ class Entry < ApplicationRecord
     self.update_column(:state_messages,nil)
   end
   def reset_clean!
+    reset_result!
     self.entry_geom.update_column(:clean_line,nil)
     self.entry_geom.update_column(:clean_line_kml,nil)
     self.entry_geom.update_column(:clean_line_json,nil)

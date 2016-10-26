@@ -8,10 +8,10 @@ class Charge < ApplicationRecord
   has_many :teams, through: :entries
   has_many :charge_help_points
   has_many :gps_stops, through: :entries
+  has_many :legs
 
   validates :name, presence: true
   validates :charge_date, presence: true
-  validates :charge_state, presence: true
 
   after_initialize :init
   after_commit :process_updates

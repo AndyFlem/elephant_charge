@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     member do
       post 'uploadkml'
       get 'stops'
+      get 'entriesbulk'
+      patch 'entriesbulk', to: 'charges#entriesbulkpost'
     end
     resources :guards
     resources :entries do
@@ -18,6 +20,7 @@ Rails.application.routes.draw do
         post 'process_clean'
         post 'guess_checkins'
         post 'process_result'
+        post 'clear_result'
 
         get 'kml'
         get 'geojson'
@@ -27,4 +30,5 @@ Rails.application.routes.draw do
 
   resources :guard_sponsors
 
+  resources :checkins
 end

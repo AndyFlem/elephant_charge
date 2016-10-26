@@ -1,94 +1,109 @@
 module GpsProcessor
 
   def self.process_result(entry)
+    entry.reset_result!
 
-    entry.entry_legs.destroy_all
+    #for each leg
+    leg_no=1
+    dist_sum=0
+    comp_dist_sum=0
+    check_from=nil
 
-    from_time=entry.charge.start_datetime
-    to_time=from_time+2.hours
+    entry.checkins.order(:checkin_number).each do |check_to|
+      unless check_from.nil?
 
-    previous_checkin=nil
-    missing_leg=false
+        low_guard=[check_from.guard_id,check_to.guard_id].min
+        high_guard=[check_from.guard_id,check_to.guard_id].max
 
-    entry.checkins.order(:checkin_timestamp).each_with_index do |checkin,i|
-      qry="SELECT * FROM ec_guardcheckinforentry(#{entry.id},#{checkin.guard.id},'#{from_time.utc}','#{to_time.utc}')"
-      puts qry
-      pnt=ActiveRecord::Base.connection.exec_query(qry).rows[0]
-      unless pnt.nil?
-        clean=GpsClean.find(pnt[1])
-        checkin.gps_clean=clean
-        checkin.checkin_timestamp=clean.gps_timestamp
-        checkin.processed=true
-        checkin.save!
-
-        #create the entry_leg (and leg if needed)
-        unless previous_checkin.nil?
-          low_guard=[checkin.guard_id,previous_checkin.guard_id].min
-          high_guard=[checkin.guard_id,previous_checkin.guard_id].max
-
-          #get or create leg
-          leg=Leg.where(guard1_id: low_guard,guard2_id: high_guard).first
-          if leg.nil?
-            dist=ActiveRecord::Base.connection.exec_query("SELECT ec_guardsdistance(#{low_guard},#{high_guard})").rows[0][0]
-            leg=Leg.new(guard1_id: low_guard,guard2_id: high_guard,distance_m: dist)
-            leg.save!
+        #get or create leg
+        leg=Leg.where(guard1_id: low_guard,guard2_id: high_guard).first
+        if leg.nil?
+          dist=ActiveRecord::Base.connection.exec_query("SELECT ec_guardsdistance(#{low_guard},#{high_guard})").rows[0][0]
+          leg=entry.charge.legs.new(guard1_id: low_guard,guard2_id: high_guard,distance_m: dist)
+          if check_from.guard.is_gauntlet and check_to.guard.is_gauntlet
+            leg.is_gauntlet=true
+          else
+            leg.is_gauntlet=false
           end
-
-          #create the entry_leg
-          entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id:previous_checkin.id, checkin2_id: checkin.id)
-          entry_leg.save!
-          ActiveRecord::Base.connection.exec_query("SELECT ec_entrylegcreateline (#{entry_leg.id})")
+          leg.save!
         end
 
-        previous_checkin=checkin
-        from_time=checkin.checkin_timestamp
-      else
-        checkin.gps_clean=nil
-        checkin.checkin_timestamp=nil
-        checkin.processed=false
-        checkin.save!
-        previous_checkin=nil
-        missing_leg=true;
-        raise "Ouch"
+        #create the entry_leg
+        entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id: check_from.id, checkin2_id: check_to.id, leg_number: leg_no)
+        entry_leg.save!
+        ActiveRecord::Base.connection.exec_query("SELECT ec_entrylegcreateline (#{entry_leg.id})")
+        entry_leg.reload
+
+        if check_from.guard.id==low_guard
+          entry_leg.direction_forward=true
+        else
+          entry_leg.direction_forward=false
+        end
+        if leg.is_gauntlet
+          entry_leg.distance_competition_m=entry.charge.gauntlet_multiplier*entry_leg.distance_m
+        else
+          entry_leg.distance_competition_m=entry_leg.distance_m
+        end
+        entry_leg.save!
+
+        comp_dist_sum+=entry_leg.distance_competition_m
+        dist_sum+=entry_leg.distance_m
+        leg_no+=1
       end
-      to_time=entry.charge.end_datetime
+      check_from=check_to
     end
 
+    entry.result_guards=leg_no
+    entry.distance_real_m=dist_sum
+    entry.distance_competition_m=comp_dist_sum
+    entry.save!
   end
 
   def self.guess_checkins(entry)
 
-    entry.entry_legs.destroy_all
-
-    entry.checkins.destroy_all
+    entry.reset_checkins!
 
     pnts=ActiveRecord::Base.connection.exec_query("SELECT * FROM ec_pointswithinguardforentry(#{entry.id})").rows
     #guard_id , gps_clean_id , gps_timestamp , dist_m
 
-    cur_guard=-1
-    checkin_number=1
+    #split by guard 'hits'
+    hits=[]
+    cur_hit={guard_id: pnts[0][0], points: []}
+    hits<<cur_hit
+    previous_guards={}
+
     pnts.each_with_index do |pnt,i|
-      if pnt[0]!=cur_guard
-        check=entry.checkins.new(checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(pnt[2]), checkin_number: checkin_number, guard_id: pnt[0])
-        check.save
-        checkin_number+=1
-        cur_guard=pnt[0]
+      if pnt[0]!=cur_hit[:guard_id] #new guard hit
+        cur_hit=Hash.new()
+        cur_hit={guard_id: pnt[0], points: []}
+        hits<<cur_hit
+
+        unless previous_guards[pnt[0]].nil?
+          cur_hit[:duplicate]=true
+          previous_guards[pnt[0]][:duplicate]=true
+        end
+        previous_guards[pnt[0]]=cur_hit
+      end
+      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>entry.charge.start_datetime
+        cur_hit[:points]<<pnt
       end
     end
-    entry.result_messages=[]
-    if checkin_number<12
-      entry.result_messages<<"Incomplete checkpoint record (#{(checkin_number-1).to_s} of 11)"
-    end
-    if entry.checkins.first.guard.id!=entry.start_guard.id
-      entry.result_messages<<"Unexpected starting checkpoint. #{entry.checkins.first.guard.name} instead of #{entry.start_guard.name} "
-    end
 
-    entry.save!
-
+    #for each hit find the point closest to the guard
+    hits.each_with_index do |hit,i|
+      closest=hit[:points].min { |a,b| a[3]<=> b[3] }
+      check=entry.checkins.new(
+          checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(closest[2]),
+          checkin_number: i+1,
+          guard_id: hit[:guard_id],
+          gps_clean_id: closest[1],
+          is_duplicate: hit[:duplicate].nil? ? false : true
+      )
+      check.save!
+    end
   end
 
   def self.process_raw(entry)
-
 
     ActiveRecord::Base.connection.exec_query("SELECT ec_gpsrawsupdatecalcs(#{entry.id})")
     ActiveRecord::Base.connection.exec_query("SELECT ec_gpsrawscreateline(#{entry.id})")

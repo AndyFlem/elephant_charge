@@ -1,0 +1,49 @@
+<div class="card <%= @entry.is_result_processed ? 'card-outline-success' : 'card-outline-danger' %>">
+  <% unless @entry.is_result_processed %>
+      <div class="card-block text-danger">
+        <h3 class="card-title">Result</h3>
+        <p>Not Processed</p>
+        <% unless @entry.is_ready_for_result_processing==true %>
+            <ul>
+              <% @entry.is_ready_for_result_processing.each do |msg| %>
+                  <li><%= msg %></li>
+              <% end %>
+            </ul>
+        <% end %>
+      </div>
+  <% else %>
+      <div class="card-block text-success">
+        <h3 class="card-title">Result</h3>
+        <% if @entry.result_guards==11 %>
+            <p>Completed</p>
+        <% else %>
+            <p>DNF <b><%= @entry.result_guards %></b></p>
+        <% end %>
+        <p>Competition distance - <b><%= number_with_precision(@entry.distance_competition_m/1000.0, precision: 2) %>km</b>
+        </p>
+        <p>Actual distance - <b><%= number_with_precision(@entry.distance_real_m/1000.0, precision: 2) %>km</b></p>
+      </div>
+  <% end %>
+  <div class="card-block">
+    <%= form_tag({action: :guess_checkins}) do %>
+        <div class="form-group">
+          <%= submit_tag "Guess CPs", class: "btn btn-primary btn-sm" %>
+        </div>
+    <% end %>
+
+    <% if @entry.is_ready_for_result_processing==true %>
+      <%= form_tag({action: :process_result}) do %>
+          <div class="form-group">
+            <%= submit_tag "Get Result", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
+    <% end %>
+    <%= form_tag({action: :clear_result}) do %>
+        <div class="form-group">
+          <%= submit_tag "Clear", class: "btn btn-primary btn-sm" %>
+        </div>
+    <% end %>
+  </div>
+
+
+</div>

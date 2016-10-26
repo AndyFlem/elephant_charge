@@ -25,7 +25,9 @@
 
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <%= link_to 'Cancel', charge_path(@charge), class: "btn btn-primary" %>
-
+    <% unless f.object.new_record? %>
+    <%= link_to 'Next', edit_charge_guard_path(@charge,@nextguard), class: "btn btn-primary" %>
+    <% end %>
     <br/>
 
     <% unless f.object.new_record? %>

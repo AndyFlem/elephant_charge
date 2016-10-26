@@ -1,19 +1,18 @@
 <div class="col-sm-8">
-  <div class="col-sm-12 heading-bar"><h3>Entries (<%= @charge.entries_count %>)</h3></div>
+  <div class="col-sm-12 heading-bar"><h3>Entries (<%= @charge.entries_count %>)</h3>
+    <%= link_to 'Edit', charge_path(@charge) + '/entriesbulk'%>
+  </div>
 
   <table class="table">
     <thead class="thead-inverse">
     <tr>
       <th>Car</th>
       <th>Team</th>
-      <th>Car</th>
-      <th>Lady</th>
-      <th>New</th>
-      <th>Int</th>
-      <th>Bike</th>
+      <th>Type</th>
       <th>Start</th>
       <th>ZMK</th>
-      <th></th>
+      <th>Data</th>
+      <th>Result</th>
     </tr>
     </thead>
 
@@ -26,25 +25,13 @@
             <%= link_to entry.team.name, charge_entry_path(@charge,entry) %>
           </td>
           <td>
-            <%= entry.car.name %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= entry.is_ladies ? image_tag("ic_done_black.png") : '' %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= entry.is_newcomer ? image_tag("ic_done_black.png") : '' %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= entry.is_international ? image_tag("ic_done_black.png") : '' %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= entry.is_bikes ? image_tag("ic_done_black.png") : '' %>
+            <%= entry.types_description %>
           </td>
           <td>
             <%= entry.start_guard.nil? ? '': entry.start_guard.name%>
           </td>
           <td>
-            <%= entry.raised_kwacha %>
+            K<%= entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(entry.raised_kwacha) %>
           </td>
           <td class="<%= entry.state_ref.nil? ? 'table-danger' : entry.state_ref=='RAW' ? 'table-warning' : 'table-success'%>" >
             <% unless entry.state_messages.nil? %>
@@ -52,6 +39,24 @@
             <% end %>
             <%= entry.checkins.count>0 ? 'CPs' : '' %>
 
+          </td>
+          <td class="
+            <% if entry.is_result_processed %>
+              <% if entry.result_guards==11 %>
+                <%= 'table-success' %>
+              <% else %>
+                <%= 'table-warning' %>
+              <% end %>
+            <% else %>
+              <%= 'table-danger' %>
+            <% end %>
+            ">
+            <% if entry.is_result_processed %>
+              <% if entry.result_guards<11 %>
+                DNF&nbsp;<%= entry.result_guards%>
+              <% end %>
+               <%= number_with_precision(entry.distance_competition_m/1000.0, precision: 2) %>km
+            <% end %>
           </td>
         </tr>
     <% end %>
