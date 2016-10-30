@@ -28,9 +28,9 @@
 
     <%= f.label_text_field "Kwacha Raised",:raised_kwacha, {} %>
 
-    <%= f.label_text_field "Gauntlet Pen m",:gauntlet_penalty_m, {} %>
+    <%= f.label_text_field "Gauntlet Pen m",:dist_penalty_gauntlet, {} %>
 
-    <%= f.label_text_field "Other Pen m",:other_penalty_m, {} %>
+    <%= f.label_text_field "Other Pen m",:dist_penalty_nongauntlet, {} %>
 
     <%= f.submit (f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <% if f.object.new_record? %>

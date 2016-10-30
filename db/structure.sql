@@ -333,11 +333,12 @@ $$;
 -- Name: ec_rawlinesnearguard(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_rawlinesnearguard(guardid integer) RETURNS TABLE(json text)
+CREATE FUNCTION ec_rawlinesnearguard(guardid integer) RETURNS TABLE(json text, entry_id integer)
     LANGUAGE sql
     AS $$
 SELECT 
-	ST_AsGEOJSON(ST_Intersection((SELECT ST_Buffer(location,0.001, 'quad_segs=2') FROM guards WHERE Id=guardid),e.raw_line))
+	ST_AsGEOJSON(ST_Intersection((SELECT ST_Buffer(location,0.001, 'quad_segs=2') FROM guards WHERE Id=guardid),e.raw_line)),
+	en.id as entry_id
 FROM
 	entry_geoms e
 	INNER JOIN entries en on e.entry_id=en.id
@@ -450,8 +451,10 @@ CREATE TABLE charges (
     entries_expected integer DEFAULT 0,
     start_time time without time zone,
     end_time time without time zone,
-    charge_date date,
-    ref character varying(25)
+    charge_date date NOT NULL,
+    ref character varying(25) NOT NULL,
+    gauntlet_multiplier integer NOT NULL,
+    exchange_rate double precision
 );
 
 
@@ -484,8 +487,8 @@ CREATE TABLE checkins (
     guard_id integer NOT NULL,
     gps_clean_id integer,
     checkin_number integer NOT NULL,
-    checkin_timestamp timestamp without time zone,
-    processed boolean
+    checkin_timestamp timestamp without time zone NOT NULL,
+    is_duplicate boolean
 );
 
 
@@ -528,7 +531,18 @@ CREATE TABLE entries (
     start_guard_id integer,
     state_ref character varying(10),
     state_messages character varying(255)[],
-    result_messages character varying(255)[]
+    result_guards integer,
+    dist_nongauntlet integer,
+    dist_gauntlet integer,
+    dist_penalty_gauntlet integer,
+    dist_penalty_nongauntlet integer,
+    dist_withpentalty_gauntlet integer,
+    dist_withpentalty_nongauntlet integer,
+    dist_multiplied_gauntlet integer,
+    dist_real integer,
+    dist_competition integer,
+    dist_tsetse1 integer,
+    dist_tsetse2 integer
 );
 
 
@@ -568,7 +582,8 @@ CREATE TABLE entry_geoms (
     cleans_count integer,
     stops_count integer,
     raws_from timestamp without time zone,
-    raws_to timestamp without time zone
+    raws_to timestamp without time zone,
+    result_line geometry(LineString,4326)
 );
 
 
@@ -605,7 +620,8 @@ CREATE TABLE entry_legs (
     checkin1_id integer NOT NULL,
     checkin2_id integer NOT NULL,
     leg_line geometry(LineString,4326),
-    leg_line_proj geometry(LineString,3857)
+    leg_line_proj geometry(LineString,3857),
+    leg_number integer
 );
 
 
@@ -881,7 +897,10 @@ CREATE TABLE legs (
     id integer NOT NULL,
     guard1_id integer NOT NULL,
     guard2_id integer NOT NULL,
-    distance_m integer
+    distance_m integer,
+    charge_id integer,
+    is_gauntlet boolean DEFAULT false,
+    is_tsetse boolean DEFAULT false
 );
 
 
@@ -1359,6 +1378,14 @@ ALTER TABLE ONLY gps_raws
 
 ALTER TABLE ONLY gps_stops
     ADD CONSTRAINT fk_gps_stops_entries FOREIGN KEY (entry_id) REFERENCES entries(id);
+
+
+--
+-- Name: fk_legs_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY legs
+    ADD CONSTRAINT fk_legs_charge FOREIGN KEY (charge_id) REFERENCES charges(id);
 
 
 --

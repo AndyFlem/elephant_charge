@@ -12,6 +12,10 @@ class Charge < ApplicationRecord
 
   validates :name, presence: true
   validates :charge_date, presence: true
+  validates :gauntlet_multiplier, numericality: {only_integer: true}
+  validates :entries_expected, numericality: {only_integer: true,allow_nil: true }
+  validates :exchange_rate, numericality: {allow_nil: true }
+
 
   after_initialize :init
   after_commit :process_updates
@@ -22,6 +26,18 @@ class Charge < ApplicationRecord
   end
   def end_datetime
     self.charge_date + self.end_time.seconds_since_midnight.seconds
+  end
+
+  def state_description
+    if self.state_ref=="NOT_SETUP"
+      "Not setup"
+    end
+    if self.state_ref=="READY"
+      "Ready to process result"
+    end
+    if self.state_ref=="RESULT"
+      "Result ready"
+    end
   end
 
   protected
@@ -35,6 +51,7 @@ class Charge < ApplicationRecord
     self.entries_expected||=0
     self.guards_located_count||=0
     self.state_ref||='NOT_SETUP'
+    self.gauntlet_multiplier||=0
   end
 
   def process_updates
@@ -43,10 +60,11 @@ class Charge < ApplicationRecord
     update_state!
   end
 
+
   def update_state!
 
     state_messages=[]
-    state_ref="READY"
+    state_ref="RESULT"
 
     gauntlet_count=self.guards.where(is_gauntlet: true).count
     if gauntlet_count!=3
@@ -82,6 +100,13 @@ class Charge < ApplicationRecord
       state_ref="NOT_SETUP"
     end
 
+    if state_ref=="RESULT"
+      self.entries.each do |entry|
+        if entry.is_result_processed
+          state_ref=="READY"
+        end
+      end
+    end
 
     update_column(:state_ref,state_ref)
     update_column(:state_messages,state_messages)

@@ -13,7 +13,7 @@
   </thead>
 
   <% @charges.each do |charge| %>
-      <tr class="<%= charge.state_ref=='NOT_SETUP' ? 'table-danger' : '' %>">
+      <tr class="<%= charge.state_ref=='NOT_SETUP' ? 'table-danger' : charge.state_ref=='RESULT' ? 'table-success' : '' %>">
         <td><%= link_to charge.name, charge_path(charge) %></td>
 
         <td><%= charge.location %></td>

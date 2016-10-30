@@ -5,21 +5,21 @@ module GpsProcessor
 
     #for each leg
     leg_no=1
-    dist_sum=0
-    comp_dist_sum=0
+    nongauntlet_dist_sum=0
+    gauntlet_dist_sum=0
     check_from=nil
 
     entry.checkins.order(:checkin_number).each do |check_to|
       unless check_from.nil?
 
-        low_guard=[check_from.guard_id,check_to.guard_id].min
-        high_guard=[check_from.guard_id,check_to.guard_id].max
+        low_guard=[check_from.guard_id, check_to.guard_id].min
+        high_guard=[check_from.guard_id, check_to.guard_id].max
 
         #get or create leg
-        leg=Leg.where(guard1_id: low_guard,guard2_id: high_guard).first
+        leg=Leg.where(guard1_id: low_guard, guard2_id: high_guard).first
         if leg.nil?
           dist=ActiveRecord::Base.connection.exec_query("SELECT ec_guardsdistance(#{low_guard},#{high_guard})").rows[0][0]
-          leg=entry.charge.legs.new(guard1_id: low_guard,guard2_id: high_guard,distance_m: dist)
+          leg=entry.charge.legs.new(guard1_id: low_guard, guard2_id: high_guard, distance_m: dist)
           if check_from.guard.is_gauntlet and check_to.guard.is_gauntlet
             leg.is_gauntlet=true
           else
@@ -29,7 +29,8 @@ module GpsProcessor
         end
 
         #create the entry_leg
-        entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id: check_from.id, checkin2_id: check_to.id, leg_number: leg_no)
+        elapsed=check_to.checkin_timestamp-check_from.checkin_timestamp
+        entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id: check_from.id, checkin2_id: check_to.id, leg_number: leg_no, elapsed_s: elapsed)
         entry_leg.save!
         ActiveRecord::Base.connection.exec_query("SELECT ec_entrylegcreateline (#{entry_leg.id})")
         entry_leg.reload
@@ -40,22 +41,39 @@ module GpsProcessor
           entry_leg.direction_forward=false
         end
         if leg.is_gauntlet
-          entry_leg.distance_competition_m=entry.charge.gauntlet_multiplier*entry_leg.distance_m
+          gauntlet_dist_sum+=entry_leg.distance_m
         else
-          entry_leg.distance_competition_m=entry_leg.distance_m
+          nongauntlet_dist_sum+=entry_leg.distance_m
         end
         entry_leg.save!
-
-        comp_dist_sum+=entry_leg.distance_competition_m
-        dist_sum+=entry_leg.distance_m
         leg_no+=1
       end
       check_from=check_to
     end
 
     entry.result_guards=leg_no
-    entry.distance_real_m=dist_sum
-    entry.distance_competition_m=comp_dist_sum
+
+    #dist_nongauntlet;
+    entry.dist_nongauntlet=nongauntlet_dist_sum;
+
+    #dist_gauntlet;
+    entry.dist_gauntlet=gauntlet_dist_sum;
+
+    #dist_withpentalty_nongauntlet;
+    entry.dist_withpentalty_nongauntlet=nongauntlet_dist_sum + entry.dist_penalty_nongauntlet
+
+    #dist_withpentalty_gauntlet;
+    entry.dist_withpentalty_gauntlet=gauntlet_dist_sum + entry.dist_penalty_gauntlet
+
+    #dist_multiplied_gauntlet;
+    entry.dist_multiplied_gauntlet=entry.dist_withpentalty_gauntlet*entry.charge.gauntlet_multiplier
+
+    #dist_real;
+    entry.dist_real=nongauntlet_dist_sum+gauntlet_dist_sum;
+
+    #dist_competition;
+    entry.dist_competition=entry.dist_withpentalty_nongauntlet+entry.dist_multiplied_gauntlet
+
     entry.save!
   end
 
@@ -68,30 +86,34 @@ module GpsProcessor
 
     #split by guard 'hits'
     hits=[]
-    cur_hit={guard_id: pnts[0][0], points: []}
+    cur_hit={guard_id: pnts[0][0], gps_clean_id: pnts[0][1], points: []}
     hits<<cur_hit
     previous_guards={}
+    prev_clean_id=-1
 
-    pnts.each_with_index do |pnt,i|
-      if pnt[0]!=cur_hit[:guard_id] #new guard hit
-        cur_hit=Hash.new()
-        cur_hit={guard_id: pnt[0], points: []}
-        hits<<cur_hit
-
-        unless previous_guards[pnt[0]].nil?
-          cur_hit[:duplicate]=true
-          previous_guards[pnt[0]][:duplicate]=true
-        end
-        previous_guards[pnt[0]]=cur_hit
-      end
+    pnts.each_with_index do |pnt, i|
       if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>entry.charge.start_datetime
+        if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>30 and prev_clean_id!=-1) #new guard hit
+          cur_hit=Hash.new()
+          cur_hit={guard_id: pnt[0], gps_clean_id: pnt[1], points: []}
+          hits<<cur_hit
+
+          unless previous_guards[pnt[0]].nil?
+            cur_hit[:duplicate]=true
+            previous_guards[pnt[0]][:duplicate]=true
+          end
+          previous_guards[pnt[0]]=cur_hit
+        end
+        prev_clean_id=pnt[1]
         cur_hit[:points]<<pnt
+
+
       end
     end
 
     #for each hit find the point closest to the guard
-    hits.each_with_index do |hit,i|
-      closest=hit[:points].min { |a,b| a[3]<=> b[3] }
+    hits.each_with_index do |hit, i|
+      closest=hit[:points].min { |a, b| a[3]<=> b[3] }
       check=entry.checkins.new(
           checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(closest[2]),
           checkin_number: i+1,
@@ -144,9 +166,9 @@ module GpsProcessor
     #iterate points for stop candidates
     raws=entry.gps_raws.order(:gps_timestamp)
     raws_count=raws.count
-    peek_offset=0;sum_x=0;sum_y=0;
+    peek_offset=0; sum_x=0; sum_y=0;
     stops=[]
-    raws.each_with_index do |raw,i|
+    raws.each_with_index do |raw, i|
       if peek_offset==0 #skip already processed
 
         #peek forward until point is greater than stop radius
@@ -166,18 +188,18 @@ module GpsProcessor
           }
         else
           #no stop
-          peek_offset=0; sum_x=0;sum_y=0;
+          peek_offset=0; sum_x=0; sum_y=0;
         end
       else
         peek_offset-=1
-        sum_x=0;sum_y=0;
+        sum_x=0; sum_y=0;
       end
     end
 
     #amalgamte consecutive stops
     peek_offset=0
     stops_combined=[]
-    stops.each_with_index do |stop,i|
+    stops.each_with_index do |stop, i|
       if peek_offset==0 #skip already processed
 
         #peek forward while stops consecutive
@@ -195,19 +217,19 @@ module GpsProcessor
           }
         else
           #emit
-          peek_offset=0; sum_x=0;sum_y=0
+          peek_offset=0; sum_x=0; sum_y=0
           stops_combined<<stop
         end
       else
         peek_offset-=1
-        sum_x=0;sum_y=0
+        sum_x=0; sum_y=0
       end
     end
 
     #output clean points and stops
     #enumerate clean points and hold a pointer against stops
     stop_i=0
-    raws.each_with_index do |raw,raw_i|
+    raws.each_with_index do |raw, raw_i|
       if stop_i<stops_combined.count and
           raw_i >= stops_combined[stop_i][:from_index] and
           raw_i <= stops_combined[stop_i][:to_index]
@@ -247,7 +269,7 @@ module GpsProcessor
     entry.save!
   end
 
-  def self.output_clean(entry_id,gps_timestamp,location_prj_x,location_prj_y,stop_id=nil)
+  def self.output_clean(entry_id, gps_timestamp, location_prj_x, location_prj_y, stop_id=nil)
     query = <<-SQL
             INSERT INTO gps_cleans (entry_id,gps_timestamp,location_prj,location,stop_id) VALUES (
               #{entry_id},
@@ -260,7 +282,7 @@ module GpsProcessor
     ActiveRecord::Base.connection.exec_query(query)
   end
 
-  def self.output_stop(entry_id,start_timestamp,end_timestamp,location_prj_x,location_prj_y)
+  def self.output_stop(entry_id, start_timestamp, end_timestamp, location_prj_x, location_prj_y)
     query = <<-SQL
             INSERT INTO gps_stops (entry_id,start_timestamp,end_timestamp,location_prj,location) VALUES (
               #{entry_id},

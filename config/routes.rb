@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       get 'stops'
       get 'entriesbulk'
       patch 'entriesbulk', to: 'charges#entriesbulkpost'
+      patch 'legstsetse', to: 'charges#legstsetse'
+      get 'kml'
     end
     resources :guards
     resources :entries do
@@ -21,11 +23,13 @@ Rails.application.routes.draw do
         post 'guess_checkins'
         post 'process_result'
         post 'clear_result'
+        post 'clear_clean'
 
         get 'kml'
         get 'geojson'
       end
     end
+    resources :legs
   end
 
   resources :guard_sponsors

@@ -31,8 +31,8 @@
           <td><%= f.check_box(:is_bikes) %></td>
           <td><%= f.select(:start_guard_id, @start_guards,{:include_blank=>'-- select --'}) %></td>
           <td><%= f.text_field(:raised_kwacha,:size=>"8") %></td>
-          <td><%= f.text_field(:gauntlet_penalty_m,:size=>"8") %></td>
-          <td><%= f.text_field(:other_penalty_m,:size=>"8") %></td>
+          <td><%= f.text_field(:dist_penalty_gauntlet,:size=>"8") %></td>
+          <td><%= f.text_field(:dist_penalty_nongauntlet,:size=>"8") %></td>
         </tr>
       <% end %>
   <% end %>
@@ -47,8 +47,8 @@
         <td><%= f.check_box(:is_bikes) %></td>
         <td><%= f.select(:start_guard_id, @start_guards,{:include_blank=>'-- select --'}) %></td>
         <td><%= f.text_field(:raised_kwacha,:size=>"8") %></td>
-        <td><%= f.text_field(:gauntlet_penalty_m,:size=>"8") %></td>
-        <td><%= f.text_field(:other_penalty_m,:size=>"8") %></td>
+        <td><%= f.text_field(:dist_penalty_gauntlet,:size=>"8") %></td>
+        <td><%= f.text_field(:dist_penalty_nongauntlet,:size=>"8") %></td>
     <% end %>
   </tr>
 </table>

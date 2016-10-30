@@ -19,9 +19,15 @@
         <% else %>
             <p>DNF <b><%= @entry.result_guards %></b></p>
         <% end %>
-        <p>Competition distance - <b><%= number_with_precision(@entry.distance_competition_m/1000.0, precision: 2) %>km</b>
-        </p>
-        <p>Actual distance - <b><%= number_with_precision(@entry.distance_real_m/1000.0, precision: 2) %>km</b></p>
+
+
+        <p>Actual distance - <b><%= number_with_precision(@entry.dist_real/1000.0, precision: 2) %>km</b> of which gauntlet <b><%= number_with_precision(@entry.dist_gauntlet/1000.0, precision: 2) %>km</b></p>
+
+        <p>Gauntlet Penalties - <b><%= number_with_precision(@entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</b></p>
+        <p>Gauntlet with Penalties and Multiplier(<%=@charge.gauntlet_multiplier%>x) - <b><%= number_with_precision(@entry.dist_multiplied_gauntlet/1000.0, precision: 2) %>km</b></p>
+
+        <p>Competition distance - <b><%= number_with_precision(@entry.dist_competition/1000.0, precision: 2) %>km</b></p>
+
       </div>
   <% end %>
   <div class="card-block">
@@ -40,7 +46,13 @@
     <% end %>
     <%= form_tag({action: :clear_result}) do %>
         <div class="form-group">
-          <%= submit_tag "Clear", class: "btn btn-primary btn-sm" %>
+          <%= submit_tag "Clear Result", class: "btn btn-primary btn-sm" %>
+        </div>
+    <% end %>
+
+    <%= form_tag({action: :clear_clean}) do %>
+        <div class="form-group">
+          <%= submit_tag "Clear All", class: "btn btn-primary btn-sm" %>
         </div>
     <% end %>
   </div>

@@ -4,4 +4,5 @@ class Leg < ApplicationRecord
   belongs_to :guard2, foreign_key: 'guard2_id', class_name: 'Guard'
   belongs_to :charge
   has_many :entries, through: :entry_legs
+
 end

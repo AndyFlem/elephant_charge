@@ -11,7 +11,7 @@ $( document ).ready(function() {
 
         L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
             attribution: '',
-            maxZoom: 17
+            maxZoom: 22
         }).addTo(cpmap);
 
         var myIcon = L.icon({
@@ -26,14 +26,21 @@ $( document ).ready(function() {
             for (i=0; i<data.length;i++){
                 //console.log(JSON.stringify(data[i]));
                 if(data[i].lat && data[i].lon) {
-                    var marker = L.marker([data[i].lat, data[i].lon],{icon: myIcon}).addTo(cpmap);
+                    var marker = L.circle([data[i].lat, data[i].lon], {
+                        color: 'red',
+                        fillColor: 'red',
+                        fillOpacity: 0.3,
+                        radius: data[i].radius
+                    }).addTo(cpmap);
+
+                    //var marker = L.marker([data[i].lat, data[i].lon],{icon: myIcon}).addTo(cpmap);
                     var tooltip= L.tooltip({
                         offset:L.point(0,0)
                     })
                     tooltip.setTooltipContent(data[i].name);
 
                     marker.bindTooltip(data[i].name,{
-                        offset:L.point(8,7),
+                        offset:L.point(0,0),
                         direction: 'top',
                         className:data[i].is_gauntlet ? 'cp_tooltip_gt':'cp_tooltip',
                         permanent:true

@@ -19,8 +19,9 @@
               <th>Gauntlet</th>
               <th>Out</th>
               <th>In</th>
+              <th>Time</th>
               <th>Dist</th>
-              <th>Comp Dist</th>
+              <th>Position</th>
             </tr>
             </thead>
             <% @legs.each do |entry_leg| %>
@@ -31,9 +32,9 @@
                   <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
                   <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
                   <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
+                  <td><%= entry_leg.elapsed_s/60 %>min</td>
                   <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %></td>
-                  <td><%= number_with_precision(entry_leg.distance_competition_m/1000.0, precision: 2) %>km</td>
-                  <td></td>
+                  <td><%= entry_leg.position %> of <%= entry_leg.leg.entries.count %></td>
                 </tr>
             <% end %>
           </table>
@@ -94,7 +95,7 @@
         <em>Pledge: </em>K<%= @entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(@entry.raised_kwacha) %>
       </p>
       <p>
-        <em>Penalties: </em>Gauntlet: <%= @entry.gauntlet_penalty_m.nil? ? '  0' : number_with_delimiter(@entry.gauntlet_penalty_m) %>m Other: <%= @entry.other_penalty_m.nil? ? '  0' : number_with_delimiter(@entry.other_penalty_m) %>m
+        <em>Penalties: </em>Gauntlet: <%= @entry.dist_penalty_gauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_gauntlet) %>m Other: <%= @entry.dist_penalty_nongauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_nongauntlet) %>m
       </p>
 
     </div>

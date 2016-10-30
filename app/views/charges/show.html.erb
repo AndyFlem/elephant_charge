@@ -2,8 +2,7 @@
   <div class="col-sm-12 heading-bar"><h3>Entries (<%= @charge.entries_count %>)</h3>
     <%= link_to 'Edit', charge_path(@charge) + '/entriesbulk'%>
   </div>
-
-  <table class="table">
+  <table class="table table-sm">
     <thead class="thead-inverse">
     <tr>
       <th>Car</th>
@@ -55,7 +54,7 @@
               <% if entry.result_guards<11 %>
                 DNF&nbsp;<%= entry.result_guards%>
               <% end %>
-               <%= number_with_precision(entry.distance_competition_m/1000.0, precision: 2) %>km
+               <%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
             <% end %>
           </td>
         </tr>
@@ -66,7 +65,6 @@
 
 
   <div class="col-sm-12 heading-bar"><h3>Checkpoints</h3></div>
-
   <table class="table  table-sm">
     <thead class="thead-inverse">
     <tr>
@@ -107,9 +105,40 @@
         </tr>
     <% end %>
   </table>
-
   <%= link_to 'Add', new_charge_guard_path(@charge),class: "btn btn-primary"  %>
+  <br/><br/><br/><br/>
 
+  <div class="col-sm-12 heading-bar"><h3>Legs</h3></div>
+  <%= form_for @charge,as: :post,url: legstsetse_charge_path do |fc| %>
+  <table class="table table-sm">
+    <thead class="thead-inverse">
+    <tr>
+      <th>Checkpoints</th>
+      <th>Distance</th>
+      <th>Teams</th>
+      <th>Gauntlet?</th>
+      <th>Tsetse?</th>
+    </tr>
+    </thead>
+
+      <% @legs.each do |leg| %>
+            <%= fc.fields_for leg, index: leg.id do |f|%>
+              <tr>
+                <td><%= leg.guard1.name %> - <%= leg.guard2.name %></td>
+                <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2)%></td>
+                <td><%= leg.entries.count %></td>
+                <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
+                <td>
+                  <% unless leg.is_gauntlet %>
+                  <%= f.check_box(:is_tsetse) %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+      <% end %>
+  </table>
+  <%= submit_tag "Update",  class: "btn btn-primary " %>
+  <% end %>
 </div>
 
 <div class="col-sm-4">
@@ -121,7 +150,7 @@
       <h3 class="card-title">Status</h3>
     </div>
     <div class="card-block">
-      <%=@charge.state_ref%>
+      <%=@charge.state_description%>
       <ul>
         <%@charge.state_messages.each do |msg| %>
           <li><%= msg %></li>
@@ -130,6 +159,14 @@
     </div>
   </div>
 
+  <div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+      <h3 class="card-title">Results</h3>
+    </div>
+    <div class="card-block">
+      <%= link_to 'Legs',charge_legs_path(@charge) %>
+    </div>
+  </div>
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Read From KML</h3>

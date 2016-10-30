@@ -27,19 +27,30 @@ class EntriesController < ApplicationController
 
   def kml
     @charge = Charge.find(params[:charge_id])
-    @entry = @charge.entries.find(params[:id])
+    @entries = [@charge.entries.find(params[:id])]
 
-    render 'kml/entry.kml',{type: :builder,formats: [:xml],layout: false}
+    render 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
+
   end
 
   def clear_result
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
 
-    @entry.reset_result!
+    @entry.reset_checkins!
 
     redirect_to charge_entry_path @entry.charge,@entry
   end
+
+  def clear_clean
+    @charge = Charge.find(params[:charge_id])
+    @entry = @charge.entries.find(params[:id])
+
+    @entry.reset_clean!
+
+    redirect_to charge_entry_path @entry.charge,@entry
+  end
+
 
   def process_result
     @charge = Charge.find(params[:charge_id])
@@ -159,6 +170,6 @@ class EntriesController < ApplicationController
 
   private
   def entry_params
-    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :gauntlet_penalty_m, :other_penalty_m, :raised_kwacha)
+    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :dist_penalty_nongauntlet, :dist_penalty_gauntlet, :raised_kwacha)
   end
 end

@@ -2,8 +2,9 @@ class Entry < ApplicationRecord
   include FriendlyId
   friendly_id :car_no, use: :finders
 
-  has_one :entry_geom
+  after_initialize :init
 
+  has_one :entry_geom
   belongs_to :charge, touch: true
   belongs_to :team
   belongs_to :car
@@ -21,10 +22,21 @@ class Entry < ApplicationRecord
   validates :charge, presence: true
   validates :team, presence: true
   validates :car, presence: true
-  validates :gauntlet_penalty_m, numericality: { only_integer: true,allow_nil: true }
-  validates :other_penalty_m, numericality: { only_integer: true,allow_nil: true }
+  validates :dist_penalty_gauntlet, numericality: { only_integer: true,allow_nil: true }
+  validates :dist_penalty_nongauntlet, numericality: { only_integer: true,allow_nil: true }
   validates :raised_kwacha, numericality: { only_integer: true,allow_nil: true }
 
+  #dist_penalty_gauntlet;
+  #dist_penalty_nongauntlet;
+  #dist_nongauntlet;
+  #dist_gauntlet;
+  #dist_withpentalty_gauntlet;
+  #dist_withpentalty_nongauntlet;
+  #dist_multiplied_gauntlet;
+  #dist_real;
+  #dist_competition;
+  #dist_tsetse1;
+  #dist_tsetse2;
 
   def types_description
     type=[]
@@ -55,7 +67,7 @@ class Entry < ApplicationRecord
   end
 
   def is_result_processed
-    if self.distance_competition_m.nil?
+    if self.dist_competition.nil?
       false
     else
       true
@@ -103,16 +115,22 @@ class Entry < ApplicationRecord
         leg.destroy
       end
     end
-    self.update_column(:result_guards,nil)
-    #self.update_column(:result_process_ref,nil)
-    self.update_column(:distance_real_m,nil)
-    self.update_column(:distance_competition_m,nil)
+
+    self.update_column(:dist_nongauntlet,nil)
+    self.update_column(:dist_gauntlet,nil)
+    self.update_column(:dist_withpentalty_gauntlet,nil)
+    self.update_column(:dist_withpentalty_nongauntlet,nil)
+    self.update_column(:dist_multiplied_gauntlet,nil)
+    self.update_column(:dist_real,nil)
+    self.update_column(:dist_competition,nil)
+    self.update_column(:dist_tsetse1,nil)
+    self.update_column(:dist_tsetse2,nil)
   end
 
   def reset_checkins!
     reset_result!
-    entry.entry_legs.destroy_all
-    entry.checkins.destroy_all
+    self.entry_legs.destroy_all
+    self.checkins.destroy_all
   end
 
   def reset_raw!
@@ -128,7 +146,7 @@ class Entry < ApplicationRecord
     self.update_column(:state_messages,nil)
   end
   def reset_clean!
-    reset_result!
+    reset_checkins!
     self.entry_geom.update_column(:clean_line,nil)
     self.entry_geom.update_column(:clean_line_kml,nil)
     self.entry_geom.update_column(:clean_line_json,nil)
@@ -137,5 +155,11 @@ class Entry < ApplicationRecord
     ActiveRecord::Base.connection.exec_query("DELETE FROM gps_cleans WHERE entry_id=#{self.id}")
     ActiveRecord::Base.connection.exec_query("DELETE FROM gps_stops WHERE entry_id=#{self.id}")
     self.update_column(:state_ref,"RAW")
+  end
+
+  protected
+  def init
+    self.dist_penalty_gauntlet||=0
+    self.dist_penalty_nongauntlet||=0
   end
 end
