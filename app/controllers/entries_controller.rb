@@ -117,6 +117,7 @@ class EntriesController < ApplicationController
     legs_params.each do |entry_leg_id|
       leg_params=legs_params[entry_leg_id]
       entry_leg=EntryLeg.find(entry_leg_id)
+      
       if leg_params[:distance_m]!=entry_leg.distance_m
         entry_leg.distance_m=leg_params[:distance_m]
         entry_leg.save!
