@@ -14,9 +14,13 @@ Rails.application.routes.draw do
       patch 'entriesbulk', to: 'charges#entriesbulkpost'
       patch 'legstsetse', to: 'charges#legstsetse'
       get 'kml'
+      get 'result'
+      post 'clear_results'
+      post 'process_results'
     end
     resources :guards
     resources :entries do
+      resources :checkins
       member do
         post 'import'
         post 'process_clean'
@@ -27,6 +31,8 @@ Rails.application.routes.draw do
 
         get 'kml'
         get 'geojson'
+        get 'legsedit'
+        patch 'legsedit', to: 'entries#legsedit_update'
       end
     end
     resources :legs

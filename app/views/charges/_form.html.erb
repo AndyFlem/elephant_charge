@@ -24,11 +24,14 @@
 
     <%= f.label_text_field "Gauntlet Multiplier",:gauntlet_multiplier, {} %>
 
-    <%= f.label_text_field "K per $",:exchange_rate, {} %>
+    <%= f.label_text_field "Exchange Rate K per $",:exchange_rate, {} %>
+
+    <%= f.label_text_field 'Netting m / K',:m_per_kwacha, {} %>
 
 
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
-    <%= link_to 'Cancel', charges_path, class: "btn btn-primary" %>
+
+    <%= link_to 'Cancel', f.object.new_record? ? charges_path : charge_path(@charge), class: "btn btn-primary" %>
 
 
 <% end %>

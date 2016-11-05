@@ -7,7 +7,7 @@
 
   </div>
 
-  <% if @entry.is_result_processed %>
+  <% if @entry.result_state_ref=='PROCESSED' %>
       <div class="card">
         <div class="card-block">
           <table class="table table-sm">

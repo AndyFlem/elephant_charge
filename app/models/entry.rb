@@ -37,6 +37,12 @@ class Entry < ApplicationRecord
   #dist_competition;
   #dist_tsetse1;
   #dist_tsetse2;
+  #dist_net;
+  #dist_best
+
+  def raised_dollars
+    self.raised_kwacha/self.charge.exchange_rate
+  end
 
   def types_description
     type=[]
@@ -48,59 +54,101 @@ class Entry < ApplicationRecord
     type.join(', ')
   end
 
-  def check_duplicate_checkins
-    checks={}
-    self.checkins.each do |checkin|
-      if !checks[checkin.guard.id].nil? and checkin.guard.id!=self.start_guard.id
-        checkin.is_duplicate=true;
-        checkin.save!
-        checks[checkin.guard.id].is_duplicate=true;
-        checks[checkin.guard.id].save!
+  def update_distances!
+    nongauntlet_dist_sum=0
+    gauntlet_dist_sum=0
+    best_dist_sum=0
+
+    self.entry_legs.each do |entry_leg|
+      best_dist_sum+=entry_leg.leg.distance_m
+      if entry_leg.leg.is_gauntlet
+        gauntlet_dist_sum+=entry_leg.distance_m
       else
-        if checkin.is_duplicate
-          checkin.is_duplicate=false;
-          checkin.save!
-        end
+        nongauntlet_dist_sum+=entry_leg.distance_m
       end
-      checks[checkin.guard.id]=checkin
     end
+
+    #dist_nongauntlet;
+    self.dist_nongauntlet=nongauntlet_dist_sum;
+
+    #dist_gauntlet;
+    self.dist_gauntlet=gauntlet_dist_sum;
+
+    #dist_withpentalty_nongauntlet;
+    self.dist_withpentalty_nongauntlet=nongauntlet_dist_sum + self.dist_penalty_nongauntlet
+
+    #dist_withpentalty_gauntlet;
+    self.dist_withpentalty_gauntlet=gauntlet_dist_sum + self.dist_penalty_gauntlet
+
+    #dist_multiplied_gauntlet;
+    self.dist_multiplied_gauntlet=self.dist_withpentalty_gauntlet*self.charge.gauntlet_multiplier
+
+    #dist_real;
+    self.dist_real=nongauntlet_dist_sum+gauntlet_dist_sum;
+
+    #dist_competition;
+    self.dist_competition=self.dist_withpentalty_nongauntlet+self.dist_multiplied_gauntlet
+
+    #dist_best
+    self.dist_best=best_dist_sum
+
+    #dist_net;
+    if self.result_gauntlet_guards==3
+      self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
+    end
+    self.save!
   end
 
-  def is_result_processed
-    if self.dist_competition.nil?
-      false
-    else
-      true
-    end
-  end
 
-  def is_ready_for_result_processing
+  def update_result_state!
+    #NOT_READY
+    #READY
+    #PROCESSED
     res=[]
+    state='NOT_READY'
     if self.checkins.count>11
       res<<"Too many checkpoints #{self.checkins.count}"
     end
-
-    unless self.start_guard.nil?
-      if self.checkins.count>0
-        unless self.checkins.first.guard.id==self.start_guard.id
-          res<<"Unexpected first checkpoint #{self.checkins.first.guard.name}"
-        end
-      end
-      checks={}
-      self.checkins.each do |checkin|
-        if !checks[checkin.guard.id].nil? and checkin.guard.id!=self.start_guard.id
-          res<<"Checkpoint #{checkin.guard.name} listed twice"
-        end
-        checks[checkin.guard.id]=true
-      end
-      if res==[]
-        true
-      else
-        res
-      end
+    if self.checkins.count==0
+      res<<"No checkpoints defined"
     else
-      res<<"Starting checkpoint not defined"
+      if self.start_guard.nil?
+        res<<"No starting checkpoint defined"
+      else
+        unless self.checkins.order(:checkin_number).first.guard.id==self.start_guard.id
+          res<<"Unexpected first checkpoint #{self.checkins.order(:checkin_number).first.guard.name}"
+        end
+        checks={}
+        self.checkins.order(:checkin_number).each do |checkin|
+
+          if !checks[checkin.guard.id].nil? and (checkin.guard.id!=self.start_guard.id or checkin.checkin_number!=self.checkins.count)
+            checkin.is_duplicate=true;
+            checkin.save!
+            checks[checkin.guard.id].is_duplicate=true;
+            checks[checkin.guard.id].save!
+            res<<"Duplicate checkpoint #{checkin.guard.name}"
+          else
+            if checkin.is_duplicate
+              checkin.is_duplicate=false;
+              checkin.save!
+            end
+          end
+          checks[checkin.guard.id]=checkin
+        end
+      end
+
     end
+
+
+    if res==[]
+      state='READY'
+      if self.result_guards==self.checkins.count
+        state='PROCESSED'
+      end
+    end
+    self.result_state_ref=state
+    self.result_state_messages=res
+    self.save!
   end
 
   def reset_result!
@@ -116,6 +164,9 @@ class Entry < ApplicationRecord
       end
     end
 
+
+    self.update_column(:result_guards,nil)
+    self.update_column(:result_gauntlet_guards,nil)
     self.update_column(:dist_nongauntlet,nil)
     self.update_column(:dist_gauntlet,nil)
     self.update_column(:dist_withpentalty_gauntlet,nil)
@@ -125,12 +176,24 @@ class Entry < ApplicationRecord
     self.update_column(:dist_competition,nil)
     self.update_column(:dist_tsetse1,nil)
     self.update_column(:dist_tsetse2,nil)
+    self.update_column(:dist_net,nil)
+    self.update_column(:dist_best,nil)
+
+
+    self.update_column(:position_distance,nil)
+    self.update_column(:position_net_distance,nil)
+    self.update_column(:position_gauntlet,nil)
+    self.update_column(:position_tsetse1,nil)
+    self.update_column(:position_tsetse2,nil)
+
+    self.update_result_state!
   end
 
   def reset_checkins!
     reset_result!
     self.entry_legs.destroy_all
     self.checkins.destroy_all
+    self.update_result_state!
   end
 
   def reset_raw!

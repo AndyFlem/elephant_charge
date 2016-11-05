@@ -305,6 +305,25 @@ $$;
 
 
 --
+-- Name: ec_linesforleg(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION ec_linesforleg(legid integer) RETURNS TABLE(json text, entry_id integer)
+    LANGUAGE sql
+    AS $$
+SELECT 
+	ST_AsGEOJSON(el.leg_line),
+	el.entry_id as entry_id
+FROM
+	legs l
+	INNER JOIN entry_legs el ON l.id=el.leg_id
+WHERE
+	l.id=legid
+	
+$$;
+
+
+--
 -- Name: ec_pointswithinguardforentry(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -321,6 +340,7 @@ FROM
 	gps_cleans gps
 	INNER JOIN guards g ON ST_DWithin(gps.location_prj,ST_Transform(g.location,3857),g.radius_m)
 	INNER JOIN guard_sponsors gs on g.guard_sponsor_id=gs.id
+	INNER JOIN entries e ON e.id=gps.entry_id and g.charge_id=e.charge_id
 WHERE	
 	gps.entry_id=entryid
 ORDER BY
@@ -454,7 +474,8 @@ CREATE TABLE charges (
     charge_date date NOT NULL,
     ref character varying(25) NOT NULL,
     gauntlet_multiplier integer NOT NULL,
-    exchange_rate double precision
+    exchange_rate double precision,
+    m_per_kwacha double precision
 );
 
 
@@ -542,7 +563,17 @@ CREATE TABLE entries (
     dist_real integer,
     dist_competition integer,
     dist_tsetse1 integer,
-    dist_tsetse2 integer
+    dist_tsetse2 integer,
+    result_gauntlet_guards integer,
+    position_distance integer,
+    position_net_distance integer,
+    position_gauntlet integer,
+    position_tsetse1 integer,
+    position_tsetse2 integer,
+    dist_net integer,
+    dist_best integer,
+    result_state_ref character varying(10),
+    result_state_messages character varying(255)[]
 );
 
 
@@ -621,7 +652,8 @@ CREATE TABLE entry_legs (
     checkin2_id integer NOT NULL,
     leg_line geometry(LineString,4326),
     leg_line_proj geometry(LineString,3857),
-    leg_number integer
+    leg_number integer,
+    start_time timestamp without time zone
 );
 
 

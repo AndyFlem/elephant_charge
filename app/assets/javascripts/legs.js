@@ -3,26 +3,19 @@
 
 
 $( document ).ready(function() {
-    if ( $( "#guardmap" ).length ) {
-        var guardmapdiv = $("#guardmap");
+    if ( $( "#legmap" ).length ) {
+        var legmapdiv = $("#legmap");
 
-        guardmap = L.map('guardmap');
-        guardmap.setView([guardmapdiv.data("center-lat"), guardmapdiv.data("center-lon")], guardmapdiv.data("scale")+3);
+        legmap = L.map('legmap');
+        legmap.setView([legmapdiv.data("center-lat"), legmapdiv.data("center-lon")], legmapdiv.data("scale"));
 
-        guardmap.on('click', function(e) {
-            console.log(JSON.stringify(e.latlng));
-            $( "#guard_location_longitude").val(e.latlng.lng)
-            $( "#guard_location_latitude").val(e.latlng.lat)
-        });
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+            attribution: '',
+            maxZoom: 22
+        }).addTo(legmap);
 
-        var myIcon = L.icon({
-            iconUrl: '/../../assets/control_point_white.png',
-            iconSize: [18, 18],
-            iconAnchor: [0, 0],
-            popupAnchor: [-3, -76]
-        });
 
-        $.getJSON(window.location.pathname + '/../../', function (data) {
+        $.getJSON(window.location.pathname + '/../../guards/', function (data) {
             for (i=0; i<data.length;i++){
 
                 if(data[i].lat && data[i].lon) {
@@ -31,7 +24,7 @@ $( document ).ready(function() {
                         fillColor: 'green',
                         fillOpacity: 0.3,
                         radius: data[i].radius
-                    }).addTo(guardmap);
+                    }).addTo(legmap);
                     var tooltip= L.tooltip({
                         offset:L.point(0,0)
                     })
@@ -40,7 +33,7 @@ $( document ).ready(function() {
                     marker.bindTooltip(data[i].name,{
                         offset:L.point(8,7),
                         direction: 'top',
-                        className:data[i].is_gauntlet ? 'cp_tooltip_gt':'cp_tooltip',
+                        className:(data[i].id==legmapdiv.data("guard1-id") || data[i].id==legmapdiv.data("guard2-id")) ? 'cp_tooltip_gt':'cp_tooltip',
                         permanent:true
                     }).openTooltip();
 
@@ -48,21 +41,8 @@ $( document ).ready(function() {
             }
         })
 
-        $.getJSON(window.location.pathname + '/../../../stops', function (data) {
-
-            for (i=0; i<data.length;i++){
-
-                var circle = L.circle([data[i].lat, data[i].lon], {
-                    color: 'black',
-                    fillColor: 'black',
-                    fillOpacity: 0.5,
-                    radius: 2
-                }).addTo(guardmap);
-            }
-        });
-
         var tracks={};
-        $.getJSON(window.location.pathname + '/../', function (data) {
+        $.getJSON(window.location.pathname, function (data) {
             for (i=0; i<data.length;i++){
                 trck=L.geoJSON(data[i],{
                     style:{
@@ -75,12 +55,13 @@ $( document ).ready(function() {
                         tracks[feature.properties.name]=layer;
                     }
                 });
-                trck.addTo(guardmap);
+                trck.addTo(legmap);
                 //tracks[data[i].properties.name]=trck
             }
         })
 
-        $("#entries").change(function() {
+        $("[id|='entry']").click(function(e) {
+            console.dir(e.target)
             for (var key in tracks) {
                 if (tracks.hasOwnProperty(key)) {
                     tracks[key].setStyle({
@@ -91,7 +72,7 @@ $( document ).ready(function() {
                 }
             }
 
-            entry_id=$("#entries").val();
+            entry_id= e.target.id.split('-')[1];
             layer=tracks[entry_id]
             layer.setStyle({
                 color: 'red',

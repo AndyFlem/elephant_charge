@@ -6,23 +6,45 @@
 
 <div class="heading-bar"><h3>Teams</h3></div>
 
-<table class="table table-sm">
+<table class="table table-sm  table-striped sortable">
   <thead class="thead-inverse">
   <tr>
     <th>Name</th>
     <th>Captain</th>
-    <th></th>
+    <th>Charges</th>
+    <th>Kwacha</th>
+    <th>Dollars</th>
     <th></th>
   </tr>
   </thead>
 
-  <% @teams.each do |team| %>
+  <%
+    sum_k=0
+    sum_d=0
+    @teams.each do |team|
+      sum_d+=team.raised_dollars
+      sum_k+=team.raised_kwacha
+  %>
       <tr>
         <td><%= team.name %></td>
         <td><%= team.captain %></td>
-        <td><%= link_to 'Edit', edit_team_path(team) %></td>
-        <td><%= link_to 'Delete', team_path(team), method: :delete%></td>
+        <td><%= team.entries.count %></td>
+
+        <td>K<%= number_with_precision(team.raised_kwacha, precision: 0, delimiter: ',') %></td>
+        <td>$<%= number_with_precision(team.raised_dollars, precision: 0, delimiter: ',') %></td>
+        <td>
+          <%= link_to 'Edit', edit_team_path(team) %>
+          <%= link_to 'Delete', team_path(team), method: :delete%>
+        </td>
       </tr>
   <% end %>
+  <tr class="bg-inverse">
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>K<%= number_with_precision(sum_k, precision: 0, delimiter: ',') %></td>
+    <td>$<%= number_with_precision(sum_d, precision: 0, delimiter: ',') %></td>
+    <td></td>
+  </tr>
 </table>
 <%= link_to 'New team', new_team_path,class: "btn btn-primary" %>

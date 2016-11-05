@@ -8,6 +8,7 @@ class GuardsController < ApplicationController
       format.json {
 
         render json: @guards.collect {|p| {
+            :id=>p.id,
             :name =>p.guard_sponsor.short_name ? p.guard_sponsor.short_name : p.guard_sponsor.name,
             :lat=>p.location_latitude,
             :lon=>p.location_longitude,
@@ -67,6 +68,7 @@ class GuardsController < ApplicationController
     @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
     @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
+    @checkins=@guard.checkins
 
     guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
     nxt=false
@@ -99,6 +101,22 @@ class GuardsController < ApplicationController
       @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
       @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
       @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
+
+      guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
+      nxt=false
+      guards.each do |gd|
+        if nxt
+          @nextguard=gd
+          nxt=false
+        end
+        if @guard.id==gd.id
+          nxt=true
+        end
+      end
+      if nxt
+        @nextguard=guards.first
+      end
+
       render 'edit'
     end
   end

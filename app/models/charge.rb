@@ -15,6 +15,7 @@ class Charge < ApplicationRecord
   validates :gauntlet_multiplier, numericality: {only_integer: true}
   validates :entries_expected, numericality: {only_integer: true,allow_nil: true }
   validates :exchange_rate, numericality: {allow_nil: true }
+  validates :m_per_kwacha, numericality: {allow_nil: true }
 
 
   after_initialize :init
@@ -40,6 +41,31 @@ class Charge < ApplicationRecord
     end
   end
 
+  def update_positions!
+
+    #position_distance
+    entries=self.entries.order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_distance=i+1
+      p.save!
+    end
+
+    #position_net_distance
+    entries=self.entries.order(result_guards: :desc, dist_net: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_net_distance=i+1
+      p.save!
+    end
+
+    #gauntlet
+    entries=self.entries.order(result_gauntlet_guards: :desc, dist_withpentalty_gauntlet: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_gauntlet=i+1
+      p.save!
+    end
+
+  end
+
   protected
 
   def init
@@ -52,6 +78,7 @@ class Charge < ApplicationRecord
     self.guards_located_count||=0
     self.state_ref||='NOT_SETUP'
     self.gauntlet_multiplier||=0
+    self.m_per_kwacha||=0.5
   end
 
   def process_updates
@@ -102,7 +129,7 @@ class Charge < ApplicationRecord
 
     if state_ref=="RESULT"
       self.entries.each do |entry|
-        if entry.is_result_processed
+        unless entry.result_state_ref=='PROCESSED'
           state_ref=="READY"
         end
       end

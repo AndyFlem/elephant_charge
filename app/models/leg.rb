@@ -5,4 +5,11 @@ class Leg < ApplicationRecord
   belongs_to :charge
   has_many :entries, through: :entry_legs
 
+
+  def location_x
+    (self.guard1.location.x+self.guard2.location.x)/2
+  end
+  def location_y
+    (self.guard1.location.y+self.guard2.location.y)/2
+  end
 end

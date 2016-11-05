@@ -1,0 +1,41 @@
+<div class="col-sm-8">
+  <div class="heading-bar"><h3><%= @entry.car_no %> - <%= @entry.team.name %></h3></div>
+
+      <div class="card">
+        <div class="card-block">
+          <%= form_for @entry,as: :post,url: legsedit_charge_entry_path(@charge,@entry) do |fc| %>
+          <table class="table table-sm">
+            <thead class="thead-inverse">
+            <tr>
+              <th>No.</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Gauntlet</th>
+              <th>Out</th>
+              <th>In</th>
+              <th>Best Dist (m)</th>
+              <th>Dist (m)</th>
+              <th>Position</th>
+            </tr>
+            </thead>
+            <% @legs.each do |entry_leg| %>
+                <%= fc.fields_for entry_leg, index: entry_leg.id do |f|%>
+                <tr>
+                  <td><%= entry_leg.leg_number %></td>
+                  <td><%= entry_leg.checkin1.guard.name %></td>
+                  <td><%= entry_leg.checkin2.guard.name %></td>
+                  <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
+                  <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
+                  <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
+                  <td><%= entry_leg.leg.distance_m %></td>
+                  <td><%= f.text_field(:distance_m,:size=>"8") %></td>
+                  <td><%= entry_leg.position %> of <%= entry_leg.leg.entries.count %></td>
+                </tr>
+                <% end %>
+            <% end %>
+          </table>
+              <%= submit_tag("Update") %>
+          <% end %>
+        </div>
+      </div>
+</div>

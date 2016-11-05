@@ -5,9 +5,9 @@ module GpsProcessor
 
     #for each leg
     leg_no=1
-    nongauntlet_dist_sum=0
-    gauntlet_dist_sum=0
+
     check_from=nil
+    gauntlet_guard_count=0
 
     entry.checkins.order(:checkin_number).each do |check_to|
       unless check_from.nil?
@@ -30,7 +30,7 @@ module GpsProcessor
 
         #create the entry_leg
         elapsed=check_to.checkin_timestamp-check_from.checkin_timestamp
-        entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id: check_from.id, checkin2_id: check_to.id, leg_number: leg_no, elapsed_s: elapsed)
+        entry_leg=entry.entry_legs.new(leg_id: leg.id, checkin1_id: check_from.id, checkin2_id: check_to.id, leg_number: leg_no, elapsed_s: elapsed, start_time: check_from.checkin_timestamp)
         entry_leg.save!
         ActiveRecord::Base.connection.exec_query("SELECT ec_entrylegcreateline (#{entry_leg.id})")
         entry_leg.reload
@@ -40,41 +40,22 @@ module GpsProcessor
         else
           entry_leg.direction_forward=false
         end
-        if leg.is_gauntlet
-          gauntlet_dist_sum+=entry_leg.distance_m
-        else
-          nongauntlet_dist_sum+=entry_leg.distance_m
-        end
         entry_leg.save!
         leg_no+=1
+      end
+      if check_to.guard.is_gauntlet
+        gauntlet_guard_count+=1
       end
       check_from=check_to
     end
 
     entry.result_guards=leg_no
-
-    #dist_nongauntlet;
-    entry.dist_nongauntlet=nongauntlet_dist_sum;
-
-    #dist_gauntlet;
-    entry.dist_gauntlet=gauntlet_dist_sum;
-
-    #dist_withpentalty_nongauntlet;
-    entry.dist_withpentalty_nongauntlet=nongauntlet_dist_sum + entry.dist_penalty_nongauntlet
-
-    #dist_withpentalty_gauntlet;
-    entry.dist_withpentalty_gauntlet=gauntlet_dist_sum + entry.dist_penalty_gauntlet
-
-    #dist_multiplied_gauntlet;
-    entry.dist_multiplied_gauntlet=entry.dist_withpentalty_gauntlet*entry.charge.gauntlet_multiplier
-
-    #dist_real;
-    entry.dist_real=nongauntlet_dist_sum+gauntlet_dist_sum;
-
-    #dist_competition;
-    entry.dist_competition=entry.dist_withpentalty_nongauntlet+entry.dist_multiplied_gauntlet
-
+    entry.result_gauntlet_guards=gauntlet_guard_count
     entry.save!
+
+    entry.update_distances!
+    entry.update_result_state!
+    entry.charge.update_positions!
   end
 
   def self.guess_checkins(entry)
@@ -88,26 +69,20 @@ module GpsProcessor
     hits=[]
     cur_hit={guard_id: pnts[0][0], gps_clean_id: pnts[0][1], points: []}
     hits<<cur_hit
-    previous_guards={}
     prev_clean_id=-1
 
     pnts.each_with_index do |pnt, i|
-      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>entry.charge.start_datetime
-        if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>30 and prev_clean_id!=-1) #new guard hit
+      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>=entry.charge.start_datetime and ActiveSupport::TimeZone['UTC'].parse(pnt[2])<=entry.charge.end_datetime
+        if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>15 and prev_clean_id!=-1) #new guard hit
+          if hits.count==1 and cur_hit[:points].count==0 #left first guard early!
+            cur_hit[:points]<<pnts[i-1]
+          end
           cur_hit=Hash.new()
           cur_hit={guard_id: pnt[0], gps_clean_id: pnt[1], points: []}
           hits<<cur_hit
-
-          unless previous_guards[pnt[0]].nil?
-            cur_hit[:duplicate]=true
-            previous_guards[pnt[0]][:duplicate]=true
-          end
-          previous_guards[pnt[0]]=cur_hit
         end
         prev_clean_id=pnt[1]
         cur_hit[:points]<<pnt
-
-
       end
     end
 
@@ -118,11 +93,15 @@ module GpsProcessor
           checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(closest[2]),
           checkin_number: i+1,
           guard_id: hit[:guard_id],
-          gps_clean_id: closest[1],
-          is_duplicate: hit[:duplicate].nil? ? false : true
+          gps_clean_id: closest[1]
       )
       check.save!
     end
+    if entry.start_guard.nil?
+      entry.start_guard=entry.checkins.first.guard
+      entry.save!
+    end
+    entry.update_result_state!
   end
 
   def self.process_raw(entry)

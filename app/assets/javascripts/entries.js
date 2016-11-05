@@ -58,5 +58,21 @@ $( document ).ready(function() {
                 "opacity": 1
             }}).addTo(cpmap);
         })
+
+        $.getJSON(window.location.pathname + "/checkins", function (data) {
+            console.log(JSON.stringify(data));
+            for (i=0; i<data.length;i++) {
+
+                if (data[i].lat && data[i].lon) {
+                    var marker = L.circle([data[i].lat, data[i].lon], {
+                        color: 'black',
+                        fillColor: 'black',
+                        fillOpacity: 0.3,
+                        radius: 5
+                    }).addTo(cpmap);
+                }
+            }
+        })
+
     }
 })

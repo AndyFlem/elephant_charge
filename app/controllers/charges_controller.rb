@@ -1,13 +1,38 @@
 include KmlReader
+include GpsProcessor
 
 class ChargesController < ApplicationController
+
+  def process_results
+    @charge = Charge.find(params[:id])
+
+    entries = @charge.entries
+    entries.each do |e|
+      e.reset_result!
+      if e.state_ref=='CLEAN'
+        GpsProcessor.guess_checkins(e)
+        if e.result_state_ref=='READY'
+          GpsProcessor.process_result(e)
+        end
+      end
+    end
+    redirect_to charge_path @charge
+  end
+
+  def clear_results
+    @charge = Charge.find(params[:id])
+    entries = @charge.entries
+    entries.each do |e|
+      e.reset_result!
+    end
+    redirect_to charge_path @charge
+  end
 
   def kml
     @charge = Charge.find(params[:id])
     @entries = @charge.entries.order(:car_no)
 
     render 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
-
   end
 
   def legstsetse
@@ -34,8 +59,8 @@ class ChargesController < ApplicationController
     @newentry=@charge.entries.new()
     render 'entriesbulk'
   end
-  def entriesbulkpost
 
+  def entriesbulkpost
     @charge = Charge.find(params[:id])
     ents_params=params[:post][:entry]
     ents_params.each do |car_no|
@@ -52,13 +77,14 @@ class ChargesController < ApplicationController
           entry.team_id=ent_params[:team_id]
           entry.car_id=ent_params[:car_id]
           entry.save!
-          enry.reload
+          entry.reload
           entry.create_entry_geom!
         end
       end
     end
     redirect_to entriesbulk_charge_path(@charge)
   end
+
   def set_entry entry,ent_params
     entry.is_ladies=ent_params[:is_ladies]
     entry.is_international=ent_params[:is_international]
@@ -99,6 +125,15 @@ class ChargesController < ApplicationController
     redirect_to charge_path params[:id]
   end
 
+  def result
+    @charge = Charge.find(params[:id])
+    @shortest_dist=@charge.entries.order(position_distance: :asc)
+    @gauntlet=@charge.entries.order(position_gauntlet: :asc)
+    @net=@charge.entries.where('dist_net IS NOT NULL').order(position_net_distance: :asc)
+    @raised=@charge.entries.order(raised_kwacha: :desc)
+    @tsetselegs=@charge.legs.where(is_tsetse: true)
+
+  end
 
   def index
     @charges = Charge.order(charge_date: :desc)
@@ -106,7 +141,7 @@ class ChargesController < ApplicationController
 
   def show
     @charge = Charge.references(:entries).find(params[:id])
-    @entries=@charge.entries.includes(:car,:team,:start_guard).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    @entries=@charge.entries.includes(:car,:team,:start_guard).order(car_no: :asc)
     #@entries=Entry.order(:car_no).includes(:car).includes(:team).where(charge_id: @charge.id)
     @guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
     @legs=@charge.legs.order(is_gauntlet: :desc,is_tsetse: :desc)
@@ -134,7 +169,6 @@ class ChargesController < ApplicationController
   def update
     @charge = Charge.find(params[:id])
 
-
     if @charge.update(charge_params)
       redirect_to charge_path(@charge)
     else
@@ -144,6 +178,6 @@ class ChargesController < ApplicationController
 
   private
   def charge_params
-    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,:start_time,:end_time,:entries_expected,:gauntlet_multiplier, :exchange_rate)
+    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,:start_time,:end_time,:entries_expected,:gauntlet_multiplier, :exchange_rate, :m_per_kwacha)
   end
 end

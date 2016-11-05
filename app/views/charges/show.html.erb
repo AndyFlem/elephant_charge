@@ -9,6 +9,7 @@
       <th>Team</th>
       <th>Type</th>
       <th>Start</th>
+      <th>Start</th>
       <th>ZMK</th>
       <th>Data</th>
       <th>Result</th>
@@ -30,6 +31,9 @@
             <%= entry.start_guard.nil? ? '': entry.start_guard.name%>
           </td>
           <td>
+            <%= entry.checkins.count==0 ? '': formattime(entry.checkins.order(:checkin_number).first.checkin_timestamp) %>
+          </td>
+          <td>
             K<%= entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(entry.raised_kwacha) %>
           </td>
           <td class="<%= entry.state_ref.nil? ? 'table-danger' : entry.state_ref=='RAW' ? 'table-warning' : 'table-success'%>" >
@@ -40,7 +44,7 @@
 
           </td>
           <td class="
-            <% if entry.is_result_processed %>
+            <% if entry.result_state_ref=='PROCESSED' %>
               <% if entry.result_guards==11 %>
                 <%= 'table-success' %>
               <% else %>
@@ -50,11 +54,11 @@
               <%= 'table-danger' %>
             <% end %>
             ">
-            <% if entry.is_result_processed %>
+            <% if entry.result_state_ref=='PROCESSED' %>
               <% if entry.result_guards<11 %>
                 DNF&nbsp;<%= entry.result_guards%>
               <% end %>
-               <%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
+               <%= entry.dist_competition.nil? ? '-' : number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
             <% end %>
           </td>
         </tr>
@@ -124,7 +128,7 @@
       <% @legs.each do |leg| %>
             <%= fc.fields_for leg, index: leg.id do |f|%>
               <tr>
-                <td><%= leg.guard1.name %> - <%= leg.guard2.name %></td>
+                <td><%= link_to(leg.guard1.name + '-' + leg.guard2.name,charge_leg_path(@charge,leg)) %></td>
                 <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2)%></td>
                 <td><%= leg.entries.count %></td>
                 <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
@@ -142,7 +146,7 @@
 </div>
 
 <div class="col-sm-4">
-  <div class="heading-bar"><h3>Map</h3></div>
+  <div class="heading-bar"><h4><%=@charge.charge_date.strftime("%d %b %Y") %></h4></div>
   <div id='cpmap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0:@charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0:@charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
 
   <div class="card" style="margin-top: 20px;">
@@ -164,9 +168,12 @@
       <h3 class="card-title">Results</h3>
     </div>
     <div class="card-block">
-      <%= link_to 'Legs',charge_legs_path(@charge) %>
+      <%= link_to 'Summary',result_charge_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= link_to 'Legs',charge_legs_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= link_to 'Teams',charge_entries_path(@charge) %>
     </div>
   </div>
+
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Read From KML</h3>
@@ -181,5 +188,23 @@
     </div>
   </div>
 
-  <h4></h4>
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Actions</h3>
+    </div>
+    <div class="card-block">
+      <%= form_tag({action: :clear_results}) do %>
+          <div class="form-group">
+            <%= submit_tag "Clear Results", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
+      <%= form_tag({action: :process_results}) do %>
+          <div class="form-group">
+            <%= submit_tag "Process Results", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
+
+    </div>
+  </div>
+
 </div>

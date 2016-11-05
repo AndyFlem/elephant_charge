@@ -1,33 +1,38 @@
 <nav class="navbar navbar-dark bg-primary" style="margin-bottom: 20px;">
   <% if @charge and @charge.id %>
       <%= link_to @charge.name, charge_path(@charge), class: "navbar-brand" %>
-      <ul class="nav navbar-nav pull-xs-right">
-        <li class="nav-item">
-          <a class="nav-link" href="<%=edit_charge_path(@charge)%>">Edit</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/charges">Charges</a>
-        </li>
+
+      <div class="btn-group pull-xs-right">
+        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="/charges">Charges</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="<%=charge_path(@charge)%>">Show Charge</a>
+          <a class="dropdown-item" href="<%=edit_charge_path(@charge)%>">Edit Charge</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="<%= result_charge_path(@charge) %>">Summary Results</a>
+          <a class="dropdown-item" href="<%= charge_entries_path(@charge) %>">Team Results</a>
+          <a class="dropdown-item" href="<%= charge_legs_path(@charge) %>">Leg Results</a>
+        </div>
+      </div>
 
 
-
-      </ul>
   <%else%>
       <%= link_to "Elephant Charge", root_path, class: "navbar-brand" %>
-      <ul class="nav navbar-nav pull-xs-right">
-        <li class="nav-item">
-          <a class="nav-link" href="/guard_sponsors">CP Sponsors</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/cars">Cars</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/teams">Teams</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/charges">Charges</a>
-        </li>
-      </ul>
+
+      <div class="btn-group pull-xs-right">
+        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="/charges">Home</a>
+          <a class="dropdown-item" href="/teams">Teams</a>
+          <a class="dropdown-item" href="/cars">Cars</a>
+          <a class="dropdown-item" href="/guard_sponsors">CP Sponsors</a>
+        </div>
+      </div>
 
   <%end%>
 </nav>

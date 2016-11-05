@@ -1,5 +1,18 @@
 class CheckinsController < ApplicationController
 
+  def index
+    @charge = Charge.find(params[:charge_id])
+    @entry=@charge.entries.find(params[:entry_id])
+    @checkins=@entry.checkins
+
+    respond_to do |format|
+      format.json {
+        render json: @checkins.collect {|p| { lat: p.gps_clean.location.y, lon: p.gps_clean.location.x}}
+      }
+    end
+  end
+
+
   def destroy
 
     checkin=Checkin.find(params[:id])
@@ -10,7 +23,7 @@ class CheckinsController < ApplicationController
       check.save!
     end
     checkin.destroy
-    entry.check_duplicate_checkins
+    entry.update_result_state!
 
     redirect_to charge_entry_path(entry.charge,entry)
   end

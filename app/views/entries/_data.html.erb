@@ -23,12 +23,6 @@
             <li><%= msg %></li>
         <% end %>
     <% end %>
-    <% unless @entry.is_ready_for_result_processing %>
-        <% @entry.is_ready_for_result_processing.each do |msg| %>
-            <li><%= msg %></li>
-        <% end %>
-    <% end %>
-
   </ul>
   </p>
   <p class="list-group-item-text">

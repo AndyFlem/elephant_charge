@@ -6,8 +6,8 @@
   <thead class="thead-inverse">
   <tr>
     <th>No.</th>
-    <th>Car</th>
     <th>Team</th>
+    <th>Car</th>
 
     <th>Lady</th>
     <th>New</th>
@@ -23,8 +23,8 @@
       <%= fc.fields_for entry, index: entry.car_no do |f|%>
         <tr>
           <td><%= entry.car_no%></td>
-          <td><%= entry.car.name%></td>
           <td><%= entry.team.name%></td>
+          <td><%= entry.car.name%></td>
           <td><%= f.check_box(:is_ladies) %></td>
           <td><%= f.check_box(:is_newcomer) %></td>
           <td><%= f.check_box(:is_international) %></td>

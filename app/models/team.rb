@@ -14,4 +14,20 @@ class Team < ApplicationRecord
 
     Team.find_by_sql(query)
   end
+
+  def raised_dollars
+    sm=0
+    self.entries.each do |e|
+      sm+=e.raised_dollars
+    end
+    sm
+  end
+  def raised_kwacha
+    sm=0
+    self.entries.each do |e|
+      sm+=e.raised_kwacha
+    end
+    sm
+  end
+
 end

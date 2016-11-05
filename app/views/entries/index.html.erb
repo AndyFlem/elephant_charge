@@ -1,0 +1,44 @@
+<% @entries.each do |entry| %>
+    <div class="col-sm-8">
+      <div class="heading-bar" style="<%= entry.result_guards<11 ? 'background-color:#f2dede; color:#818a91;' : 'background-color:#dff0d8; color:#818a91;'%>">
+        <h3><%= entry.car_no %>. <%= entry.team.name %>
+        </h3>
+        <% if entry.result_guards==11 %>
+            Completed
+        <% else %>
+            DNF <%= entry.result_guards %>
+        <% end %>
+        <br/>
+        <%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km (<%= number_with_precision(entry.dist_real/1000.0, precision: 2) %>km)
+
+      </div>
+      <table class="table table-sm">
+        <thead class="thead-inverse">
+        <tr>
+          <th>No.</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Gauntlet</th>
+          <th>Out</th>
+          <th>In</th>
+          <th>Time</th>
+          <th>Dist</th>
+          <th>Position</th>
+        </tr>
+        </thead>
+        <% entry.entry_legs.order(:leg_number).each do |entry_leg| %>
+            <tr>
+              <td><%= entry_leg.leg_number %></td>
+              <td><%= entry_leg.checkin1.guard.name %></td>
+              <td><%= entry_leg.checkin2.guard.name %></td>
+              <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
+              <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
+              <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
+              <td><%= entry_leg.elapsed_s/60 %>min</td>
+              <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %></td>
+              <td><%= entry_leg.position %> of <%= entry_leg.leg.entries.count %></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+<% end %>

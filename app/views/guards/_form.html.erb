@@ -30,8 +30,12 @@
     <% end %>
     <br/>
 
-    <% unless f.object.new_record? %>
-    <div id='guardmap' class='col-sm-12' data-center-lat="<%= @guard.location.y %>" data-center-lon="<%= @guard.location.x %>" data-scale="16"></div>
+    <% unless f.object.new_record? or @guard.location.nil? %>
+      <div id='guardmap' class='col-sm-12' data-center-lat="<%= @guard.location.y %>" data-center-lon="<%= @guard.location.x %>" data-scale="16"></div>
+        <select id="entries">
+          <% @checkins.each do |check| %>
+            <option value="<%= check.entry.id %>"><%= check.entry.team.name %></option>
+          <% end %>
+        </select>
     <%end%>
-
 <% end %>

@@ -1,11 +1,11 @@
-<div class="card <%= @entry.is_result_processed ? 'card-outline-success' : 'card-outline-danger' %>">
-  <% unless @entry.is_result_processed %>
+<div class="card <%= @entry.result_state_ref=='PROCESSED' ? 'card-outline-success' : 'card-outline-danger' %>">
+  <% unless @entry.result_state_ref=='PROCESSED' %>
       <div class="card-block text-danger">
         <h3 class="card-title">Result</h3>
         <p>Not Processed</p>
-        <% unless @entry.is_ready_for_result_processing==true %>
+        <% unless @entry.result_state_ref=='PROCESSED' or @entry.result_state_messages.nil? %>
             <ul>
-              <% @entry.is_ready_for_result_processing.each do |msg| %>
+              <% @entry.result_state_messages.each do |msg| %>
                   <li><%= msg %></li>
               <% end %>
             </ul>
@@ -20,13 +20,21 @@
             <p>DNF <b><%= @entry.result_guards %></b></p>
         <% end %>
 
+        <p>Best possible distance: <b><%= @entry.dist_best.nil? ? '-' : number_with_precision(@entry.dist_best/1000.0, precision: 2) %>km</b> </p>
 
-        <p>Actual distance - <b><%= number_with_precision(@entry.dist_real/1000.0, precision: 2) %>km</b> of which gauntlet <b><%= number_with_precision(@entry.dist_gauntlet/1000.0, precision: 2) %>km</b></p>
+        <p>Actual distance: <b><%= number_with_precision(@entry.dist_real/1000.0, precision: 2) %>km</b>(<%= @entry.dist_best.nil? ? '-' : number_with_precision(@entry.dist_real*1.0/@entry.dist_best*1.0, precision: 2)  %>x) of which gauntlet <b><%= number_with_precision(@entry.dist_gauntlet/1000.0, precision: 2) %>km</b></p>
 
-        <p>Gauntlet Penalties - <b><%= number_with_precision(@entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</b></p>
-        <p>Gauntlet with Penalties and Multiplier(<%=@charge.gauntlet_multiplier%>x) - <b><%= number_with_precision(@entry.dist_multiplied_gauntlet/1000.0, precision: 2) %>km</b></p>
+        <p>Gauntlet Penalties: <b><%= number_with_precision(@entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</b></p>
+        <p>Gauntlet with Penalties and Multiplier(<%=@charge.gauntlet_multiplier%>x) <b><%= number_with_precision(@entry.dist_multiplied_gauntlet/1000.0, precision: 2) %>km</b></p>
 
-        <p>Competition distance - <b><%= number_with_precision(@entry.dist_competition/1000.0, precision: 2) %>km</b></p>
+        <p>Competition distance: <b><%= number_with_precision(@entry.dist_competition/1000.0, precision: 2) %>km</b></p>
+        <p>Net distance:
+          <% if @entry.dist_net.nil? %>
+              <b>n/a</b>
+          <% else %>
+            <b><%= number_with_precision(@entry.dist_net/1000.0, precision: 2) %>km</b>
+          <% end %>
+        </p>
 
       </div>
   <% end %>
@@ -37,12 +45,13 @@
         </div>
     <% end %>
 
-    <% if @entry.is_ready_for_result_processing==true %>
+    <% if @entry.result_state_ref=='READY' %>
       <%= form_tag({action: :process_result}) do %>
           <div class="form-group">
             <%= submit_tag "Get Result", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
+        <%= 'humph'%>
     <% end %>
     <%= form_tag({action: :clear_result}) do %>
         <div class="form-group">
