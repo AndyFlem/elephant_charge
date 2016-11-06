@@ -13,6 +13,7 @@
       <th>ZMK</th>
       <th>Data</th>
       <th>Result</th>
+      <th>Distance</th>
     </tr>
     </thead>
 
@@ -45,7 +46,7 @@
           </td>
           <td class="
             <% if entry.result_state_ref=='PROCESSED' %>
-              <% if entry.result_guards==11 %>
+              <% if entry.result=='Complete'%>
                 <%= 'table-success' %>
               <% else %>
                 <%= 'table-warning' %>
@@ -55,12 +56,26 @@
             <% end %>
             ">
             <% if entry.result_state_ref=='PROCESSED' %>
-              <% if entry.result_guards<11 %>
-                DNF&nbsp;<%= entry.result_guards%>
-              <% end %>
-               <%= entry.dist_competition.nil? ? '-' : number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
+              <%= entry.result %>
             <% end %>
           </td>
+
+          <td class="
+            <% if entry.result_state_ref=='PROCESSED' %>
+              <% if entry.result=='Complete' %>
+                <%= 'table-success' %>
+              <% else %>
+                <%= 'table-warning' %>
+              <% end %>
+            <% else %>
+              <%= 'table-danger' %>
+            <% end %>
+            ">
+            <% if entry.result_state_ref=='PROCESSED' %>
+                <%= entry.dist_competition.nil? ? '-' : number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
+            <% end %>
+          </td>
+
         </tr>
     <% end %>
   </table>
@@ -146,7 +161,7 @@
 </div>
 
 <div class="col-sm-4">
-  <div class="heading-bar"><h4><%=@charge.charge_date.strftime("%d %b %Y") %></h4></div>
+  <div class="heading-bar"><h4><%=@charge.charge_date.strftime("%a %d %b %Y") %></h4></div>
   <div id='cpmap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0:@charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0:@charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
 
   <div class="card" style="margin-top: 20px;">
@@ -201,6 +216,11 @@
       <%= form_tag({action: :process_results}) do %>
           <div class="form-group">
             <%= submit_tag "Process Results", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
+      <%= form_tag({action: :recalc_distances}) do %>
+          <div class="form-group">
+            <%= submit_tag "Recalc Distances", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
 

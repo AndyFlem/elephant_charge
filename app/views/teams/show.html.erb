@@ -1,0 +1,40 @@
+<div class="col-sm-8">
+  <div class="heading-bar">
+    <h3><%= @team.name%></h3>
+  </div>
+
+  <div class="card">
+    <div class="card-block">
+      <p>
+        Entered <b><%= @entries.count%></b> charge<%= @entries.count>1 ? 's':'' %> since <b><%= @entries.first.charge.ref%></b>
+        raising <b>$<%= number_with_precision(@team.raised_dollars, precision: 0, delimiter: ',') %></b>.
+      </p>
+    </div>
+  </div>
+  <% @entries.each do |entry| %>
+      <div class="card">
+        <div class="card-header">
+          <h5><%= entry.charge.name + ' ' + entry.charge.location %></h5>
+          <%= entry.charge.entries.count %> entires.
+        </div>
+        <div class="card-block">
+          <p>
+            <b><%= format_position(entry.position_raised) %></b> place in fundraising. Raised <b>$<%= number_with_precision(entry.raised_dollars, precision: 0, delimiter: ',') %></b>.
+          </p>
+        </div>
+      </div>
+  <% end %>
+
+  <table class="table table-sm">
+    <thead class="thead-inverse">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Kwacha</th>
+      <th>Dollars</th>
+    </tr>
+    </thead>
+
+  </table>
+</div>

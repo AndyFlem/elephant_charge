@@ -11,6 +11,7 @@
   <tr>
     <th>Name</th>
     <th>Short Name</th>
+    <th>Charges</th>
     <th></th>
     <th></th>
   </tr>
@@ -20,6 +21,7 @@
       <tr>
         <td><%= guard_sponsor.name %></td>
         <td><%= guard_sponsor.short_name %></td>
+        <td><%= guard_sponsor.charges.count %></td>
         <td><%= link_to 'Edit', edit_guard_sponsor_path(guard_sponsor) %></td>
         <td><%= link_to 'Delete', guard_sponsor_path(guard_sponsor), method: :delete%></td>
       </tr>

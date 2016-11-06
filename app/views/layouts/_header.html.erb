@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark bg-primary" style="margin-bottom: 20px;">
   <% if @charge and @charge.id %>
-      <%= link_to @charge.name, charge_path(@charge), class: "navbar-brand" %>
+      <%= link_to @charge.name + ' ' + @charge.location, charge_path(@charge), class: "navbar-brand" %>
 
       <div class="btn-group pull-xs-right">
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -8,6 +8,9 @@
         </button>
         <div class="dropdown-menu dropdown-menu-right">
           <a class="dropdown-item" href="/charges">Charges</a>
+          <a class="dropdown-item" href="/teams">Teams</a>
+          <a class="dropdown-item" href="/cars">Cars</a>
+          <a class="dropdown-item" href="/guard_sponsors">CP Sponsors</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="<%=charge_path(@charge)%>">Show Charge</a>
           <a class="dropdown-item" href="<%=edit_charge_path(@charge)%>">Edit Charge</a>
@@ -27,7 +30,7 @@
           Menu
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="/charges">Home</a>
+          <a class="dropdown-item" href="/charges">Charges</a>
           <a class="dropdown-item" href="/teams">Teams</a>
           <a class="dropdown-item" href="/cars">Cars</a>
           <a class="dropdown-item" href="/guard_sponsors">CP Sponsors</a>

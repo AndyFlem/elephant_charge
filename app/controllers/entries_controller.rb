@@ -117,7 +117,7 @@ class EntriesController < ApplicationController
     legs_params.each do |entry_leg_id|
       leg_params=legs_params[entry_leg_id]
       entry_leg=EntryLeg.find(entry_leg_id)
-      
+
       if leg_params[:distance_m]!=entry_leg.distance_m
         entry_leg.distance_m=leg_params[:distance_m]
         entry_leg.save!
@@ -184,6 +184,6 @@ class EntriesController < ApplicationController
 
   private
   def entry_params
-    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :dist_penalty_nongauntlet, :dist_penalty_gauntlet, :raised_kwacha)
+    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :dist_penalty_nongauntlet, :dist_penalty_gauntlet, :raised_kwacha, :late_finish_min)
   end
 end

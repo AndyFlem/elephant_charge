@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get 'result'
       post 'clear_results'
       post 'process_results'
+      post 'recalc_distances'
     end
     resources :guards
     resources :entries do

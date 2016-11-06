@@ -475,7 +475,12 @@ CREATE TABLE charges (
     ref character varying(25) NOT NULL,
     gauntlet_multiplier integer NOT NULL,
     exchange_rate double precision,
-    m_per_kwacha double precision
+    m_per_kwacha double precision,
+    guards_expected integer,
+    map_file_name character varying,
+    map_content_type character varying,
+    map_file_size integer,
+    map_updated_at timestamp without time zone
 );
 
 
@@ -573,7 +578,9 @@ CREATE TABLE entries (
     dist_net integer,
     dist_best integer,
     result_state_ref character varying(10),
-    result_state_messages character varying(255)[]
+    result_state_messages character varying(255)[],
+    late_finish_min integer,
+    position_raised integer
 );
 
 
@@ -677,13 +684,36 @@ ALTER SEQUENCE entry_legs_id_seq OWNED BY entry_legs.id;
 
 
 --
--- Name: entry_states; Type: TABLE; Schema: public; Owner: -
+-- Name: entry_photos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entry_states (
-    state_ref character varying(10) NOT NULL,
-    description character varying(255)
+CREATE TABLE entry_photos (
+    id integer NOT NULL,
+    photo_file_name character varying,
+    photo_content_type character varying,
+    photo_file_size integer,
+    photo_updated_at timestamp without time zone,
+    entry_id integer NOT NULL
 );
+
+
+--
+-- Name: entry_photos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE entry_photos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: entry_photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE entry_photos_id_seq OWNED BY entry_photos.id;
 
 
 --
@@ -827,21 +857,6 @@ ALTER SEQUENCE gps_stops_id_seq OWNED BY gps_stops.id;
 
 
 --
--- Name: gpsdata_raw; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE gpsdata_raw (
-    "GPSDataId" integer NOT NULL,
-    "TeamId" integer NOT NULL,
-    "Lat" real NOT NULL,
-    "Lon" real NOT NULL,
-    "TimeDate" timestamp with time zone NOT NULL,
-    charge character varying(25),
-    team character varying(255)
-);
-
-
---
 -- Name: guard_sponsors; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -907,18 +922,6 @@ CREATE SEQUENCE guards_id_seq
 --
 
 ALTER SEQUENCE guards_id_seq OWNED BY guards.id;
-
-
---
--- Name: import_2016; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE import_2016 (
-    teamid integer,
-    lat double precision,
-    lon double precision,
-    timedate timestamp with time zone
-);
 
 
 --
@@ -1043,6 +1046,13 @@ ALTER TABLE ONLY entry_geoms ALTER COLUMN id SET DEFAULT nextval('entry_geoms_id
 --
 
 ALTER TABLE ONLY entry_legs ALTER COLUMN id SET DEFAULT nextval('entry_legs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY entry_photos ALTER COLUMN id SET DEFAULT nextval('entry_photos_id_seq'::regclass);
 
 
 --
@@ -1182,11 +1192,11 @@ ALTER TABLE ONLY entry_legs
 
 
 --
--- Name: pk_entry_states; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_entry_photos; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_states
-    ADD CONSTRAINT pk_entry_states PRIMARY KEY (state_ref);
+ALTER TABLE ONLY entry_photos
+    ADD CONSTRAINT pk_entry_photos PRIMARY KEY (id);
 
 
 --
@@ -1381,6 +1391,14 @@ ALTER TABLE ONLY entry_legs
 
 
 --
+-- Name: fk_entry_photots_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY entry_photos
+    ADD CONSTRAINT fk_entry_photots_entry FOREIGN KEY (entry_id) REFERENCES entries(id);
+
+
+--
 -- Name: fk_gps_cleans_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1498,6 +1516,6 @@ ALTER TABLE ONLY entries
 
 SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES ('20161003193839'), ('20161003195041'), ('20161004045039'), ('20161004045228'), ('20161004045434'), ('20161004045616'), ('20161004045817'), ('20161004184528'), ('20161004185135'), ('20161005063810'), ('20161005064452'), ('20161010052049'), ('20161010053023'), ('20161010053314'), ('20161010114846'), ('20161011222354'), ('20161012080600');
+INSERT INTO schema_migrations (version) VALUES ('20161003193839'), ('20161003195041'), ('20161004045039'), ('20161004045228'), ('20161004045434'), ('20161004045616'), ('20161004045817'), ('20161004184528'), ('20161004185135'), ('20161005063810'), ('20161005064452'), ('20161010052049'), ('20161010053023'), ('20161010053314'), ('20161010114846'), ('20161011222354'), ('20161012080600'), ('20161106200834'), ('20161106201642');
 
 

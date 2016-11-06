@@ -30,9 +30,13 @@ module KmlReader
 
     pmarks.each do |pmark|
 
-      coors=pmark.at_xpath('.//coordinates').content.split(',')
+      name=pmark.at_xpath('.//name')
+      unless name.nil?
+        coors=pmark.at_xpath('.//coordinates').content.split(',')
 
-      points<<[pmark.at_xpath('.//name').content,coors[0],coors[1]]
+        points<<[name.content,coors[0],coors[1]]
+      end
+
     end
     points
   end

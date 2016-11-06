@@ -3,6 +3,17 @@ include GpsProcessor
 
 class ChargesController < ApplicationController
 
+  def recalc_distances
+    @charge = Charge.find(params[:id])
+    @entries = @charge.entries
+
+    @entries.each do |e|
+      e.update_distances!
+    end
+    @charge.update_positions!
+    redirect_to charge_path @charge
+  end
+
   def process_results
     @charge = Charge.find(params[:id])
 
@@ -129,7 +140,7 @@ class ChargesController < ApplicationController
     @charge = Charge.find(params[:id])
     @shortest_dist=@charge.entries.order(position_distance: :asc)
     @gauntlet=@charge.entries.order(position_gauntlet: :asc)
-    @net=@charge.entries.where('dist_net IS NOT NULL').order(position_net_distance: :asc)
+    @net=@charge.entries.where('result_guards='+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
     @raised=@charge.entries.order(raised_kwacha: :desc)
     @tsetselegs=@charge.legs.where(is_tsetse: true)
 
@@ -141,10 +152,12 @@ class ChargesController < ApplicationController
 
   def show
     @charge = Charge.references(:entries).find(params[:id])
+
     @entries=@charge.entries.includes(:car,:team,:start_guard).order(car_no: :asc)
     #@entries=Entry.order(:car_no).includes(:car).includes(:team).where(charge_id: @charge.id)
     @guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
     @legs=@charge.legs.order(is_gauntlet: :desc,is_tsetse: :desc)
+
   end
 
   def new
@@ -157,6 +170,7 @@ class ChargesController < ApplicationController
 
   def create
     @charge = Charge.new(charge_params)
+    @charge.ref=@charge.charge_date.strftime('%Y')
 
     if @charge.save
       redirect_to charges_path
@@ -178,6 +192,6 @@ class ChargesController < ApplicationController
 
   private
   def charge_params
-    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,:start_time,:end_time,:entries_expected,:gauntlet_multiplier, :exchange_rate, :m_per_kwacha)
+    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,:start_time,:end_time,:entries_expected,:gauntlet_multiplier, :exchange_rate, :m_per_kwacha, :guards_expected)
   end
 end

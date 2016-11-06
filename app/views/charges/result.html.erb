@@ -1,4 +1,4 @@
-<div class="col-sm-8">
+<div class="col-sm-6">
   <div class="heading-bar">
     <h3>Pledge</h3>
   </div>
@@ -17,7 +17,7 @@
         <tr>
           <td><%= i+1 %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= entry.team.name %></td>
+          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
           <td>K<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha, precision: 0,delimiter: ',') %></td>
           <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha/@charge.exchange_rate, precision: 0,delimiter: ',') %></td>
         </tr>
@@ -25,7 +25,7 @@
   </table>
 </div>
 
-<div class="col-sm-8">
+<div class="col-sm-7">
   <div class="heading-bar">
     <h3>Net Distance</h3>
   </div>
@@ -47,7 +47,7 @@
         <tr>
           <td><%= entry.position_net_distance %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= entry.team.name %></td>
+          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
           <td>K<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha, precision: 0, delimiter: ',') %></td>
           <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_dollars, precision: 0, delimiter: ',') %></td>
           <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
@@ -64,7 +64,7 @@
 </div>
 
 
-<div class="col-sm-8">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h3>Shortest Distance</h3>
   </div>
@@ -87,13 +87,9 @@
         <tr>
           <td><%= entry.position_distance %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= entry.team.name %></td>
+          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
           <td>
-            <% if entry.result_guards==11 %>
-                Completed
-            <% else %>
-                DNF <%= entry.result_guards %>
-            <% end %>
+            <%= entry.result %>
           </td>
           <td><%= entry.dist_best.nil? ? '' : number_with_precision(entry.dist_best/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_real/1000.0, precision: 2) %>km</td>
@@ -104,7 +100,7 @@
     <% end %>
   </table>
 </div>
-<div class="col-sm-8">
+<div class="col-sm-7">
   <div class="heading-bar">
     <h3>Gauntlet</h3>
   </div>
@@ -125,7 +121,7 @@
         <tr>
           <td><%= entry.position_gauntlet %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= entry.team.name %></td>
+          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
           <td><%= entry.result_gauntlet_guards %></td>
           <td><%= number_with_precision(entry.dist_gauntlet/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</td>
@@ -136,7 +132,7 @@
 </div>
 
 <% @tsetselegs.each do |leg| %>
-    <div class="col-sm-8">
+    <div class="col-sm-7">
       <div class="heading-bar">
         <h3><%= leg.guard1.guard_sponsor.name %> to <%= leg.guard2.guard_sponsor.name %> <%= leg.is_gauntlet ? '(Gauntlet)' : '' %><%= leg.is_tsetse ? '(Tsetse line)' : '' %></h3>
         <%=number_with_precision( leg.distance_m/1000.0, precision: 2) %>km
@@ -157,7 +153,7 @@
             <tr>
               <td><%= i+1 %></td>
               <td><%= entry_leg.entry.car_no %></td>
-              <td><%= entry_leg.entry.team.name %></td>
+              <td><%= link_to entry_leg.entry.team.name,team_path(entry_leg.entry.team) %></td>
               <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %>km</td>
               <td><%= number_with_precision(entry_leg.distance_m / parse_float(leg.distance_m,false),precision:2) %>x</td>
               <td><%= entry_leg.elapsed_s/60%> min</td>

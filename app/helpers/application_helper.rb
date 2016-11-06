@@ -6,10 +6,16 @@ def random_color
   r = rand(255).to_s(16)
   g = rand(255).to_s(16)
   b = rand(255).to_s(16)
-
   r, g, b = [r, g, b].map { |s| if s.size == 1 then '0' + s else s end }
-
   color = r + g + b
+end
+
+def format_position(pos)
+  ret='1st' if pos==1
+  ret='2nd' if pos==2
+  ret='3rd' if pos==3
+  ret=pos.to_s + 'th' if pos>3
+  ret
 end
 
 def formattime(time)

@@ -14,11 +14,7 @@
   <% else %>
       <div class="card-block text-success">
         <h3 class="card-title">Result</h3>
-        <% if @entry.result_guards==11 %>
-            <p>Completed</p>
-        <% else %>
-            <p>DNF <b><%= @entry.result_guards %></b></p>
-        <% end %>
+        <p><b><%= @entry.result %></b></p>
 
         <p>Best possible distance: <b><%= @entry.dist_best.nil? ? '-' : number_with_precision(@entry.dist_best/1000.0, precision: 2) %>km</b> </p>
 
@@ -51,7 +47,7 @@
             <%= submit_tag "Get Result", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
-        <%= 'humph'%>
+
     <% end %>
     <%= form_tag({action: :clear_result}) do %>
         <div class="form-group">

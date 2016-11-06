@@ -17,6 +17,9 @@ class GuardSponsorsController < ApplicationController
 
   def create
     @guard_sponsor = GuardSponsor.new(guard_sponsor_params)
+    if @guard_sponsor.short_name==""
+      @guard_sponsor.short_name=nil
+    end
 
     if @guard_sponsor.save
       redirect_to guard_sponsors_path

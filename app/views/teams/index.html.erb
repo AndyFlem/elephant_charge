@@ -26,7 +26,7 @@
       sum_k+=team.raised_kwacha
   %>
       <tr>
-        <td><%= team.name %></td>
+        <td><%= team.entries.count>0 ? link_to(team.name, team_path(team)) : team.name%></td>
         <td><%= team.captain %></td>
         <td><%= team.entries.count %></td>
 

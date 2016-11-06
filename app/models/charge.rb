@@ -16,11 +16,29 @@ class Charge < ApplicationRecord
   validates :entries_expected, numericality: {only_integer: true,allow_nil: true }
   validates :exchange_rate, numericality: {allow_nil: true }
   validates :m_per_kwacha, numericality: {allow_nil: true }
+  validates :guards_expected, numericality: {only_integer: true,allow_nil: false }
 
 
   after_initialize :init
   after_commit :process_updates
 
+
+  def raised_dollars
+    sm=0
+    self.entries.each do |e|
+      sm+=e.raised_dollars
+    end
+    sm
+  end
+  def raised_kwacha
+    sm=0
+    self.entries.each do |e|
+      unless e.raised_kwacha.nil?
+        sm+=e.raised_kwacha
+      end
+    end
+    sm
+  end
 
   def start_datetime
     self.charge_date + self.start_time.seconds_since_midnight.seconds
@@ -64,6 +82,14 @@ class Charge < ApplicationRecord
       p.save!
     end
 
+    #position_raised
+    entries=self.entries.order(raised_kwacha: :desc)
+    entries.each_with_index do |p,i|
+      p.position_raised=i+1
+      p.save!
+    end
+
+
   end
 
   protected
@@ -79,6 +105,7 @@ class Charge < ApplicationRecord
     self.state_ref||='NOT_SETUP'
     self.gauntlet_multiplier||=0
     self.m_per_kwacha||=0.5
+    self.guards_expected||=10
   end
 
   def process_updates
@@ -98,12 +125,12 @@ class Charge < ApplicationRecord
       state_messages<<"Wrong number of gauntlet checkpoints (#{gauntlet_count} of 3)"
       state_ref="NOT_SETUP"
     end
-    if self.guards_count!=10
-      state_messages<<"Not all checkpoints defined (#{self.guards_count} of 10)"
+    if self.guards_count!=self.guards_expected
+      state_messages<<"Not all checkpoints defined (#{self.guards_count} of #{self.guards_expected})"
       state_ref="NOT_SETUP"
     end
-    if self.guards_located_count!=10
-      state_messages<<"Not all checkpoints located (#{self.guards_located_count} of 10)"
+    if self.guards_located_count!=self.guards_expected
+      state_messages<<"Not all checkpoints located (#{self.guards_located_count} of #{self.guards_expected})"
       state_ref="NOT_SETUP"
     end
     if self.entries_count!=self.entries_expected

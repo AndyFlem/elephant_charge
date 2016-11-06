@@ -41,7 +41,12 @@ class Entry < ApplicationRecord
   #dist_best
 
   def raised_dollars
-    self.raised_kwacha/self.charge.exchange_rate
+    unless self.raised_kwacha.nil?
+      self.raised_kwacha/self.charge.exchange_rate
+    else
+      0
+    end
+
   end
 
   def types_description
@@ -93,12 +98,26 @@ class Entry < ApplicationRecord
     self.dist_best=best_dist_sum
 
     #dist_net;
-    if self.result_gauntlet_guards==3
-      self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
+    if self.result_guards==self.charge.guards_expected
+      unless self.raised_kwacha.nil?
+        self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
+      end
     end
     self.save!
   end
 
+
+  def result
+    if self.result_state_ref=='PROCESSED'
+      if self.result_guards==self.charge.guards_expected+1
+        'Complete'
+      else
+        'DNF ' + self.result_guards.to_s
+      end
+    else
+      'Unknown'
+    end
+  end
 
   def update_result_state!
     #NOT_READY
@@ -106,7 +125,7 @@ class Entry < ApplicationRecord
     #PROCESSED
     res=[]
     state='NOT_READY'
-    if self.checkins.count>11
+    if self.checkins.count>self.charge.guards_expected+1
       res<<"Too many checkpoints #{self.checkins.count}"
     end
     if self.checkins.count==0

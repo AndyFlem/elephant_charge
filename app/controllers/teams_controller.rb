@@ -5,6 +5,8 @@ class TeamsController < ApplicationController
 
   def show
     @team = Team.find(params[:id])
+    @entries=@team.entries.includes(:charge).order('charges.charge_date').references(:charges)
+
   end
 
   def new

@@ -18,14 +18,19 @@ class Team < ApplicationRecord
   def raised_dollars
     sm=0
     self.entries.each do |e|
-      sm+=e.raised_dollars
+      unless e.raised_dollars.nil?
+        sm+=e.raised_dollars
+      end
+
     end
     sm
   end
   def raised_kwacha
     sm=0
     self.entries.each do |e|
-      sm+=e.raised_kwacha
+      unless e.raised_kwacha.nil?
+        sm+=e.raised_kwacha
+      end
     end
     sm
   end

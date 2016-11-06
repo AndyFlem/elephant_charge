@@ -72,7 +72,7 @@ module GpsProcessor
     prev_clean_id=-1
 
     pnts.each_with_index do |pnt, i|
-      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>=entry.charge.start_datetime and ActiveSupport::TimeZone['UTC'].parse(pnt[2])<=entry.charge.end_datetime
+      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>=entry.charge.start_datetime and ActiveSupport::TimeZone['UTC'].parse(pnt[2])<=entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
         if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>15 and prev_clean_id!=-1) #new guard hit
           if hits.count==1 and cur_hit[:points].count==0 #left first guard early!
             cur_hit[:points]<<pnts[i-1]
@@ -118,7 +118,7 @@ module GpsProcessor
       end
 
     end
-    if entry.entry_geom.raws_to<entry.charge.end_datetime
+    if entry.entry_geom.raws_to<entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
       if entry.state_messages.nil?
         entry.state_messages=["Raw track missing end."]
       else

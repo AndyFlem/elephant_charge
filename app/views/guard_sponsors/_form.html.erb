@@ -9,7 +9,7 @@
 
     <%= f.label_text_field "Name",:name, {} %>
 
-    <%= f.label_text_field "Short Name",:short_name, {} %>
+    <%= f.label_text_field "Short Name",:short_name%>
 
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <%= link_to 'Cancel', guard_sponsors_path, class: "btn btn-primary" %>

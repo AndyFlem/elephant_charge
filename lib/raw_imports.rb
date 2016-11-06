@@ -56,7 +56,7 @@ module RawImports
 
     points.each do |point|
       point_time=Time.parse(point[2])
-      if point_time>entry.charge.start_datetime-10.minutes and point_time<entry.charge.end_datetime + 10.minutes
+      if point_time>entry.charge.start_datetime-10.minutes and point_time<entry.charge.end_datetime + 40.minutes + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
         if point_time-last_time>1.seconds
           location=RGeo::Geographic.simple_mercator_factory.point(point[1], point[0])
           query = <<-SQL

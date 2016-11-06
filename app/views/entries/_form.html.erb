@@ -32,6 +32,8 @@
 
     <%= f.label_text_field "Other Pen m",:dist_penalty_nongauntlet, {} %>
 
+    <%= f.label_text_field "Late Overide min",:late_finish_min, {} %>
+
     <%= f.submit (f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <% if f.object.new_record? %>
       <%= link_to 'Cancel', charge_path(@charge), class: "btn btn-primary" %>
