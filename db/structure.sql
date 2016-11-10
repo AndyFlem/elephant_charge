@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.4
--- Dumped by pg_dump version 9.5.4
+-- Dumped from database version 9.5.5
+-- Dumped by pg_dump version 9.5.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -580,7 +580,10 @@ CREATE TABLE entries (
     result_state_ref character varying(10),
     result_state_messages character varying(255)[],
     late_finish_min integer,
-    position_raised integer
+    position_raised integer,
+    name character varying,
+    captain character varying,
+    members character varying
 );
 
 

@@ -12,6 +12,12 @@
 
     <%= f.label_text_field "Team No",:car_no, {} %>
 
+    <%= f.label_text_field "Entry Name",:name, {} %>
+
+    <%= f.label_text_field "Captain",:captain, {} %>
+
+    <%= f.label_text_field "Team Members",:members, {} %>
+
     <%= f.label_select("Team",:team_id, @teams,{}) %>
 
     <%= f.label_select("Car",:car_id, @cars,{}) %>

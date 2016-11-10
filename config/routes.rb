@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :cars
   resources :teams
 
+
   resources :charges do
     member do
       post 'uploadkml'

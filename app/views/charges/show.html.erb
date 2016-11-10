@@ -20,10 +20,10 @@
     <% @entries.each do |entry| %>
         <tr>
           <td>
-            <%= link_to entry.car_no, charge_entry_path(@charge,entry) %>
+            <%= entry.car_no %>
           </td>
           <td>
-            <%= link_to entry.team.name, charge_entry_path(@charge,entry) %>
+            <%= link_to entry.name, charge_entry_path(@charge,entry) %>
           </td>
           <td>
             <%= entry.types_description %>
@@ -31,15 +31,15 @@
           <td>
             <%= entry.start_guard.nil? ? '': entry.start_guard.name%>
           </td>
-          <td>
-            <%= entry.checkins.count==0 ? '': formattime(entry.checkins.order(:checkin_number).first.checkin_timestamp) %>
+          <td class="<%= entry.start_time.nil? ? '' : (entry.start_time-@charge.start_datetime)>30.minutes ? 'text-warning' : '' %>">
+            <%= entry.start_time.nil? ? '': formattime(entry.start_time) %>
           </td>
           <td>
             K<%= entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(entry.raised_kwacha) %>
           </td>
           <td class="<%= entry.state_ref.nil? ? 'table-danger' : entry.state_ref=='RAW' ? 'table-warning' : 'table-success'%>" >
             <% unless entry.state_messages.nil? %>
-              <%= image_tag('ic_warning.png',{:style=>'width:13px;',:'data-toggle'=>'tooltip',:title=>'',:'data-original-title'=>entry.state_messages.join(' ')}) %>
+                <%= image_tag('ic_warning.png',{:style=>'width:13px;',:'data-toggle'=>'tooltip',:title=>'',:'data-original-title'=>entry.state_messages.join(' ')}) %>
             <% end %>
             <%= entry.checkins.count>0 ? 'CPs' : '' %>
 
@@ -56,7 +56,7 @@
             <% end %>
             ">
             <% if entry.result_state_ref=='PROCESSED' %>
-              <%= entry.result %>
+                <%= entry.result %>
             <% end %>
           </td>
 
@@ -129,34 +129,34 @@
 
   <div class="col-sm-12 heading-bar"><h3>Legs</h3></div>
   <%= form_for @charge,as: :post,url: legstsetse_charge_path do |fc| %>
-  <table class="table table-sm">
-    <thead class="thead-inverse">
-    <tr>
-      <th>Checkpoints</th>
-      <th>Distance</th>
-      <th>Teams</th>
-      <th>Gauntlet?</th>
-      <th>Tsetse?</th>
-    </tr>
-    </thead>
+      <table class="table table-sm">
+        <thead class="thead-inverse">
+        <tr>
+          <th>Checkpoints</th>
+          <th>Distance</th>
+          <th>Teams</th>
+          <th>Gauntlet?</th>
+          <th>Tsetse?</th>
+        </tr>
+        </thead>
 
-      <% @legs.each do |leg| %>
+        <% @legs.each do |leg| %>
             <%= fc.fields_for leg, index: leg.id do |f|%>
-              <tr>
-                <td><%= link_to(leg.guard1.name + '-' + leg.guard2.name,charge_leg_path(@charge,leg)) %></td>
-                <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2)%></td>
-                <td><%= leg.entries.count %></td>
-                <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
-                <td>
-                  <% unless leg.is_gauntlet %>
-                  <%= f.check_box(:is_tsetse) %>
-                  <% end %>
-                </td>
-              </tr>
+                <tr>
+                  <td><%= link_to(leg.guard1.name + '-' + leg.guard2.name,charge_leg_path(@charge,leg)) %></td>
+                  <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2)%></td>
+                  <td><%= leg.entries.count %></td>
+                  <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
+                  <td>
+                    <% unless leg.is_gauntlet %>
+                        <%= f.check_box(:is_tsetse) %>
+                    <% end %>
+                  </td>
+                </tr>
             <% end %>
-      <% end %>
-  </table>
-  <%= submit_tag "Update",  class: "btn btn-primary " %>
+        <% end %>
+      </table>
+      <%= submit_tag "Update",  class: "btn btn-primary " %>
   <% end %>
 </div>
 
@@ -172,7 +172,7 @@
       <%=@charge.state_description%>
       <ul>
         <%@charge.state_messages.each do |msg| %>
-          <li><%= msg %></li>
+            <li><%= msg %></li>
         <%end%>
       </ul>
     </div>
@@ -196,8 +196,8 @@
     <div class="card-block">
       <%= form_tag({action: :uploadkml}, multipart: true) do %>
           <div class="form-group row">
-          <%= file_field_tag 'kmlfile' %>
-          <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
+            <%= file_field_tag 'kmlfile' %>
+            <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
     </div>

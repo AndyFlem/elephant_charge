@@ -21,7 +21,7 @@
         <tr>
           <td><%= entry_leg.position %></td>
           <td><%= entry_leg.entry.car_no %></td>
-          <td><a href="#" id="entry-<%= entry_leg.entry.id %>"><%= entry_leg.entry.team.name %></a></td>
+          <td><a href="#" id="entry-<%= entry_leg.entry.id %>"><%= entry_leg.entry.name %></a></td>
           <td><%= entry_leg.checkin1.guard.name %> to <%= entry_leg.checkin2.guard.name %></td>
           <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry_leg.distance_m / parse_float(@leg.distance_m,false),precision:2) %>x</td>

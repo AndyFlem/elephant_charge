@@ -23,7 +23,7 @@
     <tr>
       <td><%= entry_leg.position %></td>
       <td><%= entry_leg.entry.car_no %></td>
-      <td><%= entry_leg.entry.team.name %></td>
+      <td><%= entry_leg.entry.name %></td>
       <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %>km</td>
       <td><%= number_with_precision(entry_leg.distance_m / parse_float(leg.distance_m,false),precision:2) %>x</td>
       <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>

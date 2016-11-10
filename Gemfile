@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'bcrypt', '3.1.11'
+
 gem "paperclip", "~> 5.0.0"
 
 gem 'friendly_id', :git => 'git://github.com/norman/friendly_id.git'

@@ -89,6 +89,9 @@ class ChargesController < ApplicationController
           entry.car_id=ent_params[:car_id]
           entry.save!
           entry.reload
+          entry.name=entry.team.name
+          entry.captain=entry.team.captain
+          entry.save!
           entry.create_entry_geom!
         end
       end
@@ -138,9 +141,9 @@ class ChargesController < ApplicationController
 
   def result
     @charge = Charge.find(params[:id])
-    @shortest_dist=@charge.entries.order(position_distance: :asc)
-    @gauntlet=@charge.entries.order(position_gauntlet: :asc)
-    @net=@charge.entries.where('result_guards='+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
+    @shortest_dist=@charge.entries.where("result_state_ref='PROCESSED'").order(position_distance: :asc)
+    @gauntlet=@charge.entries.where("result_state_ref='PROCESSED'").order(position_gauntlet: :asc)
+    @net=@charge.entries.where("result_state_ref='PROCESSED' and result_guards="+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
     @raised=@charge.entries.order(raised_kwacha: :desc)
     @tsetselegs=@charge.legs.where(is_tsetse: true)
 

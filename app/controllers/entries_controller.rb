@@ -86,6 +86,7 @@ class EntriesController < ApplicationController
 
     teams=ActiveRecord::Base.connection.exec_query("SELECT DISTINCT teamname FROM gps_historic WHERE charge=#{@charge.ref}")
     @historicteams=teams.rows.collect{|p| [p[0],p[0]]}
+
   end
 
   def index
@@ -146,6 +147,8 @@ class EntriesController < ApplicationController
   def create
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.new(entry_params)
+    @entry.name=@entry.team.name
+    @entry.captain=@entry.team.captain
     if @entry.save
       @entry.create_entry_geom!
       redirect_to charge_path(@charge)
@@ -184,6 +187,10 @@ class EntriesController < ApplicationController
 
   private
   def entry_params
-    params.require(:entry).permit(:charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes, :start_guard_id, :dist_penalty_nongauntlet, :dist_penalty_gauntlet, :raised_kwacha, :late_finish_min)
+    params.require(:entry).permit(
+        :charge_id,:team_id,:car_id,:car_no,:is_ladies,:is_international,:is_newcomer,:is_bikes,
+        :start_guard_id, :dist_penalty_nongauntlet, :dist_penalty_gauntlet, :raised_kwacha, :late_finish_min,
+        :name,:captain,:members
+    )
   end
 end

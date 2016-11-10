@@ -1,5 +1,5 @@
 <div class="col-sm-8">
-  <div class="heading-bar"><h3><%= @entry.car_no %> - <%= @entry.team.name %></h3>
+  <div class="heading-bar"><h3><%= @entry.car_no %> - <%= @entry.name %></h3>
     <%= link_to 'Edit', edit_charge_entry_path(@charge, @entry) %>
     &nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -61,7 +61,7 @@
                   <td><%= formattime(checkin.checkin_timestamp) %></td>
                   <td>
                     <% if checkin.is_duplicate %>
-                    <%= link_to 'Del', checkin_path(checkin), method: :delete %>
+                        <%= link_to 'Del', checkin_path(checkin), method: :delete %>
                     <% end %>
                   </td>
                 </tr>

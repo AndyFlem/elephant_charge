@@ -17,7 +17,7 @@
         <tr>
           <td><%= i+1 %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
           <td>K<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha, precision: 0,delimiter: ',') %></td>
           <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha/@charge.exchange_rate, precision: 0,delimiter: ',') %></td>
         </tr>
@@ -47,7 +47,7 @@
         <tr>
           <td><%= entry.position_net_distance %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
           <td>K<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha, precision: 0, delimiter: ',') %></td>
           <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_dollars, precision: 0, delimiter: ',') %></td>
           <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
@@ -87,7 +87,7 @@
         <tr>
           <td><%= entry.position_distance %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
           <td>
             <%= entry.result %>
           </td>
@@ -121,7 +121,7 @@
         <tr>
           <td><%= entry.position_gauntlet %></td>
           <td><%= entry.car_no %> </td>
-          <td><%= link_to entry.team.name,team_path(entry.team) %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
           <td><%= entry.result_gauntlet_guards %></td>
           <td><%= number_with_precision(entry.dist_gauntlet/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</td>
@@ -153,7 +153,7 @@
             <tr>
               <td><%= i+1 %></td>
               <td><%= entry_leg.entry.car_no %></td>
-              <td><%= link_to entry_leg.entry.team.name,team_path(entry_leg.entry.team) %></td>
+              <td><%= link_to entry_leg.entry.name,team_path(entry_leg.entry.team) %></td>
               <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %>km</td>
               <td><%= number_with_precision(entry_leg.distance_m / parse_float(leg.distance_m,false),precision:2) %>x</td>
               <td><%= entry_leg.elapsed_s/60%> min</td>

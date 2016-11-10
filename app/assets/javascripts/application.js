@@ -20,3 +20,15 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 })
+
+$('#loginSubmit').click(function(e){
+    alert('hi')
+    e.preventDefault();
+
+     $.post('/login',
+     $('#loginForm').serialize(),
+     function(data, status, xhr){
+         alert(data)
+     // do something here with response;
+     });
+});

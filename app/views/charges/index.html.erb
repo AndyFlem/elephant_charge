@@ -9,6 +9,7 @@
     <th>Date</th>
     <th>Teams</th>
     <th>Raised</th>
+    <th>Exchange</th>
     <th>Raised</th>
     <th></th>
   </tr>
@@ -16,15 +17,16 @@
 
   <% @charges.each do |charge| %>
       <tr class="<%= charge.state_ref=='NOT_SETUP' ? 'table-danger' : charge.state_ref=='RESULT' ? '' : 'table-warning' %>">
-        <td><%= link_to charge.name, result_charge_path(charge) %></td>
+        <td><%= link_to charge.name, charge_path(charge) %></td>
 
         <td><%= charge.location %></td>
         <td><%= charge.charge_date.strftime("%a %-d %b %Y") %></td>
         <td><%= charge.entries_count %></td>
         <td>K<%= number_with_precision(charge.raised_kwacha, precision: 0, delimiter: ',')%></td>
+        <td><%= charge.exchange_rate%></td>
         <td>$<%= number_with_precision(charge.raised_dollars, precision: 0, delimiter: ',')%></td>
 
-        <td><%= link_to 'Manage', charge_path(charge) %></td>
+        <td><%= link_to 'Result', result_charge_path(charge) %></td>
       </tr>
   <% end %>
 </table>

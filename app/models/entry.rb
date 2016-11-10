@@ -40,13 +40,18 @@ class Entry < ApplicationRecord
   #dist_net;
   #dist_best
 
+  def start_time
+    unless self.checkins.nil? or self.checkins.count==0
+      self.checkins.order(:checkin_number).first.checkin_timestamp
+    end
+  end
+
   def raised_dollars
     unless self.raised_kwacha.nil?
       self.raised_kwacha/self.charge.exchange_rate
     else
       0
     end
-
   end
 
   def types_description
@@ -98,7 +103,7 @@ class Entry < ApplicationRecord
     self.dist_best=best_dist_sum
 
     #dist_net;
-    if self.result_guards==self.charge.guards_expected
+    if self.result_guards==self.charge.guards_expected+1
       unless self.raised_kwacha.nil?
         self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
       end
