@@ -14,6 +14,7 @@ class Entry < ApplicationRecord
   has_many :gps_stops
   has_many :checkins
   has_many :entry_legs
+  has_many :photos, as: :photoable
 
   validates :car_no, numericality: { only_integer: true }
   validates :car_no, uniqueness: { scope: :charge_id}

@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-sm-6 heading-bar"><h3>Grants</h3></div>
+</div>
+
+<div class="row">
+<div class="col-sm-6">
+<%= form_for @charge,as: :post,url: grants_charge_path do |fc| %>
+    <table class="table table-sm">
+      <thead class="thead-inverse">
+      <tr>
+        <th>Beneficiary</th>
+        <th>Grant Kwacha</th>
+      </tr>
+      </thead>
+      <% @grants.each do |grant| %>
+          <%= fc.fields_for grant, index: grant.id do |f|%>
+          <tr>
+            <td><%= grant.beneficiary.name %></td>
+            <td><%= f.text_field(:grant_kwacha,:size=>"8") %></td>
+          </tr>
+          <% end %>
+      <% end %>
+      <tr>
+        <%= fc.fields_for @newgrant, index: -1 do |f|%>
+            <td><%= f.select(:beneficiary_id, @beneficiaries,{:include_blank=>'-- select --'},class:"form-control",style:"width:200px") %></td>
+            <td><%= f.text_field(:grant_kwacha,:size=>"8") %></td>
+        <% end %>
+      </tr>
+    </table>
+      <%= submit_tag("Update",class:"btn btn-primary") %>
+<% end %>
+</div>
+  </div>

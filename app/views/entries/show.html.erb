@@ -7,97 +7,130 @@
 
   </div>
 
-  <% if @entry.result_state_ref=='PROCESSED' %>
-      <div class="card">
-        <div class="card-block">
-          <table class="table table-sm">
-            <thead class="thead-inverse">
-            <tr>
-              <th>No.</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Gauntlet</th>
-              <th>Out</th>
-              <th>In</th>
-              <th>Time</th>
-              <th>Dist</th>
-              <th>Position</th>
-            </tr>
-            </thead>
-            <% @legs.each do |entry_leg| %>
-                <tr>
-                  <td><%= entry_leg.leg_number %></td>
-                  <td><%= entry_leg.checkin1.guard.name %></td>
-                  <td><%= entry_leg.checkin2.guard.name %></td>
-                  <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
-                  <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
-                  <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
-                  <td><%= entry_leg.elapsed_s/60 %>min</td>
-                  <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %></td>
-                  <td><%= entry_leg.position %> of <%= entry_leg.leg.entries.count %></td>
-                </tr>
-            <% end %>
-          </table>
+  <div class='col-sm-12'>
+    <% if @entry.result_state_ref=='PROCESSED' %>
+        <div class="card">
+          <div class="card-block">
+            <table class="table table-sm">
+              <thead class="thead-inverse">
+              <tr>
+                <th>No.</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Gauntlet</th>
+                <th>Out</th>
+                <th>In</th>
+                <th>Time</th>
+                <th>Dist</th>
+                <th>Position</th>
+              </tr>
+              </thead>
+              <% @legs.each do |entry_leg| %>
+                  <tr>
+                    <td><%= entry_leg.leg_number %></td>
+                    <td><%= entry_leg.checkin1.guard.name %></td>
+                    <td><%= entry_leg.checkin2.guard.name %></td>
+                    <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
+                    <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
+                    <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
+                    <td><%= entry_leg.elapsed_s/60 %>min</td>
+                    <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %></td>
+                    <td><%= entry_leg.position %> of <%= entry_leg.leg.entries.count %></td>
+                  </tr>
+              <% end %>
+            </table>
+          </div>
         </div>
-      </div>
 
-  <% else %>
+    <% else %>
 
-      <div class="card">
-        <div class="card-block">
-          <table class="table table-sm">
-            <thead class="thead-inverse">
-            <tr>
-              <th>No.</th>
-              <th>Checkpoint</th>
-              <th>Time</th>
-              <th></th>
-            </tr>
-            </thead>
-            <% @checkins.each do |checkin| %>
-                <tr>
-                  <td><%= checkin.checkin_number %></td>
-                  <td><%= checkin.guard.name %></td>
-                  <td><%= formattime(checkin.checkin_timestamp) %></td>
-                  <td>
-                    <% if checkin.is_duplicate %>
-                        <%= link_to 'Del', checkin_path(checkin), method: :delete %>
-                    <% end %>
-                  </td>
-                </tr>
-            <% end %>
-          </table>
+        <div class="card">
+          <div class="card-block">
+            <table class="table table-sm">
+              <thead class="thead-inverse">
+              <tr>
+                <th>No.</th>
+                <th>Checkpoint</th>
+                <th>Time</th>
+                <th></th>
+              </tr>
+              </thead>
+              <% @checkins.each do |checkin| %>
+                  <tr>
+                    <td><%= checkin.checkin_number %></td>
+                    <td><%= checkin.guard.name %></td>
+                    <td><%= formattime(checkin.checkin_timestamp) %></td>
+                    <td>
+                      <% if checkin.is_duplicate %>
+                          <%= link_to 'Del', checkin_path(checkin), method: :delete %>
+                      <% end %>
+                    </td>
+                  </tr>
+              <% end %>
+            </table>
+          </div>
         </div>
+    <% end %>
+  </div>
+
+
+  <div class='col-sm-7'>
+    <div id='entrymap' data-center-lat="<%= @charge.map_center.nil? ? 0 : @charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0 : @charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
+  </div>
+
+
+  <div class="col-sm-5">
+    <div class="card">
+      <div class="card-block">
+        <p>
+          Car: <b><%= @entry.car.name %></b>
+        </p>
+        <p>
+          Starting Checkpoint: <b><%= @entry.start_guard.nil? ? 'not set' : @entry.start_guard.name %></b>
+        </p>
+        <p>
+          Team Type: <b><%= @entry.types_description %></b>
+        </p>
+        <p>
+          Pledge: <b>K<%= @entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(@entry.raised_kwacha) %></b>
+        </p>
+        <p>
+          Penalties: Gauntlet- <b><%= @entry.dist_penalty_gauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_gauntlet) %>m</b>, Other- <b><%= @entry.dist_penalty_nongauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_nongauntlet) %>m</b>
+        </p>
+
       </div>
-  <% end %>
-  <div id='entrymap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0 : @charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0 : @charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
+    </div>
+
+  </div>
 
 </div>
 
 <div class="col-sm-4">
-
   <% if @entry.state_ref=='CLEAN' %>
       <%= render partial: "process",locals: {entry: @entry} %>
   <% else %>
       <%= render partial: "data",locals: {entry: @entry} %>
   <% end %>
 
-
   <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Photos</h3>
+    </div>
     <div class="card-block">
-      <p>
-        <em>Starting Checkpoint: </em><%= @entry.start_guard.nil? ? 'not set' : @entry.start_guard.name %>
-      </p>
-      <p>
-        <em>Team Type: </em><%= @entry.types_description %>
-      </p>
-      <p>
-        <em>Pledge: </em>K<%= @entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(@entry.raised_kwacha) %>
-      </p>
-      <p>
-        <em>Penalties: </em>Gauntlet: <%= @entry.dist_penalty_gauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_gauntlet) %>m Other: <%= @entry.dist_penalty_nongauntlet.nil? ? '  0' : number_with_delimiter(@entry.dist_penalty_nongauntlet) %>m
-      </p>
 
+      <%= form_tag({action: :uploadphoto}, multipart: true) do %>
+          <div class="form-group row">
+            <%= file_field_tag 'photofile' %>
+            <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
     </div>
   </div>
+</div>
+
+
+
+<div class="col-sm-12">
+  <div class="heading-bar"><h4>Photos</h4></div>
+  <%= render 'photos/photoindex' %>
 </div>

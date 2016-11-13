@@ -386,6 +386,42 @@ CREATE TABLE ar_internal_metadata (
 
 
 --
+-- Name: beneficiaries; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE beneficiaries (
+    id integer NOT NULL,
+    name character varying,
+    short_name character varying,
+    geography character varying,
+    description character varying,
+    logo_file_name character varying,
+    logo_content_type character varying,
+    logo_file_size integer,
+    logo_updated_at timestamp without time zone
+);
+
+
+--
+-- Name: beneficeries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE beneficeries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: beneficeries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE beneficeries_id_seq OWNED BY beneficiaries.id;
+
+
+--
 -- Name: cars; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -480,7 +516,12 @@ CREATE TABLE charges (
     map_file_name character varying,
     map_content_type character varying,
     map_file_size integer,
-    map_updated_at timestamp without time zone
+    map_updated_at timestamp without time zone,
+    spirit_entry_id integer,
+    spirit_name character varying,
+    spirit_description character varying,
+    best_guard_id integer,
+    shafted_entry_id integer
 );
 
 
@@ -687,16 +728,17 @@ ALTER SEQUENCE entry_legs_id_seq OWNED BY entry_legs.id;
 
 
 --
--- Name: entry_photos; Type: TABLE; Schema: public; Owner: -
+-- Name: photos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entry_photos (
+CREATE TABLE photos (
     id integer NOT NULL,
     photo_file_name character varying,
     photo_content_type character varying,
     photo_file_size integer,
     photo_updated_at timestamp without time zone,
-    entry_id integer NOT NULL
+    photoable_id integer,
+    photoable_type character varying
 );
 
 
@@ -716,7 +758,7 @@ CREATE SEQUENCE entry_photos_id_seq
 -- Name: entry_photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entry_photos_id_seq OWNED BY entry_photos.id;
+ALTER SEQUENCE entry_photos_id_seq OWNED BY photos.id;
 
 
 --
@@ -860,10 +902,41 @@ ALTER SEQUENCE gps_stops_id_seq OWNED BY gps_stops.id;
 
 
 --
--- Name: guard_sponsors; Type: TABLE; Schema: public; Owner: -
+-- Name: grants; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE guard_sponsors (
+CREATE TABLE grants (
+    id integer NOT NULL,
+    charge_id integer,
+    beneficiary_id integer,
+    grant_kwacha integer
+);
+
+
+--
+-- Name: grants_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE grants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: grants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE grants_id_seq OWNED BY grants.id;
+
+
+--
+-- Name: sponsors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE sponsors (
     id integer NOT NULL,
     name character varying,
     created_at timestamp without time zone NOT NULL,
@@ -888,7 +961,7 @@ CREATE SEQUENCE guard_sponsors_id_seq
 -- Name: guard_sponsors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE guard_sponsors_id_seq OWNED BY guard_sponsors.id;
+ALTER SEQUENCE guard_sponsors_id_seq OWNED BY sponsors.id;
 
 
 --
@@ -900,7 +973,7 @@ CREATE TABLE guards (
     is_gauntlet boolean,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    guard_sponsor_id integer NOT NULL,
+    sponsor_id integer NOT NULL,
     charge_id integer NOT NULL,
     radius_m integer,
     late_start_time time without time zone,
@@ -1006,6 +1079,13 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY beneficiaries ALTER COLUMN id SET DEFAULT nextval('beneficeries_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY cars ALTER COLUMN id SET DEFAULT nextval('cars_id_seq'::regclass);
 
 
@@ -1055,13 +1135,6 @@ ALTER TABLE ONLY entry_legs ALTER COLUMN id SET DEFAULT nextval('entry_legs_id_s
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_photos ALTER COLUMN id SET DEFAULT nextval('entry_photos_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY gps_cleans ALTER COLUMN id SET DEFAULT nextval('gps_cleans_id_seq'::regclass);
 
 
@@ -1090,7 +1163,7 @@ ALTER TABLE ONLY gps_stops ALTER COLUMN id SET DEFAULT nextval('gps_stops_id_seq
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guard_sponsors ALTER COLUMN id SET DEFAULT nextval('guard_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY grants ALTER COLUMN id SET DEFAULT nextval('grants_id_seq'::regclass);
 
 
 --
@@ -1105,6 +1178,20 @@ ALTER TABLE ONLY guards ALTER COLUMN id SET DEFAULT nextval('guards_id_seq'::reg
 --
 
 ALTER TABLE ONLY legs ALTER COLUMN id SET DEFAULT nextval('legs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY photos ALTER COLUMN id SET DEFAULT nextval('entry_photos_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sponsors ALTER COLUMN id SET DEFAULT nextval('guard_sponsors_id_seq'::regclass);
 
 
 --
@@ -1166,7 +1253,7 @@ ALTER TABLE ONLY entry_geoms
 -- Name: guard_sponsors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guard_sponsors
+ALTER TABLE ONLY sponsors
     ADD CONSTRAINT guard_sponsors_pkey PRIMARY KEY (id);
 
 
@@ -1176,6 +1263,14 @@ ALTER TABLE ONLY guard_sponsors
 
 ALTER TABLE ONLY guards
     ADD CONSTRAINT guards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pk_beneficeries; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY beneficiaries
+    ADD CONSTRAINT pk_beneficeries PRIMARY KEY (id);
 
 
 --
@@ -1198,7 +1293,7 @@ ALTER TABLE ONLY entry_legs
 -- Name: pk_entry_photos; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_photos
+ALTER TABLE ONLY photos
     ADD CONSTRAINT pk_entry_photos PRIMARY KEY (id);
 
 
@@ -1232,6 +1327,14 @@ ALTER TABLE ONLY gps_raws
 
 ALTER TABLE ONLY gps_stops
     ADD CONSTRAINT pk_gps_stops PRIMARY KEY (id);
+
+
+--
+-- Name: pk_grants; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY grants
+    ADD CONSTRAINT pk_grants PRIMARY KEY (id);
 
 
 --
@@ -1312,7 +1415,7 @@ CREATE INDEX index_guards_on_charge_id ON guards USING btree (charge_id);
 -- Name: index_guards_on_guard_sponsor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_guards_on_guard_sponsor_id ON guards USING btree (guard_sponsor_id);
+CREATE INDEX index_guards_on_guard_sponsor_id ON guards USING btree (sponsor_id);
 
 
 --
@@ -1394,14 +1497,6 @@ ALTER TABLE ONLY entry_legs
 
 
 --
--- Name: fk_entry_photots_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY entry_photos
-    ADD CONSTRAINT fk_entry_photots_entry FOREIGN KEY (entry_id) REFERENCES entries(id);
-
-
---
 -- Name: fk_gps_cleans_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1434,6 +1529,22 @@ ALTER TABLE ONLY gps_stops
 
 
 --
+-- Name: fk_grants_beneficeries; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY grants
+    ADD CONSTRAINT fk_grants_beneficeries FOREIGN KEY (beneficiary_id) REFERENCES beneficiaries(id);
+
+
+--
+-- Name: fk_grants_charges; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY grants
+    ADD CONSTRAINT fk_grants_charges FOREIGN KEY (charge_id) REFERENCES charges(id);
+
+
+--
 -- Name: fk_legs_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1462,7 +1573,7 @@ ALTER TABLE ONLY legs
 --
 
 ALTER TABLE ONLY guards
-    ADD CONSTRAINT fk_rails_41012a5173 FOREIGN KEY (guard_sponsor_id) REFERENCES guard_sponsors(id);
+    ADD CONSTRAINT fk_rails_41012a5173 FOREIGN KEY (sponsor_id) REFERENCES sponsors(id);
 
 
 --

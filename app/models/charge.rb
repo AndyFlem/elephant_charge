@@ -3,12 +3,22 @@ class Charge < ApplicationRecord
   friendly_id :ref, use: :finders
 
   has_many :guards
-  has_many :guard_sponsors, through: :guards
+  has_many :sponsors, through: :guards
   has_many :entries
   has_many :teams, through: :entries
   has_many :charge_help_points
   has_many :gps_stops, through: :entries
   has_many :legs
+  has_many :photos, as: :photoable
+  belongs_to :best_guard, foreign_key: 'best_guard_id', class_name: 'Guard'
+  belongs_to :shafted_entry, foreign_key: 'shafted_entry_id', class_name: 'Entry'
+  has_many :grants
+  has_many :beneficiaries, through: :grants
+
+  has_attached_file :map,
+                    styles: { medium: "300x300", thumb: "100x100" },
+                    default_url: "/images/:style/missing.png"
+  validates_attachment_content_type :map, content_type: /\Aimage\/.*\z/
 
   validates :name, presence: true
   validates :charge_date, presence: true
@@ -22,6 +32,21 @@ class Charge < ApplicationRecord
   after_initialize :init
   after_commit :process_updates
 
+  def entry_photos_count
+    sm=0
+    self.entries.each do |e|
+      sm+=e.photos.count
+    end
+    sm
+  end
+
+  def grant_kwacha
+    sm=0
+    self.grants.each do |e|
+      sm+=e.grant_kwacha
+    end
+    sm
+  end
 
   def raised_dollars
     sm=0

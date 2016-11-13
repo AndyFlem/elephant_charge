@@ -60,10 +60,39 @@ class ChargesController < ApplicationController
     redirect_to charge_path @charge
   end
 
+  def grants
+    @charge = Charge.find(params[:id])
+    @grants=@charge.grants.includes(:beneficiary)
+    @beneficiaries=Beneficiary.all.order(:name).collect{|p| [ p.name, p.id ] }
+    @newgrant=@charge.grants.new()
+  end
+
+  def grantspost
+    @charge = Charge.find(params[:id])
+    grants_params=params[:post][:grant]
+    grants_params.each do |grant_id|
+      grant_params=grants_params[grant_id]
+      unless grant_id=="-1"
+        grant=@charge.grants.find(grant_id)
+        #grant.beneficiary_id=grant_params[:beneficiary_id]
+        grant.grant_kwacha=grant_params[:grant_kwacha]
+        grant.save!
+      else
+        if grant_params[:grant_kwacha]!=""
+          grant=@charge.grants.new()
+          grant.beneficiary_id=grant_params[:beneficiary_id]
+          grant.grant_kwacha=grant_params[:grant_kwacha]
+          grant.save!
+        end
+      end
+    end
+    redirect_to grants_charge_path(@charge)
+  end
+
   def entriesbulk
     @charge = Charge.find(params[:id])
     @entries=@charge.entries.includes(:car,:team,:start_guard).order(car_no: :asc)
-    @start_guards=@charge.guards.includes(:guard_sponsor).collect{|p| [ p.guard_sponsor.name, p.id ] }
+    @start_guards=@charge.guards.includes(:sponsor).collect{|p| [ p.sponsor.name, p.id ] }
     @teams=Team.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @cars=Car.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
 
@@ -119,6 +148,14 @@ class ChargesController < ApplicationController
       end
   end
 
+  def uploadmap
+    @charge = Charge.find(params[:id])
+    @charge.map=params[:mapfile]
+    @charge.save!
+    redirect_to charge_path params[:id]
+  end
+
+
   def uploadkml
     @charge = Charge.find(params[:id])
 
@@ -158,17 +195,22 @@ class ChargesController < ApplicationController
 
     @entries=@charge.entries.includes(:car,:team,:start_guard).order(car_no: :asc)
     #@entries=Entry.order(:car_no).includes(:car).includes(:team).where(charge_id: @charge.id)
-    @guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
+    @guards=@charge.guards.order(is_gauntlet: :desc).includes(:sponsor).order("sponsors.name")
     @legs=@charge.legs.order(is_gauntlet: :desc,is_tsetse: :desc)
-
+    @grants=@charge.grants.includes(:beneficiary).order("beneficiaries.name")
+    @photo=@charge.photos.new()
   end
 
   def new
     @charge=Charge.new()
+    @entries=@charge.entries.order(:name).collect{|p| [ p.name, p.id ] }
+    @guards=@charge.guards.includes(:sponsor).order("sponsors.name").collect{|p| [ p.sponsor.name, p.id ] }
   end
 
   def edit
     @charge = Charge.find(params[:id])
+    @entries=@charge.entries.order(:name).collect{|p| [ p.name, p.id ] }
+    @guards=@charge.guards.includes(:sponsor).order("sponsors.name").collect{|p| [ p.sponsor.name, p.id ] }
   end
 
   def create
@@ -178,6 +220,8 @@ class ChargesController < ApplicationController
     if @charge.save
       redirect_to charges_path
     else
+      @entries=@charge.entries.order(:name).collect{|p| [ p.name, p.id ] }
+      @guards=@charge.guards.includes(:sponsor).order("sponsors.name").collect{|p| [ p.sponsor.name, p.id ] }
       render 'new'
     end
 
@@ -185,6 +229,10 @@ class ChargesController < ApplicationController
 
   def update
     @charge = Charge.find(params[:id])
+
+    if params[:charge][:spirit_entry_id]!=""
+      params[:charge][:spirit_name]=@charge.entries.find(params[:charge][:spirit_entry_id]).name
+    end
 
     if @charge.update(charge_params)
       redirect_to charge_path(@charge)
@@ -195,6 +243,10 @@ class ChargesController < ApplicationController
 
   private
   def charge_params
-    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,:start_time,:end_time,:entries_expected,:gauntlet_multiplier, :exchange_rate, :m_per_kwacha, :guards_expected)
+    params.require(:charge).permit(:name, :charge_date,:location,:map_scale,
+                                   :start_time,:end_time,:entries_expected,:gauntlet_multiplier,
+                                   :exchange_rate, :m_per_kwacha, :guards_expected,
+                                   :spirit_description,:spirit_name,:spirit_entry_id,
+                                   :shafted_entry_id,:best_guard_id)
   end
 end

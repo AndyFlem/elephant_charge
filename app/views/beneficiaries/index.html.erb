@@ -1,0 +1,34 @@
+<% if flash[:error] %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:error] %>
+    </div>
+<% end %>
+
+<div class="heading-bar"><h3>Beneficiaries</h3></div>
+
+<table class="table table-sm">
+  <thead class="thead-inverse">
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>Short Name</th>
+    <th>Location</th>
+    <th>Grants</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <% @beneficiaries.each do |ben| %>
+      <tr>
+        <td><%= image_tag ben.logo.url(:thumb) %></td>
+        <td><%= ben.name %></td>
+        <td><%= ben.short_name %></td>
+        <td><%= ben.geography %></td>
+        <td><%= ben.grants.count %></td>
+        <td><%= link_to 'Edit', edit_beneficiary_path(ben) %></td>
+        <td><%= link_to 'Delete', beneficiary_path(ben), method: :delete%></td>
+      </tr>
+  <% end %>
+</table>
+<%= link_to 'New Beneficiary', new_beneficiary_path,class: "btn btn-primary" %>

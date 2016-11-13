@@ -65,6 +65,19 @@ class EntriesController < ApplicationController
     redirect_to charge_entry_path @entry.charge,@entry
   end
 
+  def uploadphoto
+    @charge = Charge.find(params[:charge_id])
+    @entry = @charge.entries.find(params[:id])
+
+    photo=@entry.photos.new()
+
+    photo.photo=params[:photofile]
+    photo.save!
+
+    redirect_to charge_entry_path @entry.charge,@entry
+  end
+
+
   def import
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
@@ -87,6 +100,7 @@ class EntriesController < ApplicationController
     teams=ActiveRecord::Base.connection.exec_query("SELECT DISTINCT teamname FROM gps_historic WHERE charge=#{@charge.ref}")
     @historicteams=teams.rows.collect{|p| [p[0],p[0]]}
 
+    @photos=@entry.photos
   end
 
   def index
@@ -99,7 +113,7 @@ class EntriesController < ApplicationController
     @entry=@charge.entries.new()
     @teams=Team.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @cars=Car.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
-    @start_guards=@charge.guards.collect{|p| [ p.guard_sponsor.name, p.id ] }
+    @start_guards=@charge.guards.collect{|p| [ p.sponsor.name, p.id ] }
   end
 
   def legsedit
@@ -141,7 +155,7 @@ class EntriesController < ApplicationController
     @teams << [@entry.team.name, @entry.team.id]
     @cars=Car.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @cars << [@entry.car.name, @entry.car.id]
-    @start_guards=@charge.guards.includes(:guard_sponsor).collect{|p| [ p.guard_sponsor.name, p.id ] }
+    @start_guards=@charge.guards.includes(:sponsor).collect{|p| [ p.sponsor.name, p.id ] }
   end
 
   def create

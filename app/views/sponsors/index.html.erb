@@ -1,0 +1,30 @@
+<% if flash[:error] %>
+    <div class="alert alert-danger" role="alert">
+      <%= flash[:error] %>
+    </div>
+<% end %>
+
+<div class="heading-bar"><h3>Sponsors</h3></div>
+
+<table class="table table-sm">
+  <thead class="thead-inverse">
+  <tr>
+    <th>Name</th>
+    <th>Short Name</th>
+    <th>Charges</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <% @sponsors.each do |sponsor| %>
+      <tr>
+        <td><%= sponsor.name %></td>
+        <td><%= sponsor.short_name %></td>
+        <td><%= sponsor.charges.count %></td>
+        <td><%= link_to 'Edit', edit_sponsor_path(sponsor) %></td>
+        <td><%= link_to 'Delete', sponsor_path(sponsor), method: :delete%></td>
+      </tr>
+  <% end %>
+</table>
+<%= link_to 'New Sponsor', new_sponsor_path,class: "btn btn-primary" %>

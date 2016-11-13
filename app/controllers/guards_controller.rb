@@ -1,7 +1,7 @@
 class GuardsController < ApplicationController
   def index
     @charge = Charge.find(params[:charge_id])
-    @guards = Guard.order(is_gauntlet: :desc).includes(:guard_sponsor,:charge).order("guard_sponsors.name").where(charge_id: @charge.id)
+    @guards = Guard.order(is_gauntlet: :desc).includes(:sponsor,:charge).order("sponsors.name").where(charge_id: @charge.id)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -9,7 +9,7 @@ class GuardsController < ApplicationController
 
         render json: @guards.collect {|p| {
             :id=>p.id,
-            :name =>p.guard_sponsor.short_name ? p.guard_sponsor.short_name : p.guard_sponsor.name,
+            :name =>p.sponsor.short_name ? p.sponsor.short_name : p.sponsor.name,
             :lat=>p.location_latitude,
             :lon=>p.location_longitude,
             :is_gauntlet=>p.is_gauntlet,
@@ -37,7 +37,7 @@ class GuardsController < ApplicationController
   def new
     @charge=Charge.find(params[:charge_id])
     @guard=Guard.new()
-    @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
+    @sponsors=Sponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
     @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
   end
 
@@ -45,17 +45,17 @@ class GuardsController < ApplicationController
     @charge = Charge.find(params[:charge_id])
 
     guard_params=params[:guard]
-    guard_sponsor=GuardSponsor.find(guard_params[:guard_sponsor_id])
+    sponsor=Sponsor.find(guard_params[:sponsor_id])
 
     location=get_location(guard_params)
 
-    @guard=Guard.new(charge:@charge,location:location,guard_sponsor: guard_sponsor,radius_m: guard_params[:radius_m], is_gauntlet: guard_params[:is_gauntlet])
+    @guard=Guard.new(charge:@charge,location:location,sponsor: sponsor,radius_m: guard_params[:radius_m], is_gauntlet: guard_params[:is_gauntlet])
 
     if @guard.save
       redirect_to charge_path(@charge)
     else
-      @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
-      @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
+      @sponsors=Sponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
+      @sponsors<<[@guard.sponsor.name,@guard.sponsor.id]
       @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
       render 'new'
     end
@@ -65,12 +65,12 @@ class GuardsController < ApplicationController
     @charge=Charge.find(params[:charge_id])
     @guard = Guard.find(params[:id])
 
-    @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
-    @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
+    @sponsors=Sponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
+    @sponsors<<[@guard.sponsor.name,@guard.sponsor.id]
     @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
     @checkins=@guard.checkins
 
-    guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
+    guards=@charge.guards.order(is_gauntlet: :desc).includes(:sponsor).order("sponsors.name")
     nxt=false
     guards.each do |gd|
       if nxt
@@ -91,18 +91,18 @@ class GuardsController < ApplicationController
     @guard = Guard.find(params[:id])
 
     guard_params=params[:guard]
-    guard_sponsor=GuardSponsor.find(guard_params[:guard_sponsor_id])
+    sponsor=Sponsor.find(guard_params[:sponsor_id])
 
     location=get_location(guard_params)
 
-    if @guard.update(location:location,guard_sponsor: guard_sponsor,radius_m: guard_params[:radius_m], is_gauntlet: guard_params[:is_gauntlet])
+    if @guard.update(location:location,sponsor: sponsor,radius_m: guard_params[:radius_m], is_gauntlet: guard_params[:is_gauntlet])
       redirect_to edit_charge_guard_path(@charge,@guard)
     else
-      @guard_sponsors=GuardSponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
-      @guard_sponsors<<[@guard.guard_sponsor.name,@guard.guard_sponsor.id]
+      @sponsors=Sponsor.not_referenced_by(@charge).sort_by {|p| [p.name, p.id]}.collect {|p| [ p.name, p.id ] }
+      @sponsors<<[@guard.sponsor.name,@guard.sponsor.id]
       @help_points=@charge.charge_help_points.collect {|p| [ p.name, p.id ] }
 
-      guards=@charge.guards.order(is_gauntlet: :desc).includes(:guard_sponsor).order("guard_sponsors.name")
+      guards=@charge.guards.order(is_gauntlet: :desc).includes(:sponsor).order("sponsors.name")
       nxt=false
       guards.each do |gd|
         if nxt
@@ -132,7 +132,7 @@ class GuardsController < ApplicationController
 
   private
   def guard_params
-    params.require(:guard).permit(:is_gauntlet,:radius_m,:guard_sponsor_id)
+    params.require(:guard).permit(:is_gauntlet,:radius_m,:sponsor_id)
   end
 
   def get_location(guard_params)

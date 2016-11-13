@@ -1,0 +1,29 @@
+<%= form_for @charge,url: photosupdate_charge_path(@charge) do |fc| %>
+<div class="row">
+  <% @photos.each_with_index do |photo,i| %>
+      <% if i%4==0 %>
+          </div>
+          <div class="row">
+      <% end %>
+      <div class="col-sm-3">
+        <div class="card">
+          <a target="_blank" href="<%= photo.photo.url(:original) %>"><%= image_tag photo.photo.url(:medium),class: "card-img-top",style:"display:block;margin-left:auto;margin-right:auto;margin-top:10px;" %></a>
+          <div class="card-block">
+            <%= fc.fields_for photo, index: photo.id do |f|%>
+                <div class="form-group">
+                  <label class="col-form-label">Delete</label>
+                  <%= f.check_box :id%>
+                </div>
+                <% if local_assigns[:team_select] %>
+                  <div class="form-group">
+                    <%= f.select(:photoable, @entries,{:include_blank=>'-- team --'}, class:'form-control',style:"width:100px;") %>
+                  </div>
+                <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+  <% end %>
+  </div>
+  <%= fc.submit  "Update", class: "btn btn-primary" %>
+  <% end %>

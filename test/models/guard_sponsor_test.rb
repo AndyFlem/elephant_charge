@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GuardSponsorTest < ActiveSupport::TestCase
+class SponsorTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

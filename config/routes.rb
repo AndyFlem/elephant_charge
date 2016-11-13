@@ -6,13 +6,17 @@ Rails.application.routes.draw do
   resources :cars
   resources :teams
 
-
   resources :charges do
+    resources 'photos'
     member do
+      patch 'photosupdate', to: 'photos#update_all'
       post 'uploadkml'
+      post 'uploadmap'
       get 'stops'
       get 'entriesbulk'
       patch 'entriesbulk', to: 'charges#entriesbulkpost'
+      get 'grants'
+      patch 'grants', to: 'charges#grantspost'
       patch 'legstsetse', to: 'charges#legstsetse'
       get 'kml'
       get 'result'
@@ -22,6 +26,7 @@ Rails.application.routes.draw do
     end
     resources :guards
     resources :entries do
+      resources 'photos'
       resources :checkins
       member do
         post 'import'
@@ -35,12 +40,19 @@ Rails.application.routes.draw do
         get 'geojson'
         get 'legsedit'
         patch 'legsedit', to: 'entries#legsedit_update'
+        post 'uploadphoto'
       end
     end
     resources :legs
   end
 
-  resources :guard_sponsors
+  resources :sponsors
 
   resources :checkins
+
+  resources :beneficiaries do
+    member do
+      post 'uploadlogo'
+    end
+  end
 end

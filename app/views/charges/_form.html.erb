@@ -31,6 +31,15 @@
 
     <%= f.label_text_field 'Netting m / K',:m_per_kwacha, {} %>
 
+    <%= f.label_select("Spirit of Charge Team",:spirit_entry_id, @entries,{:include_blank=>'-- select --'}) %>
+
+    <%= f.label_text_field 'Spirit of Charge Winner',:spirit_name, {} %>
+
+    <%= f.label_text_field 'Spirit Description',:spirit_description, {} %>
+
+    <%= f.label_select("Properly Shafted Team",:shafted_entry_id, @entries,{:include_blank=>'-- select --'}) %>
+
+    <%= f.label_select("Best Checkpoint Award",:best_guard_id, @guards,{:include_blank=>'-- select --'}) %>
 
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
 
