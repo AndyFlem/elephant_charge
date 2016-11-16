@@ -8,19 +8,28 @@ class PhotosController < ApplicationController
     phts.each do |pht_no|
       pht=phts[pht_no]
 
-      if pht[:photoable]!=""
+      if !pht[:photoable].nil? and pht[:photoable]!=""
         entry=@charge.entries.find(pht[:photoable])
         photo=@charge.photos.find(pht_no)
         photo.photoable=entry
         photo.save!
       end
-      if pht[:id]=="1"
-        photo=@charge.photos.find(pht_no)
+      if pht[:delete]=="1"
+        photo=Photo.find(pht_no)
         photo.destroy
       end
+      if pht[:remove]=="1"
+        photo=Photo.find(pht_no)
+        photo.photoable=@charge
+        photo.save!
+      end
+    end
+    if params[:entry_id].nil?
+      redirect_to charge_photos_path @charge
+    else
+      redirect_to charge_entry_path @charge,params[:entry_id]
     end
 
-    redirect_to charge_photos_path @charge
   end
 
   def index

@@ -1,4 +1,6 @@
 <nav class="navbar navbar-dark bg-primary" style="margin-bottom: 20px;">
+  <%= image_tag 'ec_logo_grey.png',class:'pull-xs-left',style:'height:50px;margin-right:10px;'%>
+  <div style="position:absolute;left:58px;top:37px;"><em>Dust, sweat & gears</em></div>
   <% if @charge and @charge.id %>
       <%= link_to @charge.name + ' ' + @charge.location, charge_path(@charge), class: "navbar-brand" %>
 
@@ -24,6 +26,7 @@
 
 
   <%else%>
+
       <%= link_to "Elephant Charge", root_path, class: "navbar-brand" %>
 
       <div class="btn-group pull-xs-right">

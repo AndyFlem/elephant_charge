@@ -9,26 +9,48 @@
     <th>Date</th>
     <th>Teams</th>
     <th>Raised</th>
+    <th>Grant</th>
     <th>Exchange</th>
     <th>Raised</th>
+    <th>Grants</th>
     <th></th>
   </tr>
   </thead>
 
-  <% @charges.each do |charge| %>
-      <tr class="<%= charge.state_ref=='NOT_SETUP' ? 'table-danger' : charge.state_ref=='RESULT' ? '' : 'table-warning' %>">
+  <%
+    raised_sum=0
+    dollar_sum=0
+    grant_sum=0
+    kgrant_sum=0
+    @charges.each do |charge|
+      raised_sum+=charge.raised_kwacha
+      dollar_sum+=charge.raised_dollars
+      grant_sum+=charge.grant_dollars
+      kgrant_sum+=charge.grant_kwacha
+  %>
+      <tr class="<%= charge.state_ref=='NOT_SETUPx' ? 'table-danger' : charge.state_ref='' ? '' : 'table-warning' %>">
         <td><%= link_to charge.name, charge_path(charge) %></td>
-
         <td><%= charge.location %></td>
         <td><%= charge.charge_date.strftime("%a %-d %b %Y") %></td>
         <td><%= charge.entries_count %></td>
         <td>K<%= number_with_precision(charge.raised_kwacha, precision: 0, delimiter: ',')%></td>
-        <td><%= charge.exchange_rate%></td>
+        <td>K<%= number_with_precision(charge.grant_kwacha, precision: 0, delimiter: ',')%></td>
+        <td>K<%= number_with_precision(charge.exchange_rate, precision: 2, delimiter: ',')%></td>
         <td>$<%= number_with_precision(charge.raised_dollars, precision: 0, delimiter: ',')%></td>
-
+        <td>$<%= number_with_precision(charge.grant_dollars, precision: 0, delimiter: ',')%></td>
         <td><%= link_to 'Result', result_charge_path(charge) %></td>
       </tr>
   <% end %>
+  <tr class="bg-inverse">
+    <td colspan="4"></td>
+    <td>K<%= number_with_precision(raised_sum, precision: 0, delimiter: ',')%></td>
+    <td>K<%= number_with_precision(kgrant_sum, precision: 0, delimiter: ',')%></td>
+    <td></td>
+    <td>$<%= number_with_precision(dollar_sum, precision: 0, delimiter: ',')%></td>
+    <td>$<%= number_with_precision(grant_sum, precision: 0, delimiter: ',')%></td>
+
+    <td></td>
+  </tr>
 </table>
 
 <%= link_to 'New charge', new_charge_path,class: "btn btn-primary"  %>

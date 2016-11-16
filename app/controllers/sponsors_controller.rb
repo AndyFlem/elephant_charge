@@ -28,6 +28,14 @@ class SponsorsController < ApplicationController
     end
   end
 
+
+  def uploadlogo
+    sponsor= Sponsor.find(params[:id])
+    sponsor.logo=params[:logo]
+    sponsor.save!
+    redirect_to sponsors_path
+  end
+
   def destroy
     @sponsor= Sponsor.find(params[:id])
     begin

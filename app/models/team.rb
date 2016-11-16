@@ -1,6 +1,12 @@
 class Team < ApplicationRecord
   has_many :entries
   has_many :charges, through: :entries
+
+  has_attached_file :badge,
+                    styles: { medium: "200x200", thumb: "100x100" },
+                    default_url: "/images/:style/missing.png"
+  validates_attachment_content_type :badge, content_type: /\Aimage\/.*\z/
+
   validates :name, presence: true
 
   def self.not_referenced_by(charge)
@@ -21,18 +27,12 @@ class Team < ApplicationRecord
       unless e.raised_dollars.nil?
         sm+=e.raised_dollars
       end
-
     end
     sm
   end
   def raised_kwacha
-    sm=0
-    self.entries.each do |e|
-      unless e.raised_kwacha.nil?
-        sm+=e.raised_kwacha
-      end
-    end
-    sm
+    self.entries.all.sum(:raised_kwacha)
   end
+
 
 end

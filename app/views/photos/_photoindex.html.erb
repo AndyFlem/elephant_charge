@@ -12,12 +12,17 @@
             <%= fc.fields_for photo, index: photo.id do |f|%>
                 <div class="form-group">
                   <label class="col-form-label">Delete</label>
-                  <%= f.check_box :id%>
+                  <%= f.check_box :delete%>
                 </div>
+
                 <% if local_assigns[:team_select] %>
                   <div class="form-group">
                     <%= f.select(:photoable, @entries,{:include_blank=>'-- team --'}, class:'form-control',style:"width:100px;") %>
                   </div>
+                <% else %>
+                    <label class="col-form-label">Remove</label>
+                    <%= f.check_box :remove%>
+                    <input type="hidden" name="entry_id" value="<%=@entry.id%>">
                 <% end %>
             <% end %>
           </div>

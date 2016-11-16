@@ -16,6 +16,11 @@ class Entry < ApplicationRecord
   has_many :entry_legs
   has_many :photos, as: :photoable
 
+  has_attached_file :badge,
+                    styles: { medium: "200x200", thumb: "100x100" },
+                    default_url: "/images/:style/missing.png"
+  validates_attachment_content_type :badge, content_type: /\Aimage\/.*\z/
+
   validates :car_no, numericality: { only_integer: true }
   validates :car_no, uniqueness: { scope: :charge_id}
   validates :car_id, uniqueness: { scope: :charge_id}

@@ -1,49 +1,51 @@
-<%= form_for(@charge,builder: LabellingFormBuilder) do |f| %>
-    <% if @charge.errors.any? %>
-        <% @charge.errors.full_messages.each do |msg| %>
-            <div class="alert alert-danger" role="alert">
-              <%= msg %>
-            </div>
-        <% end %>
-    <% end %>
+<div class="col-sm-8">
+  <%= form_for(@charge,builder: LabellingFormBuilder) do |f| %>
+      <% if @charge.errors.any? %>
+          <% @charge.errors.full_messages.each do |msg| %>
+              <div class="alert alert-danger" role="alert">
+                <%= msg %>
+              </div>
+          <% end %>
+      <% end %>
 
-    <%= f.label_text_field "Name",:name, {} %>
-
-
-    <%= f.label_text_field "Location",:location, {} %>
-
-    <%= f.label_date_field "Date",:charge_date, {} %>
-
-    <%= f.label_text_field "Map Scale",:map_scale, {} %>
-
-    <%= f.label_time_field "Start Time",:start_time, {} %>
-
-    <%= f.label_time_field "End Time",:end_time, {} %>
+      <%= f.label_text_field "Name",:name, {} %>
 
 
-    <%= f.label_text_field "Checkpoints",:guards_expected, {} %>
+      <%= f.label_text_field "Location",:location, {} %>
 
-    <%= f.label_text_field "Entries Expected",:entries_expected, {} %>
+      <%= f.label_date_field "Date",:charge_date, {} %>
 
-    <%= f.label_text_field "Gauntlet Multiplier",:gauntlet_multiplier, {} %>
+      <%= f.label_text_field "Map Scale",:map_scale, {} %>
 
-    <%= f.label_text_field "Exchange Rate K per $",:exchange_rate, {} %>
+      <%= f.label_time_field "Start Time",:start_time, {} %>
 
-    <%= f.label_text_field 'Netting m / K',:m_per_kwacha, {} %>
-
-    <%= f.label_select("Spirit of Charge Team",:spirit_entry_id, @entries,{:include_blank=>'-- select --'}) %>
-
-    <%= f.label_text_field 'Spirit of Charge Winner',:spirit_name, {} %>
-
-    <%= f.label_text_field 'Spirit Description',:spirit_description, {} %>
-
-    <%= f.label_select("Properly Shafted Team",:shafted_entry_id, @entries,{:include_blank=>'-- select --'}) %>
-
-    <%= f.label_select("Best Checkpoint Award",:best_guard_id, @guards,{:include_blank=>'-- select --'}) %>
-
-    <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
-
-    <%= link_to 'Cancel', f.object.new_record? ? charges_path : charge_path(@charge), class: "btn btn-primary" %>
+      <%= f.label_time_field "End Time",:end_time, {} %>
 
 
-<% end %>
+      <%= f.label_text_field "Checkpoints",:guards_expected, {} %>
+
+      <%= f.label_text_field "Entries Expected",:entries_expected, {} %>
+
+      <%= f.label_text_field "Gauntlet Multiplier",:gauntlet_multiplier, {} %>
+
+      <%= f.label_text_field "Exchange Rate K per $",:exchange_rate, {} %>
+
+      <%= f.label_text_field 'Netting m / K',:m_per_kwacha, {} %>
+
+      <%= f.label_select("Spirit of Charge Team",:spirit_entry_id, @entries,{:include_blank=>'-- select --'}) %>
+
+      <%= f.label_text_field 'Spirit of Charge Winner',:spirit_name, {} %>
+
+      <%= f.label_text_field 'Spirit Description',:spirit_description, {} %>
+
+      <%= f.label_select("Properly Shafted Team",:shafted_entry_id, @entries,{:include_blank=>'-- select --'}) %>
+
+      <%= f.label_select("Best Checkpoint Award",:best_guard_id, @guards,{:include_blank=>'-- select --'}) %>
+
+      <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
+
+      <%= link_to 'Cancel', f.object.new_record? ? charges_path : charge_path(@charge), class: "btn btn-primary" %>
+
+
+  <% end %>
+</div>

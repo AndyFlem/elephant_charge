@@ -60,6 +60,13 @@ class ChargesController < ApplicationController
     redirect_to charge_path @charge
   end
 
+  def grantdestroy
+    @charge = Charge.find(params[:id])
+    grant=@charge.grants.find(params[:grant_id])
+    grant.destroy
+    redirect_to grants_charge_path(@charge)
+  end
+
   def grants
     @charge = Charge.find(params[:id])
     @grants=@charge.grants.includes(:beneficiary)

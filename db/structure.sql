@@ -398,7 +398,9 @@ CREATE TABLE beneficiaries (
     logo_file_name character varying,
     logo_content_type character varying,
     logo_file_size integer,
-    logo_updated_at timestamp without time zone
+    logo_updated_at timestamp without time zone,
+    website character varying,
+    facebook character varying
 );
 
 
@@ -624,7 +626,11 @@ CREATE TABLE entries (
     position_raised integer,
     name character varying,
     captain character varying,
-    members character varying
+    members character varying,
+    badge_file_name character varying,
+    badge_content_type character varying,
+    badge_file_size integer,
+    badge_updated_at timestamp without time zone
 );
 
 
@@ -738,7 +744,8 @@ CREATE TABLE photos (
     photo_file_size integer,
     photo_updated_at timestamp without time zone,
     photoable_id integer,
-    photoable_type character varying
+    photoable_type character varying,
+    aspect double precision
 );
 
 
@@ -941,7 +948,13 @@ CREATE TABLE sponsors (
     name character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    short_name character varying
+    short_name character varying,
+    website character varying,
+    facebook character varying,
+    logo_file_name character varying,
+    logo_content_type character varying,
+    logo_file_size integer,
+    logo_updated_at timestamp without time zone
 );
 
 
@@ -1052,7 +1065,11 @@ CREATE TABLE teams (
     name character varying,
     captain character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    badge_file_name character varying,
+    badge_content_type character varying,
+    badge_file_size integer,
+    badge_updated_at timestamp without time zone
 );
 
 

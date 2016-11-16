@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       patch 'entriesbulk', to: 'charges#entriesbulkpost'
       get 'grants'
       patch 'grants', to: 'charges#grantspost'
+      delete 'grant/:grant_id', to:'charges#grantdestroy'
       patch 'legstsetse', to: 'charges#legstsetse'
       get 'kml'
       get 'result'
@@ -26,7 +27,7 @@ Rails.application.routes.draw do
     end
     resources :guards
     resources :entries do
-      resources 'photos'
+      resources :photos
       resources :checkins
       member do
         post 'import'
@@ -35,7 +36,6 @@ Rails.application.routes.draw do
         post 'process_result'
         post 'clear_result'
         post 'clear_clean'
-
         get 'kml'
         get 'geojson'
         get 'legsedit'
@@ -46,7 +46,11 @@ Rails.application.routes.draw do
     resources :legs
   end
 
-  resources :sponsors
+  resources :sponsors do
+    member do
+      post 'uploadlogo'
+    end
+  end
 
   resources :checkins
 

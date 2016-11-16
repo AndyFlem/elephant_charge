@@ -33,6 +33,7 @@ class Charge < ApplicationRecord
   after_commit :process_updates
 
   def entry_photos_count
+    #self.entries.photo.all.count
     sm=0
     self.entries.each do |e|
       sm+=e.photos.count
@@ -41,28 +42,17 @@ class Charge < ApplicationRecord
   end
 
   def grant_kwacha
-    sm=0
-    self.grants.each do |e|
-      sm+=e.grant_kwacha
-    end
-    sm
+    self.grants.all.sum(:grant_kwacha)
+  end
+  def grant_dollars
+    self.grant_kwacha/self.exchange_rate
   end
 
   def raised_dollars
-    sm=0
-    self.entries.each do |e|
-      sm+=e.raised_dollars
-    end
-    sm
+    self.raised_kwacha/self.exchange_rate
   end
   def raised_kwacha
-    sm=0
-    self.entries.each do |e|
-      unless e.raised_kwacha.nil?
-        sm+=e.raised_kwacha
-      end
-    end
-    sm
+    self.entries.all.sum(:raised_kwacha)
   end
 
   def start_datetime
