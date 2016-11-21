@@ -10,20 +10,22 @@
           <a target="_blank" href="<%= photo.photo.url(:original) %>"><%= image_tag photo.photo.url(:medium),class: "card-img-top",style:"display:block;margin-left:auto;margin-right:auto;margin-top:10px;" %></a>
           <div class="card-block">
             <%= fc.fields_for photo, index: photo.id do |f|%>
-                <div class="form-group">
+                <div class="form-group ">
                   <label class="col-form-label">Delete</label>
                   <%= f.check_box :delete%>
-                </div>
+
+                  <label class="col-form-label">Is Car?</label>
+                  <%= f.check_box :is_car%>
+
 
                 <% if local_assigns[:team_select] %>
-                  <div class="form-group">
                     <%= f.select(:photoable, @entries,{:include_blank=>'-- team --'}, class:'form-control',style:"width:100px;") %>
-                  </div>
                 <% else %>
                     <label class="col-form-label">Remove</label>
                     <%= f.check_box :remove%>
                     <input type="hidden" name="entry_id" value="<%=@entry.id%>">
                 <% end %>
+                </div>
             <% end %>
           </div>
         </div>

@@ -9,7 +9,7 @@ class GuardsController < ApplicationController
 
         render json: @guards.collect {|p| {
             :id=>p.id,
-            :name =>p.sponsor.short_name ? p.sponsor.short_name : p.sponsor.name,
+            :name =>p.name,
             :lat=>p.location_latitude,
             :lon=>p.location_longitude,
             :is_gauntlet=>p.is_gauntlet,

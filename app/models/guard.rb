@@ -12,7 +12,7 @@ class Guard < ApplicationRecord
 
 
   def name
-    if self.sponsor.short_name.nil?
+    if self.sponsor.short_name.nil? or self.sponsor.short_name==""
       self.sponsor.name
     else
       self.sponsor.short_name

@@ -1,6 +1,6 @@
 <div class="col-sm-8">
   <div class="col-sm-12 heading-bar"><h3>Entries (<%= @charge.entries_count %>)</h3>
-    <%= link_to 'Edit', charge_path(@charge) + '/entriesbulk'%>
+    <%= link_to 'Edit', charge_path(@charge) + '/entriesbulk' %>
   </div>
   <table class="table table-sm">
     <thead class="thead-inverse">
@@ -24,7 +24,7 @@
             <%= entry.car_no %>
           </td>
           <td>
-            <%= link_to entry.name, charge_entry_path(@charge,entry) %>
+            <%= link_to entry.name, charge_entry_path(@charge, entry) %>
           </td>
           <td>
             <%= entry.types_description %>
@@ -33,24 +33,24 @@
             <%= entry.photos.count %>
           </td>
           <td>
-            <%= entry.start_guard.nil? ? '': entry.start_guard.name%>
+            <%= entry.start_guard.nil? ? '' : entry.start_guard.name %>
           </td>
           <td class="<%= entry.start_time.nil? ? '' : (entry.start_time-@charge.start_datetime)>30.minutes ? 'text-warning' : '' %>">
-            <%= entry.start_time.nil? ? '': formattime(entry.start_time) %>
+            <%= entry.start_time.nil? ? '' : formattime(entry.start_time) %>
           </td>
           <td>
             K<%= entry.raised_kwacha.nil? ? '  -' : number_with_delimiter(entry.raised_kwacha) %>
           </td>
-          <td class="<%= entry.state_ref.nil? ? 'table-danger' : entry.state_ref=='RAW' ? 'table-warning' : 'table-success'%>" >
+          <td class="<%= entry.state_ref.nil? ? 'table-danger' : entry.state_ref=='RAW' ? 'table-warning' : 'table-success' %>">
             <% unless entry.state_messages.nil? %>
-                <%= image_tag('ic_warning.png',{:style=>'width:13px;',:'data-toggle'=>'tooltip',:title=>'',:'data-original-title'=>entry.state_messages.join(' ')}) %>
+                <%= image_tag('ic_warning.png', {:style => 'width:13px;', :'data-toggle' => 'tooltip', :title => '', :'data-original-title' => entry.state_messages.join(' ')}) %>
             <% end %>
             <%= entry.checkins.count>0 ? 'CPs' : '' %>
 
           </td>
           <td class="
             <% if entry.result_state_ref=='PROCESSED' %>
-              <% if entry.result=='Complete'%>
+              <% if entry.result=='Complete' %>
                 <%= 'table-success' %>
               <% else %>
                 <%= 'table-warning' %>
@@ -76,7 +76,8 @@
             <% end %>
             ">
             <% if entry.result_state_ref=='PROCESSED' %>
-                <%= entry.dist_competition.nil? ? '-' : number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
+                <%= entry.dist_competition.nil? ? '-' : number_with_precision(entry.dist_competition/1000.0, precision: 2) %>
+                km
             <% end %>
           </td>
 
@@ -88,123 +89,176 @@
       <td colspan="3"></td>
     </tr>
   </table>
-  <%= link_to 'Add', new_charge_entry_path(@charge),class: "btn btn-primary" %>
+  <%= link_to 'Add', new_charge_entry_path(@charge), class: "btn btn-primary" %>
   <br/><br/><br/><br/>
 
 
-  <div class="col-sm-12 heading-bar"><h3>Checkpoints</h3></div>
-  <table class="table  table-sm">
-    <thead class="thead-inverse">
-    <tr>
-      <th>No</th>
-      <th>Name</th>
-      <th>Gauntlet?</th>
-      <th>Radius</th>
-      <th>Located</th>
-      <th>Starters</th>
-      <th></th>
-    </tr>
-    </thead>
+  <div class="col-sm-12 heading-bar">
+    <h3>Checkpoints</h3>
+    <a class="collapsed" data-toggle="collapse" href="#checkpoints" aria-expanded="false" aria-controls="checkpoints">
+      Show
+    </a>
+  </div>
 
-    <% @guards.each_with_index do |guard,i| %>
-        <tr>
-          <td>
-            <%=(i+1)%>
-          </td>
-          <td>
-            <%= link_to guard.sponsor.name, edit_charge_guard_path(@charge,guard) %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= guard.is_gauntlet ? image_tag("ic_done_black.png"):'' %>
-          </td>
-          <td>
-            <%= guard.radius_m.nil? ? "-":guard.radius_m.to_s + "m" %>
-          </td>
-          <td style="padding:0.0rem">
-            <%= guard.is_located? ? image_tag("ic_done_black.png"):"" %>
-          </td>
-          <td>
-            <%= guard.starters.count>0 ? guard.starters.count : '-' %>
-          </td>
+  <div class="collapse" id="checkpoints">
+    <table class="table  table-sm">
+      <thead class="thead-inverse">
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Gauntlet?</th>
+        <th>Radius</th>
+        <th>Located</th>
+        <th>Starters</th>
+        <th></th>
+      </tr>
+      </thead>
 
-          <td>
-            <%= link_to 'Del', charge_guard_path(@charge,guard), method: :delete%>
-          </td>
-        </tr>
-    <% end %>
-  </table>
-  <%= link_to 'Add', new_charge_guard_path(@charge),class: "btn btn-primary"  %>
-  <br/><br/><br/><br/>
+      <% @guards.each_with_index do |guard, i| %>
+          <tr>
+            <td>
+              <%= (i+1) %>
+            </td>
+            <td>
+              <%= link_to guard.sponsor.name, edit_charge_guard_path(@charge, guard) %>
+            </td>
+            <td style="padding:0.0rem">
+              <%= guard.is_gauntlet ? image_tag("ic_done_black.png") : '' %>
+            </td>
+            <td>
+              <%= guard.radius_m.nil? ? "-" : guard.radius_m.to_s + "m" %>
+            </td>
+            <td style="padding:0.0rem">
+              <%= guard.is_located? ? image_tag("ic_done_black.png") : "" %>
+            </td>
+            <td>
+              <%= guard.starters.count>0 ? guard.starters.count : '-' %>
+            </td>
 
-  <div class="col-sm-12 heading-bar"><h3>Legs</h3></div>
-  <%= form_for @charge,as: :post,url: legstsetse_charge_path do |fc| %>
-      <table class="table table-sm">
-        <thead class="thead-inverse">
-        <tr>
-          <th>Checkpoints</th>
-          <th>Distance</th>
-          <th>Teams</th>
-          <th>Gauntlet?</th>
-          <th>Tsetse?</th>
-        </tr>
-        </thead>
-
-        <% @legs.each do |leg| %>
-            <%= fc.fields_for leg, index: leg.id do |f|%>
-                <tr>
-                  <td><%= link_to(leg.guard1.name + '-' + leg.guard2.name,charge_leg_path(@charge,leg)) %></td>
-                  <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2)%></td>
-                  <td><%= leg.entries.count %></td>
-                  <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
-                  <td>
-                    <% unless leg.is_gauntlet %>
-                        <%= f.check_box(:is_tsetse) %>
-                    <% end %>
-                  </td>
-                </tr>
-            <% end %>
-        <% end %>
-      </table>
-      <%= submit_tag "Update",  class: "btn btn-primary " %>
-  <% end %>
-  <br/><br/><br/><br/>
-
-  <div class="col-sm-12 heading-bar"><h3>Grants</h3></div>
-  <table class="table table-sm">
-    <thead class="thead-inverse">
-    <tr>
-      <th>Beneficiary</th>
-      <th>Grant Kwacha</th>
-    </tr>
-    </thead>
-      <% @grants.each do |grant| %>
-        <tr>
-          <td><%= grant.beneficiary.name %></td>
-          <td>K<%= number_with_delimiter(grant.grant_kwacha) %></td>
-        </tr>
+            <td>
+              <%= link_to 'Del', charge_guard_path(@charge, guard), method: :delete %>
+            </td>
+          </tr>
       <% end %>
-    <tr class="bg-inverse">
-      <td></td>
-      <td>K<%= number_with_delimiter(@charge.grant_kwacha) %></td>
-    </tr>
     </table>
-    <%= link_to 'Edit',grants_charge_path(@charge),class:"btn btn-primary" %>
+    <%= link_to 'Add', new_charge_guard_path(@charge), class: "btn btn-primary" %>
+  </div>
+  <br/><br/><br/><br/>
+
+  <div class="col-sm-12 heading-bar">
+    <h3>Legs</h3>
+    <a class="collapsed" data-toggle="collapse" href="#legs" aria-expanded="false" aria-controls="legs">
+      Show
+    </a>
+  </div>
+
+  <div class="collapse" id="legs">
+    <%= form_for @charge, as: :post, url: legstsetse_charge_path do |fc| %>
+        <table class="table table-sm">
+          <thead class="thead-inverse">
+          <tr>
+            <th>Checkpoints</th>
+            <th>Distance</th>
+            <th>Teams</th>
+            <th>Gauntlet?</th>
+            <th>Tsetse?</th>
+          </tr>
+          </thead>
+
+          <% @legs.each do |leg| %>
+              <%= fc.fields_for leg, index: leg.id do |f| %>
+                  <tr>
+                    <td><%= link_to(leg.guard1.name + '-' + leg.guard2.name, charge_leg_path(@charge, leg)) %></td>
+                    <td><%= number_with_precision(leg.distance_m/1000.0, precision: 2) %></td>
+                    <td><%= leg.entries.count %></td>
+                    <td><%= leg.is_gauntlet ? 'yes' : 'no' %></td>
+                    <td>
+                      <% unless leg.is_gauntlet %>
+                          <%= f.check_box(:is_tsetse) %>
+                      <% end %>
+                    </td>
+                  </tr>
+              <% end %>
+          <% end %>
+        </table>
+        <%= submit_tag "Update", class: "btn btn-primary " %>
+    <% end %>
+  </div>
+  <br/><br/><br/><br/>
+  <div class="col-sm-12 heading-bar">
+    <h3>Grants</h3>
+    <a class="collapsed" data-toggle="collapse" href="#grants" aria-expanded="false" aria-controls="grants">
+      Show
+    </a>
+  </div>
+  <div class="collapse" id="grants">
+    <table class="table table-sm">
+      <thead class="thead-inverse">
+      <tr>
+        <th>Beneficiary</th>
+        <th>Grant Kwacha</th>
+      </tr>
+      </thead>
+      <% @grants.each do |grant| %>
+          <tr>
+            <td><%= grant.beneficiary.name %></td>
+            <td>K<%= number_with_delimiter(grant.grant_kwacha) %></td>
+          </tr>
+      <% end %>
+      <tr class="bg-inverse">
+        <td></td>
+        <td>K<%= number_with_delimiter(@charge.grant_kwacha) %></td>
+      </tr>
+    </table>
+    <%= link_to 'Edit', grants_charge_path(@charge), class: "btn btn-primary" %>
+  </div>
+
+  <br/><br/><br/><br/>
+  <div class="col-sm-12 heading-bar">
+    <h3>Sponsors</h3>
+    <a class="collapsed" data-toggle="collapse" href="#sponsors" aria-expanded="false" aria-controls="sponsors">
+      Show
+    </a>
+  </div>
+  <div class="collapse" id="sponsors">
+    <table class="table table-sm">
+      <thead class="thead-inverse">
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Sponsorship Type</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <% unless @sponsors.nil? %>
+      <% @sponsors.each do |sponsor| %>
+          <tr>
+            <td><%= sponsor.sponsor.name %></td>
+            <td><%= sponsor.type_desc%></td>
+            <td><%= sponsor.sponsorship_type_desc%></td>
+            <td><%= sponsor.sponsorship_description%></td>
+          </tr>
+      <% end %>
+      <% end %>
+    </table>
+    <%= link_to 'Edit', charge_sponsors_charge_path(@charge), class: "btn btn-primary" %>
+  </div>
 </div>
 
 <div class="col-sm-4">
-  <div class="heading-bar"><h4><%=@charge.charge_date.strftime("%a %d %b %Y") %></h4></div>
-  <div id='cpmap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0:@charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0:@charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
+  <div class="heading-bar"><h4><%= @charge.charge_date.strftime("%a %d %b %Y") %></h4></div>
+  <div id='cpmap' class='' data-center-lat="<%= @charge.map_center.nil? ? 0 : @charge.map_center.y %>" data-center-lon="<%= @charge.map_center.nil? ? 0 : @charge.map_center.x %>" data-scale="<%= @charge.map_scale %>"></div>
 
   <div class="card" style="margin-top: 20px;">
     <div class="card-header">
       <h3 class="card-title">Status</h3>
     </div>
     <div class="card-block">
-      <%=@charge.state_description%>
+      <%= @charge.state_description %>
       <ul>
-        <%@charge.state_messages.each do |msg| %>
+        <% @charge.state_messages.each do |msg| %>
             <li><%= msg %></li>
-        <%end%>
+        <% end %>
       </ul>
     </div>
   </div>
@@ -214,34 +268,32 @@
       <h3 class="card-title">Results</h3>
     </div>
     <div class="card-block">
-      <%= link_to 'Summary',result_charge_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <%= link_to 'Legs',charge_legs_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <%= link_to 'Teams',charge_entries_path(@charge) %>
+      <%= link_to 'Summary', result_charge_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= link_to 'Legs', charge_legs_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= link_to 'Teams', charge_entries_path(@charge) %>
     </div>
   </div>
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Read From KML</h3>
+      <h3 class="card-title">Images</h3>
     </div>
     <div class="card-block">
-      <%= form_tag({action: :uploadkml}, multipart: true) do %>
+
+      <%= form_for @photo, url: charge_photos_path(@charge), html: {multipart: true} do |form| %>
           <div class="form-group">
-            <%= file_field_tag 'kmlfile',class:"form-control" %>
+            <%= form.file_field :photo, class: "form-control" %>
             <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Map</h3>
+      <%= link_to @charge.photos.count.to_s + ' charge photos and ' + @charge.entry_photos_count.to_s + ' team photos', charge_photos_path(@charge) %>
+
     </div>
     <div class="card-block">
       <a target="_blank" href="<%= @charge.map.url(:original) %>"><%= image_tag @charge.map.url(:thumb) %></a>
       <%= form_tag({action: :uploadmap}, multipart: true) do %>
           <div class="form-group">
-            <%= file_field_tag 'mapfile',class:"form-control" %>
+            <%= file_field_tag 'mapfile', class: "form-control" %>
             <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
@@ -250,6 +302,15 @@
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Actions</h3>
+    </div>
+    <div class="card-block">
+      KML:
+      <%= form_tag({action: :uploadkml}, multipart: true) do %>
+          <div class="form-group">
+            <%= file_field_tag 'kmlfile', class: "form-control" %>
+            <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
+          </div>
+      <% end %>
     </div>
     <div class="card-block">
       <%= form_tag({action: :clear_results}) do %>
@@ -267,22 +328,6 @@
             <%= submit_tag "Recalc Distances", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
-
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Photos</h3>
-    </div>
-    <div class="card-block">
-
-      <%= form_for @photo, url: charge_photos_path(@charge), html: { multipart: true } do |form| %>
-          <div class="form-group">
-            <%= form.file_field :photo,class:"form-control" %>
-            <%= submit_tag "Upload", class: "btn btn-primary btn-sm" %>
-          </div>
-      <% end %>
-      <%= link_to @charge.photos.count.to_s + ' charge photos and ' + @charge.entry_photos_count.to_s + ' team photos',charge_photos_path(@charge) %>
 
     </div>
   </div>

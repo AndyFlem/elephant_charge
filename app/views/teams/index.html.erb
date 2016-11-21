@@ -11,6 +11,7 @@
   <tr>
     <th>Name</th>
     <th>Captain</th>
+    <th>Website Ref</th>
     <th>Charges</th>
     <th>Kwacha</th>
     <th>Dollars</th>
@@ -28,6 +29,7 @@
       <tr>
         <td><%= team.entries.count>0 ? link_to(team.name, team_path(team)) : team.name%></td>
         <td><%= team.captain %></td>
+        <td><%= team.ref %></td>
         <td><%= team.entries.count %></td>
 
         <td>K<%= number_with_precision(team.raised_kwacha, precision: 0, delimiter: ',') %></td>

@@ -400,7 +400,9 @@ CREATE TABLE beneficiaries (
     logo_file_size integer,
     logo_updated_at timestamp without time zone,
     website character varying,
-    facebook character varying
+    facebook character varying,
+    email_admin character varying,
+    email_public character varying
 );
 
 
@@ -487,6 +489,39 @@ CREATE SEQUENCE charge_help_points_id_seq
 --
 
 ALTER SEQUENCE charge_help_points_id_seq OWNED BY charge_help_points.id;
+
+
+--
+-- Name: charge_sponsors; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE charge_sponsors (
+    id integer NOT NULL,
+    charge_id integer,
+    sponsor_id integer,
+    type_ref character varying(10),
+    sponsorship_type_ref character varying(10),
+    sponsorship_description character varying
+);
+
+
+--
+-- Name: charge_sponsors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE charge_sponsors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: charge_sponsors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE charge_sponsors_id_seq OWNED BY charge_sponsors.id;
 
 
 --
@@ -745,7 +780,8 @@ CREATE TABLE photos (
     photo_updated_at timestamp without time zone,
     photoable_id integer,
     photoable_type character varying,
-    aspect double precision
+    aspect double precision,
+    is_car boolean
 );
 
 
@@ -954,7 +990,10 @@ CREATE TABLE sponsors (
     logo_file_name character varying,
     logo_content_type character varying,
     logo_file_size integer,
-    logo_updated_at timestamp without time zone
+    logo_updated_at timestamp without time zone,
+    email_admin character varying,
+    email_public character varying,
+    ref character varying(25)
 );
 
 
@@ -1069,7 +1108,8 @@ CREATE TABLE teams (
     badge_file_name character varying,
     badge_content_type character varying,
     badge_file_size integer,
-    badge_updated_at timestamp without time zone
+    badge_updated_at timestamp without time zone,
+    ref character varying(25)
 );
 
 
@@ -1111,6 +1151,13 @@ ALTER TABLE ONLY cars ALTER COLUMN id SET DEFAULT nextval('cars_id_seq'::regclas
 --
 
 ALTER TABLE ONLY charge_help_points ALTER COLUMN id SET DEFAULT nextval('charge_help_points_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charge_sponsors ALTER COLUMN id SET DEFAULT nextval('charge_sponsors_id_seq'::regclass);
 
 
 --
@@ -1291,6 +1338,14 @@ ALTER TABLE ONLY beneficiaries
 
 
 --
+-- Name: pk_charge_sponsors; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charge_sponsors
+    ADD CONSTRAINT pk_charge_sponsors PRIMARY KEY (id);
+
+
+--
 -- Name: pk_checkins; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1447,6 +1502,22 @@ CREATE INDEX indx_gps_cleans_entry_id ON gps_cleans USING btree (entry_id);
 --
 
 CREATE INDEX indx_gps_raws_entry_id ON gps_raws USING btree (entry_id);
+
+
+--
+-- Name: fk_charge_sponsors_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charge_sponsors
+    ADD CONSTRAINT fk_charge_sponsors_charge FOREIGN KEY (charge_id) REFERENCES charges(id);
+
+
+--
+-- Name: fk_charge_sponsors_sponsors; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charge_sponsors
+    ADD CONSTRAINT fk_charge_sponsors_sponsors FOREIGN KEY (sponsor_id) REFERENCES sponsors(id);
 
 
 --

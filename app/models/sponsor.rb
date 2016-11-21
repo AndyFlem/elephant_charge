@@ -1,6 +1,9 @@
 class Sponsor < ApplicationRecord
   has_many :guards
   has_many :charges, through: :guards
+  has_many :charge_sponsors
+
+
   validates :name, presence: true
 
   has_attached_file :logo,

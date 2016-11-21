@@ -11,6 +11,16 @@
 
     <%= f.label_text_field "Short Name",:short_name%>
 
+    <%= f.label_text_field "Website",:website%>
+
+    <%= f.label_text_field "Facebook Page",:facebook%>
+
+    <%= f.label_text_field "Website Ref",:ref%>
+
+    <%= f.label_text_field "Admin Email",:email_admin%>
+
+    <%= f.label_text_field "Public Email",:email_public%>
+
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <%= link_to 'Cancel', sponsors_path, class: "btn btn-primary" %>
 

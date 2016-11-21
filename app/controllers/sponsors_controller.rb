@@ -58,6 +58,6 @@ class SponsorsController < ApplicationController
 
   private
   def sponsor_params
-    params.require(:sponsor).permit(:name,:short_name)
+    params.require(:sponsor).permit(:name,:short_name,:website,:facebook,:ref,:email_admin,:email_public)
   end
 end

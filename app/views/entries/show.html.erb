@@ -83,7 +83,7 @@
     <div class="card">
       <div class="card-block">
         <p>
-          Car: <b><%= @entry.car.name %></b>
+          Car: <b><%= @entry.car.name %></b> - <%= @entry.car.description %>
         </p>
         <p>
           Starting Checkpoint: <b><%= @entry.start_guard.nil? ? 'not set' : @entry.start_guard.name %></b>

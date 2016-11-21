@@ -60,6 +60,48 @@ class ChargesController < ApplicationController
     redirect_to charge_path @charge
   end
 
+  def charge_sponsordestroy
+    @charge = Charge.find(params[:id])
+    charge_sponsor=@charge.charge_sponsors.find(params[:charge_sponsor_id])
+    charge_sponsor.destroy
+    redirect_to charge_sponsors_charge_path(@charge)
+  end
+
+  def charge_sponsors
+    @charge = Charge.find(params[:id])
+    @chargesponsors=@charge.charge_sponsors.includes(:sponsor).references(:sponsor).order("sponsors.name")
+    @sponsors=Sponsor.all.order(:name).collect{|p| [p.name,p.id]}
+    @newchargesponsor=@charge.charge_sponsors.new()
+  end
+
+  def charge_sponsorspost
+    @charge = Charge.find(params[:id])
+    charge_sponsors_params=params[:post][:charge_sponsor]
+    charge_sponsors_params.each do |charge_sponsor_id|
+      charge_sponsors_params.each do |charge_sponsor_id|
+        charge_sponsor_params=charge_sponsors_params[charge_sponsor_id]
+        unless charge_sponsor_id=="-1"
+          charge_sponsor=@charge.charge_sponsors.find(charge_sponsor_id)
+          charge_sponsor.sponsor_id=charge_sponsor_params[:sponsor_id]
+          charge_sponsor.type_ref=charge_sponsor_params[:type_ref]
+          charge_sponsor.sponsorship_type_ref=charge_sponsor_params[:sponsorship_type_ref]
+          charge_sponsor.sponsorship_description=charge_sponsor_params[:sponsorship_description]
+          charge_sponsor.save!
+        else
+          if charge_sponsor_params[:type_ref]!=""
+            charge_sponsor=@charge.charge_sponsors.new()
+            charge_sponsor.sponsor_id=charge_sponsor_params[:sponsor_id]
+            charge_sponsor.type_ref=charge_sponsor_params[:type_ref]
+            charge_sponsor.sponsorship_type_ref=charge_sponsor_params[:sponsorship_type_ref]
+            charge_sponsor.sponsorship_description=charge_sponsor_params[:sponsorship_description]
+            charge_sponsor.save!
+          end
+        end
+      end
+      redirect_to charge_sponsors_charge_path(@charge)
+    end
+  end
+
   def grantdestroy
     @charge = Charge.find(params[:id])
     grant=@charge.grants.find(params[:grant_id])
@@ -206,6 +248,7 @@ class ChargesController < ApplicationController
     @legs=@charge.legs.order(is_gauntlet: :desc,is_tsetse: :desc)
     @grants=@charge.grants.includes(:beneficiary).order("beneficiaries.name")
     @photo=@charge.photos.new()
+    @sponsors=@charge.charge_sponsors.includes(:sponsor).references(:sponsor).order("sponsors.name")
   end
 
   def new

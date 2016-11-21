@@ -7,20 +7,19 @@ class PhotosController < ApplicationController
 
     phts.each do |pht_no|
       pht=phts[pht_no]
+      photo=Photo.find(pht_no)
 
-      if !pht[:photoable].nil? and pht[:photoable]!=""
-        entry=@charge.entries.find(pht[:photoable])
-        photo=@charge.photos.find(pht_no)
-        photo.photoable=entry
-        photo.save!
-      end
       if pht[:delete]=="1"
-        photo=Photo.find(pht_no)
         photo.destroy
-      end
-      if pht[:remove]=="1"
-        photo=Photo.find(pht_no)
-        photo.photoable=@charge
+      else
+        if pht[:remove]=="1"
+          photo.photoable=@charge
+        end
+        if !pht[:photoable].nil? and pht[:photoable]!=""
+          entry=@charge.entries.find(pht[:photoable])
+          photo.photoable=entry
+        end
+        photo.is_car=pht[:is_car]
         photo.save!
       end
     end

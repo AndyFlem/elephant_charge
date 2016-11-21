@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/elephant_charge.iml" filepath="$PROJECT_DIR$/.idea/elephant_charge.iml" />
-      <module fileurl="file://$USER_HOME$/elephant_charge_public/.idea/elephant_charge_public.iml" filepath="$USER_HOME$/elephant_charge_public/.idea/elephant_charge_public.iml" />
     </modules>
   </component>
 </project>

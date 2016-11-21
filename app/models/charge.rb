@@ -10,6 +10,7 @@ class Charge < ApplicationRecord
   has_many :gps_stops, through: :entries
   has_many :legs
   has_many :photos, as: :photoable
+  has_many :charge_sponsors
   belongs_to :best_guard, foreign_key: 'best_guard_id', class_name: 'Guard'
   belongs_to :shafted_entry, foreign_key: 'shafted_entry_id', class_name: 'Entry'
   has_many :grants

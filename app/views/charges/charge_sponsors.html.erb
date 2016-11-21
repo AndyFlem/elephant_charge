@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-sm-10 heading-bar"><h3>Charge Sponsors</h3></div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <%= form_for @charge, as: :post, url: charge_sponsors_charge_path do |fc| %>
+        <table class="table table-sm">
+          <thead class="thead-inverse">
+          <tr>
+            <th>Sponsor</th>
+            <th>Type</th>
+            <th>Sponsorship Type</th>
+            <th>Description</th>
+            <th></th>
+          </tr>
+          </thead>
+          <% @chargesponsors.each do |sponsor| %>
+              <%= fc.fields_for sponsor, index: sponsor.id do |f| %>
+                  <tr>
+                    <td><%= sponsor.sponsor.name %></td>
+                    <td><%= sponsor.type_desc %></td>
+                    <td><%= sponsor.sponsorship_type_desc %></td>
+                    <td><%= sponsor.sponsorship_description %></td>
+                    <td><%= link_to 'Delete', charge_path(@charge) + '/charge_sponsor/' + sponsor.id.to_s, method: :delete %></td>
+                  </tr>
+              <% end %>
+          <% end %>
+          <tr>
+            <%= fc.fields_for @newchargesponsor, index: -1 do |f| %>
+                <td><%= f.select(:sponsor_id, @sponsors, {:include_blank => '-- select --'}, class: "form-control", style: "width:200px") %></td>
+                <td><%= f.select(:type_ref, ChargeSponsor.type_refs, {:include_blank => '-- select --'}, class: "form-control", style: "width:200px") %></td>
+                <td><%= f.select(:sponsorship_type_ref, ChargeSponsor.sponsorship_type_refs, {:include_blank => '-- select --'}, class: "form-control", style: "width:200px") %></td>
+                <td><%= f.text_field(:sponsorship_description, :size => "20") %></td>
+            <% end %>
+          </tr>
+        </table>
+        <%= submit_tag("Update", class: "btn btn-primary") %>
+    <% end %>
+  </div>
+</div>
