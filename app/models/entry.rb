@@ -114,20 +114,31 @@ class Entry < ApplicationRecord
         self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
       end
     end
+
+    self.save!
+
+    update_tsetse_distances!
+
+  end
+
+  def update_tsetse_distances!
+    tsetse1=self.entry_legs.where(leg_id: self.charge.tsetse1_leg.id).first
+    tsetse2=self.entry_legs.where(leg_id: self.charge.tsetse2_leg.id).first
+    unless tsetse1.nil?
+      self.dist_tsetse1=tsetse1.distance_m
+    else
+      self.dist_tsetse1=nil
+    end
+    unless tsetse2.nil?
+      self.dist_tsetse2=tsetse2.distance_m
+    else
+      self.dist_tsetse2=nil
+    end
     self.save!
   end
 
-
   def result
-    if self.result_state_ref=='PROCESSED'
-      if self.result_guards==self.charge.guards_expected+1
-        'Complete'
-      else
-        'DNF ' + self.result_guards.to_s
-      end
-    else
-      'Unknown'
-    end
+    self.result_description
   end
 
   def update_result_state!
@@ -169,11 +180,16 @@ class Entry < ApplicationRecord
 
     end
 
-
+    self.result_description=''
     if res==[]
       state='READY'
       if self.result_guards==self.checkins.count
         state='PROCESSED'
+        if self.result_guards==self.charge.guards_expected+1
+          self.result_description='Complete'
+        else
+          self.result_description='DNF ' + self.result_guards.to_s
+        end
       end
     end
     self.result_state_ref=state
@@ -194,7 +210,6 @@ class Entry < ApplicationRecord
       end
     end
 
-
     self.update_column(:result_guards,nil)
     self.update_column(:result_gauntlet_guards,nil)
     self.update_column(:dist_nongauntlet,nil)
@@ -209,12 +224,16 @@ class Entry < ApplicationRecord
     self.update_column(:dist_net,nil)
     self.update_column(:dist_best,nil)
 
-
     self.update_column(:position_distance,nil)
     self.update_column(:position_net_distance,nil)
     self.update_column(:position_gauntlet,nil)
     self.update_column(:position_tsetse1,nil)
     self.update_column(:position_tsetse2,nil)
+    self.update_column(:position_ladies,nil)
+    self.update_column(:position_international,nil)
+    self.update_column(:position_newcomer,nil)
+    self.update_column(:position_bikes,nil)
+    self.update_column(:position_net_bikes,nil)
 
     self.update_result_state!
   end

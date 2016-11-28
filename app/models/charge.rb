@@ -13,6 +13,9 @@ class Charge < ApplicationRecord
   has_many :charge_sponsors
   belongs_to :best_guard, foreign_key: 'best_guard_id', class_name: 'Guard'
   belongs_to :shafted_entry, foreign_key: 'shafted_entry_id', class_name: 'Entry'
+  belongs_to :tsetse1_leg, foreign_key: 'tsetse1_id', class_name: 'Leg'
+  belongs_to :tsetse2_leg, foreign_key: 'tsetse2_id', class_name: 'Leg'
+
   has_many :grants
   has_many :beneficiaries, through: :grants
 
@@ -78,14 +81,28 @@ class Charge < ApplicationRecord
   def update_positions!
 
     #position_distance
-    entries=self.entries.order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries=self.entries.where(is_bikes: false).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
     entries.each_with_index do |p,i|
       p.position_distance=i+1
       p.save!
     end
 
+    #position_bikes
+    entries=self.entries.where(is_bikes: true).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_bikes=i+1
+      p.save!
+    end
+
     #position_net_distance
-    entries=self.entries.order(result_guards: :desc, dist_net: :asc, car_no: :asc)
+    entries=self.entries.where(is_bikes: false).order(result_guards: :desc, dist_net: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_net_distance=i+1
+      p.save!
+    end
+
+    #position_net_bikes
+    entries=self.entries.where(is_bikes: true).order(result_guards: :desc, dist_net: :asc, car_no: :asc)
     entries.each_with_index do |p,i|
       p.position_net_distance=i+1
       p.save!
@@ -105,7 +122,49 @@ class Charge < ApplicationRecord
       p.save!
     end
 
+    #position_ladies
+    entries=self.entries.where(is_ladies: true).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_ladies=i+1
+      p.save!
+    end
 
+    #position_international
+    entries=self.entries.where(is_international: true).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_international=i+1
+      p.save!
+    end
+
+    #position_newcomer
+    entries=self.entries.where(is_newcomer: true).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries.each_with_index do |p,i|
+      p.position_newcomer=i+1
+      p.save!
+    end
+
+
+    update_tsetse_positions!
+  end
+
+  def update_tsetse_positions!
+
+      unless self.tsetse1_leg.nil?
+        entrylegs1=self.tsetse1_leg.entry_legs.order(distance_m: :asc)
+        entrylegs1.each_with_index do |p,i|
+          p.entry.position_tsetse1=i+1
+          p.entry.save!
+        end
+      end
+
+      #tsetse2
+      unless self.tsetse2_leg.nil?
+        entrylegs2=self.tsetse2_leg.entry_legs.order(distance_m: :asc)
+        entrylegs2.each_with_index do |p,i|
+          p.entry.position_tsetse2=i+1
+          p.entry.save!
+        end
+      end
   end
 
   protected

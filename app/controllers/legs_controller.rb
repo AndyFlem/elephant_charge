@@ -12,8 +12,6 @@ class LegsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json {
-
-
         lines=ActiveRecord::Base.connection.exec_query("SELECT * FROM ec_linesforleg(#{@leg.id})").rows
         res=lines.collect {|p| {type: 'Feature',properties:{name:p[1]}, geometry:JSON.parse(p[0])}}
 

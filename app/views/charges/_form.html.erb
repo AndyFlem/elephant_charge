@@ -40,6 +40,8 @@
 
       <%= f.label_select("Properly Shafted Team",:shafted_entry_id, @entries,{:include_blank=>'-- select --'}) %>
 
+      <%= f.label_text_field 'Properly Shafted Description',:shafted_description, {} %>
+
       <%= f.label_select("Best Checkpoint Award",:best_guard_id, @guards,{:include_blank=>'-- select --'}) %>
 
       <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>

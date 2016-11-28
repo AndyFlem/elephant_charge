@@ -56,6 +56,15 @@ class ChargesController < ApplicationController
       leg.is_tsetse=leg_params[:is_tsetse]
       leg.save!
     end
+    tsetses=@charge.legs.where('legs.is_tsetse=true')
+    @charge.tsetse1_leg=tsetses[0]
+    @charge.tsetse2_leg=tsetses[1]
+    @charge.save!
+
+    @charge.entries.each do |e|
+      e.update_tsetse_distances!
+    end
+    @charge.update_tsetse_positions!
 
     redirect_to charge_path @charge
   end
@@ -231,7 +240,8 @@ class ChargesController < ApplicationController
     @gauntlet=@charge.entries.where("result_state_ref='PROCESSED'").order(position_gauntlet: :asc)
     @net=@charge.entries.where("result_state_ref='PROCESSED' and result_guards="+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
     @raised=@charge.entries.order(raised_kwacha: :desc)
-    @tsetselegs=@charge.legs.where(is_tsetse: true)
+    @tsetselegs=[@charge.tsetse1_leg,@charge.tsetse2_leg]
+
 
   end
 
@@ -297,6 +307,6 @@ class ChargesController < ApplicationController
                                    :start_time,:end_time,:entries_expected,:gauntlet_multiplier,
                                    :exchange_rate, :m_per_kwacha, :guards_expected,
                                    :spirit_description,:spirit_name,:spirit_entry_id,
-                                   :shafted_entry_id,:best_guard_id)
+                                   :shafted_entry_id,:shafted_description,:best_guard_id)
   end
 end

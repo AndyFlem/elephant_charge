@@ -558,7 +558,10 @@ CREATE TABLE charges (
     spirit_name character varying,
     spirit_description character varying,
     best_guard_id integer,
-    shafted_entry_id integer
+    shafted_entry_id integer,
+    tsetse1_id integer,
+    tsetse2_id integer,
+    shafted_description character varying
 );
 
 
@@ -665,7 +668,13 @@ CREATE TABLE entries (
     badge_file_name character varying,
     badge_content_type character varying,
     badge_file_size integer,
-    badge_updated_at timestamp without time zone
+    badge_updated_at timestamp without time zone,
+    position_ladies integer,
+    position_newcomer integer,
+    position_international integer,
+    position_bikes integer,
+    result_description character varying,
+    position_net_bikes integer
 );
 
 
@@ -1109,7 +1118,9 @@ CREATE TABLE teams (
     badge_content_type character varying,
     badge_file_size integer,
     badge_updated_at timestamp without time zone,
-    ref character varying(25)
+    ref character varying(25),
+    tier integer DEFAULT 0 NOT NULL,
+    prefix character varying
 );
 
 
@@ -1505,6 +1516,14 @@ CREATE INDEX indx_gps_raws_entry_id ON gps_raws USING btree (entry_id);
 
 
 --
+-- Name: fk_charge_bestguard; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charges
+    ADD CONSTRAINT fk_charge_bestguard FOREIGN KEY (best_guard_id) REFERENCES guards(id);
+
+
+--
 -- Name: fk_charge_sponsors_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1518,6 +1537,30 @@ ALTER TABLE ONLY charge_sponsors
 
 ALTER TABLE ONLY charge_sponsors
     ADD CONSTRAINT fk_charge_sponsors_sponsors FOREIGN KEY (sponsor_id) REFERENCES sponsors(id);
+
+
+--
+-- Name: fk_charges_shaftedentry; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charges
+    ADD CONSTRAINT fk_charges_shaftedentry FOREIGN KEY (shafted_entry_id) REFERENCES entries(id);
+
+
+--
+-- Name: fk_charges_tsetse1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charges
+    ADD CONSTRAINT fk_charges_tsetse1 FOREIGN KEY (tsetse1_id) REFERENCES legs(id);
+
+
+--
+-- Name: fk_charges_tsetse2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY charges
+    ADD CONSTRAINT fk_charges_tsetse2 FOREIGN KEY (tsetse2_id) REFERENCES legs(id);
 
 
 --
