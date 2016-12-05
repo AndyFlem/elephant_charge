@@ -14,6 +14,7 @@
     <th>Short Name</th>
     <th>Location</th>
     <th>Grants</th>
+    <th>Grants $</th>
     <th></th>
     <th></th>
   </tr>
@@ -26,6 +27,7 @@
         <td><%= ben.short_name %></td>
         <td><%= ben.geography %></td>
         <td><%= ben.grants.count %></td>
+        <td><%= number_with_precision(ben.grant_dollars, precision: 2,delimiter: ',') %></td>
         <td><%= link_to 'Edit', edit_beneficiary_path(ben) %></td>
         <td><%= link_to 'Delete', beneficiary_path(ben), method: :delete%></td>
       </tr>

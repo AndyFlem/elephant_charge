@@ -1,0 +1,7 @@
+<div style="position: relative">
+  <%= image_tag image_url(@photo.photo(:original)) %>
+  <% @faces.each do |face| %>
+    <div style="border-color:red;position:absolute;border-style: solid;border-width: 2px;width: <%=face[2]%>px;height: <%=face[3]%>px;top: <%=face[1]%>px;left: <%=face[0]%>px;"></div>
+  <% end %>
+  <div style="border-color:yellow;position:absolute;border-style: solid;border-width: 2px;width: <%=@face_bounds[2]%>px;height: <%=@face_bounds[3]%>px;top: <%=@face_bounds[1]%>px;left: <%=@face_bounds[0]%>px;"></div>
+</div>

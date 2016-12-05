@@ -5,9 +5,10 @@ Rails.application.routes.draw do
 
   resources :cars
   resources :teams
+  resources :photos, only: [:show]
 
   resources :charges do
-    resources 'photos'
+    resources :photos
     member do
       patch 'photosupdate', to: 'photos#update_all'
       post 'uploadkml'
