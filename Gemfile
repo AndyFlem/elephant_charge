@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+gem 'zip-zip'
+gem 'axlsx'
+
 gem 'bcrypt', '3.1.11'
 
 gem "paperclip", "~> 5.0.0"

@@ -328,6 +328,12 @@
             <%= submit_tag "Recalc Distances", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
+      <%= form_tag({action: :generate_xlsx}) do %>
+          <div class="form-group">
+            <%= submit_tag "Generate Xlsx", class: "btn btn-primary btn-sm" %>
+          </div>
+          <a href="/system/charges/xlsx/<%=@charge.ref%>.xlsx">XLSX</a>
+      <% end %>
 
     </div>
   </div>

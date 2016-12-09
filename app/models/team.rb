@@ -9,6 +9,14 @@ class Team < ApplicationRecord
 
   validates :name, presence: true
 
+  def long_name
+    unless self.prefix.blank?
+      self.prefix + ' ' + self.name
+    else
+      self.name
+    end
+  end
+
   def self.not_referenced_by(charge)
     query = <<-SQL
       SELECT * FROM teams

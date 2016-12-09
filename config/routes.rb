@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       post 'clear_results'
       post 'process_results'
       post 'recalc_distances'
+      post 'generate_xlsx'
     end
     resources :guards
     resources :entries do

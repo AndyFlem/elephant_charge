@@ -36,6 +36,37 @@ class Charge < ApplicationRecord
   after_initialize :init
   after_commit :process_updates
 
+  def long_name
+    self.name + (self.location=='' ? '' : ' - ' + self.location)
+  end
+
+
+  def self.awards ref
+    case ref
+      when :net_distance
+        "Country Choice Trophy"
+      when :raised
+        "Sausage Tree Trophy"
+      when :distance
+        "Castle Fleming Trophy"
+      when :gauntlet
+        "Bowden Trophy"
+      when :tsetse1
+        "Sanctuary Trophy"
+      when :tsetse2
+        "Khal Amazi Trophy"
+      when :ladies
+        "Silky Cup"
+      when :bikes
+        "Dean Cup"
+      when :spirit
+        "Rhino Charge Trophy"
+      else
+        ''
+    end
+  end
+
+
   def entry_photos_count
     #self.entries.photo.all.count
     sm=0

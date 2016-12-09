@@ -1,7 +1,14 @@
 include KmlReader
 include GpsProcessor
+include XlsxGenerator
 
 class ChargesController < ApplicationController
+
+  def generate_xlsx
+    @charge = Charge.find(params[:id])
+    XlsxGenerator.charge_xl(@charge)
+    redirect_to charge_path @charge
+  end
 
   def recalc_distances
     @charge = Charge.find(params[:id])

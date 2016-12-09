@@ -51,6 +51,11 @@ class Entry < ApplicationRecord
       self.checkins.order(:checkin_number).first.checkin_timestamp
     end
   end
+  def end_time
+    unless self.checkins.nil? or self.checkins.count==0
+      self.checkins.order(:checkin_number).last.checkin_timestamp
+    end
+  end
 
   def raised_dollars
     unless self.raised_kwacha.nil?
