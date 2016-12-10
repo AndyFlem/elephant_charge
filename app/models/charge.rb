@@ -135,7 +135,7 @@ class Charge < ApplicationRecord
     #position_net_bikes
     entries=self.entries.where(is_bikes: true).order(result_guards: :desc, dist_net: :asc, car_no: :asc)
     entries.each_with_index do |p,i|
-      p.position_net_distance=i+1
+      p.position_net_bikes=i+1
       p.save!
     end
 
@@ -147,7 +147,7 @@ class Charge < ApplicationRecord
     end
 
     #position_raised
-    entries=self.entries.order(raised_kwacha: :desc)
+    entries=self.entries.order(raised_kwacha: :desc,car_no: :asc)
     entries.each_with_index do |p,i|
       p.position_raised=i+1
       p.save!

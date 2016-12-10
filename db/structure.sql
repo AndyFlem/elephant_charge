@@ -339,7 +339,7 @@ SELECT
 FROM
 	gps_cleans gps
 	INNER JOIN guards g ON ST_DWithin(gps.location_prj,ST_Transform(g.location,3857),g.radius_m)
-	INNER JOIN guard_sponsors gs on g.guard_sponsor_id=gs.id
+	INNER JOIN sponsors gs on g.sponsor_id=gs.id
 	INNER JOIN entries e ON e.id=gps.entry_id and g.charge_id=e.charge_id
 WHERE	
 	gps.entry_id=entryid
@@ -638,7 +638,7 @@ CREATE TABLE entries (
     start_guard_id integer,
     state_ref character varying(10),
     state_messages character varying(255)[],
-    result_guards integer,
+    result_guards integer DEFAULT 0,
     dist_nongauntlet integer,
     dist_gauntlet integer,
     dist_penalty_gauntlet integer,
@@ -650,7 +650,7 @@ CREATE TABLE entries (
     dist_competition integer,
     dist_tsetse1 integer,
     dist_tsetse2 integer,
-    result_gauntlet_guards integer,
+    result_gauntlet_guards integer DEFAULT 0,
     position_distance integer,
     position_net_distance integer,
     position_gauntlet integer,
@@ -665,10 +665,6 @@ CREATE TABLE entries (
     name character varying,
     captain character varying,
     members character varying,
-    badge_file_name character varying,
-    badge_content_type character varying,
-    badge_file_size integer,
-    badge_updated_at timestamp without time zone,
     position_ladies integer,
     position_newcomer integer,
     position_international integer,
@@ -790,7 +786,9 @@ CREATE TABLE photos (
     photoable_id integer,
     photoable_type character varying,
     aspect double precision,
-    is_car boolean
+    is_car boolean,
+    faces integer[],
+    faces_count integer DEFAULT 0
 );
 
 
@@ -827,7 +825,10 @@ CREATE TABLE gps_cleans (
     distance_m double precision,
     speed_kmh double precision,
     azimuth_deg double precision,
-    elapsed_s integer
+    elapsed_s integer,
+    elevation integer,
+    leg_distance_m integer,
+    entry_leg_id integer
 );
 
 
@@ -1633,6 +1634,14 @@ ALTER TABLE ONLY entry_legs
 
 ALTER TABLE ONLY gps_cleans
     ADD CONSTRAINT fk_gps_cleans_entries FOREIGN KEY (entry_id) REFERENCES entries(id);
+
+
+--
+-- Name: fk_gps_cleans_entry_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY gps_cleans
+    ADD CONSTRAINT fk_gps_cleans_entry_leg FOREIGN KEY (entry_leg_id) REFERENCES entry_legs(id);
 
 
 --

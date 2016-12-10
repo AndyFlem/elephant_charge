@@ -16,11 +16,6 @@ class Entry < ApplicationRecord
   has_many :entry_legs
   has_many :photos, as: :photoable
 
-  has_attached_file :badge,
-                    styles: { medium: "200x200", thumb: "100x100" },
-                    default_url: "/images/:style/missing.png"
-  validates_attachment_content_type :badge, content_type: /\Aimage\/.*\z/
-
   validates :car_no, numericality: { only_integer: true }
   validates :car_no, uniqueness: { scope: :charge_id}
   validates :car_id, uniqueness: { scope: :charge_id}
@@ -90,10 +85,10 @@ class Entry < ApplicationRecord
     end
 
     #dist_nongauntlet;
-    self.dist_nongauntlet=nongauntlet_dist_sum;
+    self.dist_nongauntlet=nongauntlet_dist_sum
 
     #dist_gauntlet;
-    self.dist_gauntlet=gauntlet_dist_sum;
+    self.dist_gauntlet=gauntlet_dist_sum
 
     #dist_withpentalty_nongauntlet;
     self.dist_withpentalty_nongauntlet=nongauntlet_dist_sum + self.dist_penalty_nongauntlet
@@ -202,21 +197,7 @@ class Entry < ApplicationRecord
     self.save!
   end
 
-  def reset_result!
-    self.entry_legs.each do |eleg|
-      leg=eleg.leg
-      del_leg=false;
-      if eleg.leg.entries.count==1
-        del_leg=true
-      end
-      eleg.destroy
-      if del_leg
-        leg.destroy
-      end
-    end
-
-    self.update_column(:result_guards,nil)
-    self.update_column(:result_gauntlet_guards,nil)
+  def reset_positions_distances!
     self.update_column(:dist_nongauntlet,nil)
     self.update_column(:dist_gauntlet,nil)
     self.update_column(:dist_withpentalty_gauntlet,nil)
@@ -240,7 +221,31 @@ class Entry < ApplicationRecord
     self.update_column(:position_bikes,nil)
     self.update_column(:position_net_bikes,nil)
 
+    self.save!
+  end
+
+  def reset_result!
+    self.entry_legs.each do |eleg|
+      leg=eleg.leg
+      del_leg=false;
+      if eleg.leg.entries.count==1
+        del_leg=true
+      end
+      ActiveRecord::Base.connection.exec_query("UPDATE gps_cleans SET entry_leg_id=null WHERE entry_leg_id=?", eleg.id)
+
+      eleg.destroy
+      if del_leg
+        leg.destroy
+      end
+    end
+
+    self.update_column(:result_guards,0)
+    self.update_column(:result_gauntlet_guards,0)
+
+    self.reset_positions_distances!
+
     self.update_result_state!
+    self.save!
   end
 
   def reset_checkins!

@@ -3,6 +3,7 @@ class EntryLeg < ApplicationRecord
   belongs_to :leg
   belongs_to :checkin1, foreign_key: 'checkin1_id', class_name: 'Checkin'
   belongs_to :checkin2, foreign_key: 'checkin2_id', class_name: 'Checkin'
+  has_many :gps_cleans
 
   def position
     self.leg.entry_legs.order(:distance_m).each_with_index do |entleg,i|

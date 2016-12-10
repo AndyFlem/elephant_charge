@@ -47,6 +47,7 @@ class EntriesController < ApplicationController
   def process_result
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
+    @entry.reset_result!
     GpsProcessor.process_result(@entry)
     redirect_to charge_entry_path @entry.charge,@entry
   end

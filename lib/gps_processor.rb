@@ -1,5 +1,17 @@
 module GpsProcessor
 
+  def self.process_leg(entry_leg)
+    entry=entry_leg.entry
+    cleans=GpsClean.where("id>=? and id<?",entry_leg.checkin1.gps_clean_id,entry_leg.checkin2.gps_clean_id).order(:id)
+    leg_dist=0
+    cleans.each do |c|
+      leg_dist+=c.distance_m
+      c.leg_distance_m=leg_dist
+      c.entry_leg=entry_leg
+      c.save!
+    end
+  end
+
   def self.process_result(entry)
     entry.reset_result!
 
@@ -41,6 +53,7 @@ module GpsProcessor
           entry_leg.direction_forward=false
         end
         entry_leg.save!
+        process_leg(entry_leg)
         leg_no+=1
       end
       if check_to.guard.is_gauntlet
@@ -65,41 +78,44 @@ module GpsProcessor
     pnts=ActiveRecord::Base.connection.exec_query("SELECT * FROM ec_pointswithinguardforentry(#{entry.id})").rows
     #guard_id , gps_clean_id , gps_timestamp , dist_m
 
-    #split by guard 'hits'
-    hits=[]
-    cur_hit={guard_id: pnts[0][0], gps_clean_id: pnts[0][1], points: []}
-    hits<<cur_hit
-    prev_clean_id=-1
+    if pnts.count>0
+      #split by guard 'hits'
+      hits=[]
+      cur_hit={guard_id: pnts[0][0], gps_clean_id: pnts[0][1], points: []}
+      hits<<cur_hit
+      prev_clean_id=-1
 
-    pnts.each_with_index do |pnt, i|
-      if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>=entry.charge.start_datetime and ActiveSupport::TimeZone['UTC'].parse(pnt[2])<=entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
-        if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>15 and prev_clean_id!=-1) #new guard hit
-          if hits.count==1 and cur_hit[:points].count==0 #left first guard early!
-            cur_hit[:points]<<pnts[i-1]
+      pnts.each_with_index do |pnt, i|
+        if ActiveSupport::TimeZone['UTC'].parse(pnt[2])>=entry.charge.start_datetime and ActiveSupport::TimeZone['UTC'].parse(pnt[2])<=entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
+          if pnt[0]!=cur_hit[:guard_id] or ((pnt[1]-prev_clean_id)>15 and prev_clean_id!=-1) #new guard hit
+            if hits.count==1 and cur_hit[:points].count==0 #left first guard early!
+              cur_hit[:points]<<pnts[i-1]
+            end
+            cur_hit=Hash.new()
+            cur_hit={guard_id: pnt[0], gps_clean_id: pnt[1], points: []}
+            hits<<cur_hit
           end
-          cur_hit=Hash.new()
-          cur_hit={guard_id: pnt[0], gps_clean_id: pnt[1], points: []}
-          hits<<cur_hit
+          prev_clean_id=pnt[1]
+          cur_hit[:points]<<pnt
         end
-        prev_clean_id=pnt[1]
-        cur_hit[:points]<<pnt
       end
-    end
 
-    #for each hit find the point closest to the guard
-    hits.each_with_index do |hit, i|
-      closest=hit[:points].min { |a, b| a[3]<=> b[3] }
-      check=entry.checkins.new(
-          checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(closest[2]),
-          checkin_number: i+1,
-          guard_id: hit[:guard_id],
-          gps_clean_id: closest[1]
-      )
-      check.save!
-    end
-    if entry.start_guard.nil?
-      entry.start_guard=entry.checkins.first.guard
-      entry.save!
+      #for each hit find the point closest to the guard
+      hits.each_with_index do |hit, i|
+        closest=hit[:points].min { |a, b| a[3]<=> b[3] }
+        check=entry.checkins.new(
+            checkin_timestamp: ActiveSupport::TimeZone['UTC'].parse(closest[2]),
+            checkin_number: i+1,
+            guard_id: hit[:guard_id],
+            gps_clean_id: closest[1]
+        )
+        check.save!
+      end
+      if entry.start_guard.nil?
+        entry.start_guard=entry.checkins.first.guard
+        entry.save!
+      end
+
     end
     entry.update_result_state!
   end

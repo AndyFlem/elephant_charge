@@ -15,6 +15,7 @@ class ChargesController < ApplicationController
     @entries = @charge.entries
 
     @entries.each do |e|
+      e.reset_positions_distances!
       e.update_distances!
     end
     @charge.update_positions!
