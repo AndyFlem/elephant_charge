@@ -231,7 +231,7 @@ class Entry < ApplicationRecord
       if eleg.leg.entries.count==1
         del_leg=true
       end
-      ActiveRecord::Base.connection.exec_query("UPDATE gps_cleans SET entry_leg_id=null WHERE entry_leg_id=?", eleg.id)
+      ActiveRecord::Base.connection.exec_query("UPDATE gps_cleans SET entry_leg_id=null WHERE entry_leg_id="+ eleg.id.to_s)
 
       eleg.destroy
       if del_leg

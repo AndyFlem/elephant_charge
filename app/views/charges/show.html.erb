@@ -30,7 +30,7 @@
             <%= entry.types_description %>
           </td>
           <td>
-            <%= entry.photos.count %>
+            <%= entry.photos.count %> (<%= entry.photos.where("is_car=true").count%>)
           </td>
           <td>
             <%= entry.start_guard.nil? ? '' : entry.start_guard.name %>

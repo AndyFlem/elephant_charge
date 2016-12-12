@@ -23,10 +23,10 @@ class PhotosController < ApplicationController
         photo.save!
       end
     end
-    if params[:entry_id].nil?
+    if params[:car_no].nil?
       redirect_to charge_photos_path @charge
     else
-      redirect_to charge_entry_path @charge,params[:entry_id]
+      redirect_to charge_entry_path @charge,params[:car_no]
     end
 
   end

@@ -561,7 +561,9 @@ CREATE TABLE charges (
     shafted_entry_id integer,
     tsetse1_id integer,
     tsetse2_id integer,
-    shafted_description character varying
+    shafted_description character varying,
+    elevation_max integer,
+    elevation_min integer
 );
 
 
@@ -750,7 +752,11 @@ CREATE TABLE entry_legs (
     leg_line geometry(LineString,4326),
     leg_line_proj geometry(LineString,3857),
     leg_number integer,
-    start_time timestamp without time zone
+    start_time timestamp without time zone,
+    elevation_min integer,
+    elevation_max integer,
+    total_ascent integer,
+    total_descent integer
 );
 
 
@@ -1039,7 +1045,8 @@ CREATE TABLE guards (
     charge_id integer NOT NULL,
     radius_m integer,
     late_start_time time without time zone,
-    location geometry(Point,4326)
+    location geometry(Point,4326),
+    elevation integer
 );
 
 

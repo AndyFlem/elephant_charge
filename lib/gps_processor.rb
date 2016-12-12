@@ -1,15 +1,51 @@
 module GpsProcessor
 
   def self.process_leg(entry_leg)
+    elev_max=0
+    elev_min=100000
+    ascent=0
+    descent=0
+    last_elevation=nil
     entry=entry_leg.entry
     cleans=GpsClean.where("id>=? and id<?",entry_leg.checkin1.gps_clean_id,entry_leg.checkin2.gps_clean_id).order(:id)
     leg_dist=0
     cleans.each do |c|
-      leg_dist+=c.distance_m
+      unless c.distance_m.nil?
+        leg_dist+=c.distance_m
+      end
       c.leg_distance_m=leg_dist
+
+      if c.elevation<elev_min
+        elev_min=c.elevation
+      end
+      if c.elevation>elev_max
+        elev_max=c.elevation
+      end
+      unless last_elevation==nil
+        if c.elevation>last_elevation
+          ascent+=(c.elevation-last_elevation)
+        else
+          descent+=(last_elevation-c.elevation)
+        end
+      end
+      last_elevation=c.elevation
       c.entry_leg=entry_leg
       c.save!
     end
+    entry_leg.elevation_max=elev_max
+    entry_leg.elevation_min=elev_min
+    entry_leg.total_descent=descent
+    entry_leg.total_ascent=ascent
+    entry_leg.save!
+    if entry_leg.entry.charge.elevation_max.nil? or entry_leg.entry.charge.elevation_max<elev_max
+      entry_leg.entry.charge.elevation_max=elev_max
+      entry_leg.entry.charge.save!
+    end
+    if entry_leg.entry.charge.elevation_min.nil? or entry_leg.entry.charge.elevation_min>elev_min
+      entry_leg.entry.charge.elevation_min=elev_min
+      entry_leg.entry.charge.save!
+    end
+
   end
 
   def self.process_result(entry)
