@@ -271,6 +271,8 @@
       <%= link_to 'Summary', result_charge_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <%= link_to 'Legs', charge_legs_path(@charge) %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <%= link_to 'Teams', charge_entries_path(@charge) %>
+      <a href="/system/charges/xlsx/<%=@charge.ref%>.xlsx">XLSX</a>
+      <a href="/system/charges/kml/<%=@charge.ref%>.kml">KML</a>
     </div>
   </div>
 
@@ -313,6 +315,7 @@
       <% end %>
     </div>
     <div class="card-block">
+      <div class="col-sm-6">
       <%= form_tag({action: :clear_results}) do %>
           <div class="form-group">
             <%= submit_tag "Clear Results", class: "btn btn-primary btn-sm" %>
@@ -328,12 +331,21 @@
             <%= submit_tag "Recalc Distances", class: "btn btn-primary btn-sm" %>
           </div>
       <% end %>
-      <%= form_tag({action: :generate_xlsx}) do %>
-          <div class="form-group">
-            <%= submit_tag "Generate Xlsx", class: "btn btn-primary btn-sm" %>
-          </div>
-          <a href="/system/charges/xlsx/<%=@charge.ref%>.xlsx">XLSX</a>
-      <% end %>
+      </div>
+      <div class="col-sm-6">
+        <%= form_tag({action: :generate_xlsx}) do %>
+            <div class="form-group">
+              <%= submit_tag "Generate Xlsx", class: "btn btn-primary btn-sm" %>
+            </div>
+        <% end %>
+        <%= form_tag({action: :generate_kml}) do %>
+            <div class="form-group">
+              <%= submit_tag "Generate Kml", class: "btn btn-primary btn-sm" %>
+            </div>
+
+        <% end %>
+
+      </div>
 
     </div>
   </div>

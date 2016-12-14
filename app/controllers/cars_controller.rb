@@ -9,10 +9,12 @@ class CarsController < ApplicationController
 
   def new
     @car=Car.new()
+    @makes=Make.all.collect{|p| [ p.name, p.id ] }
   end
 
   def edit
     @car = Car.find(params[:id])
+    @makes=Make.all.collect{|p| [ p.name, p.id ] }
   end
 
   def create
@@ -21,6 +23,7 @@ class CarsController < ApplicationController
       if @car.save
         redirect_to cars_path
       else
+        @makes=Make.all.collect{|p| [ p.name, p.id ] }
         render 'new'
       end
   end
@@ -41,12 +44,13 @@ class CarsController < ApplicationController
     if @car.update(car_params)
       redirect_to cars_path
     else
+      @makes=Make.all.collect{|p| [ p.name, p.id ] }
       render 'edit'
     end
   end
 
   private
   def car_params
-    params.require(:car).permit(:name, :make, :car_model, :colour, :year)
+    params.require(:car).permit(:name, :car_model, :colour, :year, :make_id)
   end
 end

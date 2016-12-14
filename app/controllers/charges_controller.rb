@@ -10,6 +10,16 @@ class ChargesController < ApplicationController
     redirect_to charge_path @charge
   end
 
+  def generate_kml
+    @charge = Charge.find(params[:id])
+
+    @entries = @charge.entries.order(:car_no)
+    kml=render_to_string 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
+    File.open('public/system/charges/kml/elephant_charge_' + @charge.ref + '.kml','w'){|f| f << kml}
+
+    redirect_to charge_path @charge
+  end
+
   def recalc_distances
     @charge = Charge.find(params[:id])
     @entries = @charge.entries

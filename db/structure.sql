@@ -432,12 +432,13 @@ ALTER SEQUENCE beneficeries_id_seq OWNED BY beneficiaries.id;
 CREATE TABLE cars (
     id integer NOT NULL,
     name character varying,
-    make character varying,
+    make_old character varying,
     car_model character varying,
     colour character varying,
     year integer,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    make_id integer
 );
 
 
@@ -1104,6 +1105,35 @@ ALTER SEQUENCE legs_id_seq OWNED BY legs.id;
 
 
 --
+-- Name: makes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE makes (
+    id integer NOT NULL,
+    name character varying
+);
+
+
+--
+-- Name: makes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE makes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: makes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE makes_id_seq OWNED BY makes.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1261,6 +1291,13 @@ ALTER TABLE ONLY guards ALTER COLUMN id SET DEFAULT nextval('guards_id_seq'::reg
 --
 
 ALTER TABLE ONLY legs ALTER COLUMN id SET DEFAULT nextval('legs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY makes ALTER COLUMN id SET DEFAULT nextval('makes_id_seq'::regclass);
 
 
 --
@@ -1437,6 +1474,14 @@ ALTER TABLE ONLY legs
 
 
 --
+-- Name: pk_makes; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY makes
+    ADD CONSTRAINT pk_makes PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1521,6 +1566,14 @@ CREATE INDEX indx_gps_cleans_entry_id ON gps_cleans USING btree (entry_id);
 --
 
 CREATE INDEX indx_gps_raws_entry_id ON gps_raws USING btree (entry_id);
+
+
+--
+-- Name: fk_cars_makes; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY cars
+    ADD CONSTRAINT fk_cars_makes FOREIGN KEY (make_id) REFERENCES makes(id);
 
 
 --

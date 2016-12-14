@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       post 'process_results'
       post 'recalc_distances'
       post 'generate_xlsx'
+      post 'generate_kml'
     end
     resources :guards
     resources :entries do

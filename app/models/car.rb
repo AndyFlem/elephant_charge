@@ -2,21 +2,22 @@ class Car < ApplicationRecord
   has_many :entries
   has_many :charges, through: :entries
   has_many :teams, through: :entries
+  belongs_to :make
 
   validates :name, presence: true
 
   def description
     des=''
-    if !self.colour.nil? and self.colour!=""
+    if !self.colour.blank?
       des+=self.colour.capitalize + ' '
     end
-    if !self.year.nil? and self.year!=""
+    if !self.year.blank?
       des+=self.year.to_s + ' '
     end
-    if !self.make.nil? and self.make!=""
-      des+=self.make.capitalize + ' '
+    if !self.make.blank?
+      des+=self.make.name.capitalize + ' '
     end
-    if !self.car_model.nil? and self.car_model!=""
+    if !self.car_model.blank?
       des+=self.car_model + ' '
     end
     des

@@ -22,7 +22,7 @@
   <% @cars.each do |car| %>
       <tr>
         <td><%= car.name %></td>
-        <td><%= car.make %></td>
+        <td><%= car.make.blank? ? '' : car.make.name %> </td>
         <td><%= car.car_model %></td>
         <td><%= car.colour %></td>
         <td><%= car.year %></td>
