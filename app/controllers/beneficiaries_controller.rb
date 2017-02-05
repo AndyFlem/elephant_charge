@@ -58,7 +58,7 @@ class BeneficiariesController < ApplicationController
 
     private
     def beneficiary_params
-      params.require(:beneficiary).permit(:name,:short_name,:logo,:geography,:description,:website,:facebook)
+      params.require(:beneficiary).permit(:name,:short_name,:logo,:geography,:geography_description,:description,:website,:facebook)
     end
 
 end
