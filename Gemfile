@@ -17,7 +17,7 @@ gem "paperclip", "~> 5.0.0"
 gem 'friendly_id', :git => 'git://github.com/norman/friendly_id.git'
 
 gem 'rubyzip'
-gem 'bootstrap', '~> 4.0.0.alpha4'
+gem 'bootstrap', '= 4.0.0.alpha5'
 source 'https://rails-assets.org' do
   gem 'rails-assets-tether', '>= 1.1.0'
 end
