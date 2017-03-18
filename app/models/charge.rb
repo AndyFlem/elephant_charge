@@ -80,11 +80,11 @@ class Charge < ApplicationRecord
     self.grants.all.sum(:grant_kwacha)
   end
   def grant_dollars
-    self.grant_kwacha/self.exchange_rate
+    self.grant_kwacha>0 ? self.grant_kwacha/self.exchange_rate : 0
   end
 
   def raised_dollars
-    self.raised_kwacha/self.exchange_rate
+    self.raised_kwacha>0 ? self.raised_kwacha/self.exchange_rate : 0
   end
   def raised_kwacha
     self.entries.all.sum(:raised_kwacha)
