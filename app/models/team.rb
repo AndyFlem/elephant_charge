@@ -3,7 +3,7 @@ class Team < ApplicationRecord
   has_many :charges, through: :entries
 
   has_attached_file :badge,
-                    styles: { medium: "200x200", thumb: "100x100" },
+                    styles: { original: "600x600",medium: "200x200", thumb: "100x100"},
                     default_url: "/images/:style/missing.png"
   validates_attachment_content_type :badge, content_type: /\Aimage\/.*\z/
 

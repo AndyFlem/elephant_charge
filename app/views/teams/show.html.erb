@@ -19,7 +19,9 @@
         </div>
         <div class="card-block">
           <p>
+            <% unless entry.is_current? %>
             <b><%= format_position(entry.position_raised) %></b> place in fundraising. Raised <b>$<%= number_with_precision(entry.raised_dollars, precision: 0, delimiter: ',') %></b>.
+            <% end %>
           </p>
         </div>
       </div>

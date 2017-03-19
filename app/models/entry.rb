@@ -41,6 +41,11 @@ class Entry < ApplicationRecord
   #dist_net;
   #dist_best
 
+
+  def is_current?
+    self.charge.state_ref!='RESULT'
+  end
+
   def start_time
     unless self.checkins.nil? or self.checkins.count==0
       self.checkins.order(:checkin_number).first.checkin_timestamp

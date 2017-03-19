@@ -4,7 +4,13 @@ Rails.application.routes.draw do
   root 'charges#index'
 
   resources :cars
-  resources :teams
+  resources :teams do
+    member do
+      post 'uploadbadge'
+      get 'photos', to: 'teams#photos'
+      patch 'photobadge', to: 'teams#setbadge'
+    end
+  end
   resources :photos, only: [:show]
 
   resources :charges do

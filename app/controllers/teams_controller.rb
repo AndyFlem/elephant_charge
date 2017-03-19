@@ -3,6 +3,28 @@ class TeamsController < ApplicationController
     @teams = Team.order(:name)
   end
 
+  def photos
+    @team = Team.find(params[:id])
+  end
+  def setbadge
+    @team = Team.find(params[:id])
+
+    phts=params[:team][:photo]
+
+    phts.each do |pht_no|
+      pht=phts[pht_no]
+      photo=Photo.find(pht_no)
+
+      if pht[:badge]=="1"
+        @team.badge=photo.photo
+        @team.save!
+      end
+    end
+
+
+    redirect_to edit_team_path(@team)
+  end
+
   def show
     @team = Team.find(params[:id])
     @entries=@team.entries.includes(:charge).order('charges.charge_date').references(:charges)
@@ -48,8 +70,15 @@ class TeamsController < ApplicationController
     end
   end
 
+  def uploadbadge
+    team= Team.find(params[:id])
+    team.badge=params[:badge]
+    team.save!
+    redirect_to edit_team_path(team)
+  end
+
   private
   def team_params
-    params.require(:team).permit(:name,:captain,:ref)
+    params.require(:team).permit(:name,:captain,:ref,:badge)
   end
 end

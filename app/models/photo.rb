@@ -19,6 +19,9 @@ class Photo < ApplicationRecord
   def remove #dummy property
     false
   end
+  def badge  #dummy property
+    false
+  end
 
   def faces_bounds
     if faces_count>0

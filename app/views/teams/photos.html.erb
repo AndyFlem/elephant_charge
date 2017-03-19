@@ -1,0 +1,25 @@
+<%= form_for @team,url: photobadge_team_path(@team) do |fc| %>
+<% @team.entries.each do |entry| %>
+  <div class="card">
+    <div class="card-header"><%= entry.charge.long_name%></div>
+    <div class="card-block">
+      <div class="container-fluid">
+        <div class="row">
+          <% entry.photos.each do |photo|%>
+              <div class="col-md-3">
+                <img src="<%= image_path(photo.photo(:medium)) %>">
+                <%= fc.fields_for photo, index: photo.id do |f|%>
+                    <label class="col-form-label">Team Badge</label>
+                    <%= f.check_box :badge%>
+                <% end %>
+              </div>
+          <% end %>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% end %>
+    <%= fc.submit  "Update", class: "btn btn-primary" %>
+<% end %>
