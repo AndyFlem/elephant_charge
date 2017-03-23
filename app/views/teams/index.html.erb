@@ -13,6 +13,7 @@
     <th>Captain</th>
     <th>Website Ref</th>
     <th>Badge</th>
+    <th>Paypal Button</th>
     <th>Charges</th>
     <th>Kwacha</th>
     <th>Dollars</th>
@@ -32,6 +33,7 @@
         <td><%= team.captain %></td>
         <td><%= team.ref %></td>
         <td><%= team.badge.exists? ? 'Yes':'No' %></td>
+        <td><%= team.paypal_button ? 'Yes':'No' %></td>
         <td><%= team.entries.count %></td>
 
         <td>K<%= number_with_precision(team.raised_kwacha, precision: 0, delimiter: ',') %></td>

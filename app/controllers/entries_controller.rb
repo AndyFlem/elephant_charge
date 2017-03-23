@@ -164,6 +164,7 @@ class EntriesController < ApplicationController
     @entry = @charge.entries.new(entry_params)
     @entry.name=@entry.team.name
     @entry.captain=@entry.team.captain
+    @entry.entry_no=@entry.team.charges.count+1
     if @entry.save
       @entry.create_entry_geom!
       redirect_to charge_path(@charge)
