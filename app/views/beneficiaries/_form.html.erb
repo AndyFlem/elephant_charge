@@ -21,6 +21,8 @@
 
     <%= f.label_text_field "Description",:description%>
 
+    <%= f.label_text_field "Grants Use",:grant_description_default%>
+
     <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
     <%= link_to 'Cancel', beneficiaries_path, class: "btn btn-primary" %>
 

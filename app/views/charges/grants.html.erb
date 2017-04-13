@@ -10,6 +10,7 @@
           <tr>
             <th>Beneficiary</th>
             <th>Grant Kwacha</th>
+            <th>Description</th>
             <th></th>
           </tr>
           </thead>
@@ -18,6 +19,7 @@
                   <tr>
                     <td><%= grant.beneficiary.name %></td>
                     <td><%= f.text_field(:grant_kwacha, :size => "8") %></td>
+                    <td><%= f.text_field(:description, :size => "60") %></td>
                     <td><%= link_to 'Delete', charge_path(@charge) + '/grant/' + grant.id.to_s, method: :delete %></td>
                   </tr>
               <% end %>

@@ -149,15 +149,18 @@ class ChargesController < ApplicationController
     grants_params.each do |grant_id|
       grant_params=grants_params[grant_id]
       unless grant_id=="-1"
+        #update existing
         grant=@charge.grants.find(grant_id)
-        #grant.beneficiary_id=grant_params[:beneficiary_id]
         grant.grant_kwacha=grant_params[:grant_kwacha]
+        grant.description=grant_params[:description]
         grant.save!
       else
         if grant_params[:grant_kwacha]!=""
+          # create new
           grant=@charge.grants.new()
           grant.beneficiary_id=grant_params[:beneficiary_id]
           grant.grant_kwacha=grant_params[:grant_kwacha]
+          grant.description=grant_params[:description]
           grant.save!
         end
       end
