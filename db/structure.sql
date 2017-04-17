@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.5
--- Dumped by pg_dump version 9.5.5
+-- Dumped from database version 9.5.6
+-- Dumped by pg_dump version 9.5.6
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -403,7 +403,8 @@ CREATE TABLE beneficiaries (
     facebook character varying,
     email_admin character varying,
     email_public character varying,
-    geography_description character varying
+    geography_description character varying,
+    grant_description_default character varying
 );
 
 
@@ -424,6 +425,43 @@ CREATE SEQUENCE beneficeries_id_seq
 --
 
 ALTER SEQUENCE beneficeries_id_seq OWNED BY beneficiaries.id;
+
+
+--
+-- Name: campaigns; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE campaigns (
+    id integer NOT NULL,
+    mailchimp_id character varying,
+    web_id character varying,
+    send_time timestamp without time zone,
+    archive_url character varying,
+    long_archive_url character varying,
+    subject_line character varying,
+    title character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: campaigns_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE campaigns_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: campaigns_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE campaigns_id_seq OWNED BY campaigns.id;
 
 
 --
@@ -674,7 +712,8 @@ CREATE TABLE entries (
     position_international integer,
     position_bikes integer,
     result_description character varying,
-    position_net_bikes integer
+    position_net_bikes integer,
+    entry_no integer
 );
 
 
@@ -970,7 +1009,8 @@ CREATE TABLE grants (
     id integer NOT NULL,
     charge_id integer,
     beneficiary_id integer,
-    grant_kwacha integer
+    grant_kwacha integer,
+    description character varying
 );
 
 
@@ -1159,7 +1199,8 @@ CREATE TABLE teams (
     badge_updated_at timestamp without time zone,
     ref character varying(25),
     tier integer DEFAULT 0 NOT NULL,
-    prefix character varying
+    prefix character varying,
+    paypal_button character varying
 );
 
 
@@ -1187,6 +1228,13 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 --
 
 ALTER TABLE ONLY beneficiaries ALTER COLUMN id SET DEFAULT nextval('beneficeries_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY campaigns ALTER COLUMN id SET DEFAULT nextval('campaigns_id_seq'::regclass);
 
 
 --
@@ -1328,6 +1376,14 @@ ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regcl
 
 ALTER TABLE ONLY ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY campaigns
+    ADD CONSTRAINT campaigns_pkey PRIMARY KEY (id);
 
 
 --
@@ -1850,6 +1906,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20161011222354'),
 ('20161012080600'),
 ('20161106200834'),
-('20161106201642');
+('20161106201642'),
+('20170416185534');
 
 

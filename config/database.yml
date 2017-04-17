@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: elephant_charge_development
+  database: elephant_charge
   username: elephant_charge
   password: <%= ENV['ELEPHANTCHARGE_DATABASE_PASSWORD'] %>
   host: 127.0.0.1
@@ -60,7 +60,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: elephant_charge_test
+  database: elephant_charge
   username: elephant_charge
   password: <%= ENV['ELEPHANTCHARGE_DATABASE_PASSWORD'] %>
   host: 127.0.0.1
