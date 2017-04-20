@@ -1200,7 +1200,8 @@ CREATE TABLE teams (
     ref character varying(25),
     tier integer DEFAULT 0 NOT NULL,
     prefix character varying,
-    paypal_button character varying
+    paypal_button character varying,
+    facebook character varying
 );
 
 
@@ -1887,7 +1888,7 @@ ALTER TABLE ONLY entries
 
 SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES
+INSERT INTO "schema_migrations" (version) VALUES
 ('20161003193839'),
 ('20161003195041'),
 ('20161004045039'),
@@ -1907,6 +1908,8 @@ INSERT INTO schema_migrations (version) VALUES
 ('20161012080600'),
 ('20161106200834'),
 ('20161106201642'),
-('20170416185534');
+('20170416185534'),
+('20170420143537'),
+('20170420143647');
 
 
