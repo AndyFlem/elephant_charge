@@ -1201,7 +1201,8 @@ CREATE TABLE teams (
     tier integer DEFAULT 0 NOT NULL,
     prefix character varying,
     paypal_button character varying,
-    facebook character varying
+    facebook character varying,
+    email character varying
 );
 
 
@@ -1911,6 +1912,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170416185534'),
 ('20170420143537'),
 ('20170420143647'),
-('20170421071722');
+('20170421071722'),
+('20170421101324'),
+('20170421101356'),
+('20170421101651');
 
 
