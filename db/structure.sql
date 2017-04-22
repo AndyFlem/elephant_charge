@@ -1151,7 +1151,8 @@ ALTER SEQUENCE legs_id_seq OWNED BY legs.id;
 
 CREATE TABLE makes (
     id integer NOT NULL,
-    name character varying
+    name character varying,
+    ref character varying
 );
 
 
@@ -1889,7 +1890,7 @@ ALTER TABLE ONLY entries
 
 SET search_path TO "$user", public;
 
-INSERT INTO "schema_migrations" (version) VALUES
+INSERT INTO schema_migrations (version) VALUES
 ('20161003193839'),
 ('20161003195041'),
 ('20161004045039'),
@@ -1915,6 +1916,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170421071722'),
 ('20170421101324'),
 ('20170421101356'),
-('20170421101651');
+('20170421101651'),
+('20170421134410'),
+('20170422065538'),
+('20170422065712');
 
 
