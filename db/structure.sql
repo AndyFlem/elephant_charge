@@ -835,7 +835,8 @@ CREATE TABLE photos (
     aspect double precision,
     is_car boolean,
     faces integer[],
-    faces_count integer DEFAULT 0
+    faces_count integer DEFAULT 0,
+    views integer
 );
 
 
@@ -1920,6 +1921,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170421134410'),
 ('20170422065538'),
 ('20170422065712'),
-('20170422130447');
+('20170422130447'),
+('20170423182021');
 
 
