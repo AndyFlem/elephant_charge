@@ -87,8 +87,8 @@ class PhotosController < ApplicationController
 
   def show
     @photo=Photo.find(params[:id])
-    @faces=@photo.faces
-    @face_bounds=@photo.faces_bounds
+    #@faces=@photo.faces
+    #@face_bounds=@photo.faces_bounds
 
   end
 end
