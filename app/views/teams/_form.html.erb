@@ -34,10 +34,15 @@
     <div class="form-group row">
       <%= f.label "Paypal button HTML", {class: 'col-xs-1 col-form-label'} %>
       <div class="col-xs-6">
-        <%= f.text_field :paypal_button, {class: 'form-control',style:'line-height:5em;'} %>
+        <%= f.text_area :paypal_button, {cols: "30", rows: "10",class: 'form-control'} %>
       </div>
     </div>
-
+    <div class="form-group row">
+      <%= f.label "Team text", {class: 'col-xs-1 col-form-label'} %>
+      <div class="col-xs-6">
+        <%= f.text_area :teamtext, {cols: "30", rows: "10",class: 'form-control'} %>
+      </div>
+    </div>
       <%= f.submit ( f.object.new_record? ? "Create" : "Update"), class: "btn btn-primary" %>
       <%= link_to 'Cancel', teams_path, class: "btn btn-primary" %>
 
