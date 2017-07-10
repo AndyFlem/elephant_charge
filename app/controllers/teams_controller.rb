@@ -79,6 +79,6 @@ class TeamsController < ApplicationController
 
   private
   def team_params
-    params.require(:team).permit(:name,:captain,:ref,:badge,:paypal_button,:facebook,:teamtext)
+    params.require(:team).permit(:name,:captain,:ref,:badge,:paypal_button,:facebook)
   end
 end
