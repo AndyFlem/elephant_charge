@@ -1204,8 +1204,7 @@ CREATE TABLE teams (
     prefix character varying,
     paypal_button character varying,
     facebook character varying,
-    email character varying,
-    teamtext character varying
+    email character varying
 );
 
 
@@ -1924,7 +1923,6 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170422065712'),
 ('20170422130447'),
 ('20170423182021'),
-('20170506094432'),
-('20170605184227');
+('20170506094432');
 
 
