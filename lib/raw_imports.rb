@@ -1,8 +1,35 @@
 require 'nokogiri'
 require 'csv'
+require 'tiny_tds'
 include GpsProcessor
 
 module RawImports
+
+  def self.geotab_vehicles()
+    client = TinyTds::Client.new username: 'sa', password: 'extramild20',
+                                 host: '10.0.2.2', port: 1433,
+                                 database: 'GEOTAB1', azure:false
+    results = client.execute("SELECT iID,sDescription FROM Vehicle order by sDescription")
+
+    results.collect{|p| [p["sDescription"],p["iID"]]}
+  end
+
+  def self.import_geotab(entry,iVehicleID)
+    entry.reset_raw!
+    client = TinyTds::Client.new username: 'sa', password: 'extramild20',
+                                 host: '10.0.2.2', port: 1433,
+                                 database: 'GEOTAB1', azure:false
+
+    qry="SELECT iID,CONVERT(VARCHAR(33), dtDateTime, 127)+'Z' AS sDateTime,fLatitude,fLongitude FROM GPSData WHERE iVehicleID=" + iVehicleID.to_s + " ORDER BY dtDateTime"
+    results = client.execute(qry)
+
+
+    points=results.collect{|c| [c["fLatitude"],c["fLongitude"],Time.parse(c["sDateTime"])]}
+
+    add_raw(entry,points)
+    GpsProcessor.process_raw(entry)
+  end
+
 
   def import_historic(entry,teamname)
     entry.reset_raw!

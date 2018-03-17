@@ -41,7 +41,9 @@
   <%= form_tag({action: :import}, multipart: true) do %>
       <div class="form-group">
         <%= file_field_tag 'gpxfile' %>
-        <%= select_tag "historic_team", options_for_select(@historicteams), {:style => 'width:200px;', :class => 'form-control', :include_blank => '-- select --'} %>
+        <!--<%= select_tag "historic_team", options_for_select(@historicteams), {:style => 'width:200px;', :class => 'form-control', :include_blank => '-- select --'} %>-->
+        <%= select_tag "geotab_vehicle", options_for_select(@geotabvehicles), {:style => 'width:200px;', :class => 'form-control', :include_blank => '-- select --'} %>
+
       </div>
       <div class="form-group">
         <%= submit_tag "Import", class: "btn btn-primary btn-sm" %>

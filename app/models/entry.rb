@@ -120,9 +120,11 @@ class Entry < ApplicationRecord
       end
     end
 
+    update_tsetse_distances!
+
     self.save!
 
-    update_tsetse_distances!
+
 
   end
 
@@ -139,7 +141,7 @@ class Entry < ApplicationRecord
     else
       self.dist_tsetse2=nil
     end
-    self.save!
+    #self.save!
   end
 
   def result

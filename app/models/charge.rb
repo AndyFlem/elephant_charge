@@ -41,29 +41,56 @@ class Charge < ApplicationRecord
   end
 
 
-  def self.awards ref
+
+  def award_winner ref
     case ref
       when :net_distance
-        "Country Choice Trophy"
+        self.entries.where('position_net_distance=1').first
       when :raised
-        "Sausage Tree Trophy"
+        self.entries.where('position_raised=1').first
       when :distance
-        "Castle Fleming Trophy"
+        self.entries.where('position_distance=1').first
       when :gauntlet
-        "Bowden Trophy"
+        self.entries.where('position_gauntlet=1').first
       when :tsetse1
-        "Sanctuary Trophy"
+        self.entries.where('position_tsetse1=1').first
       when :tsetse2
-        "Khal Amazi Trophy"
+        self.entries.where('position_tsetse2=1').first
       when :ladies
-        "Silky Cup"
+        self.entries.where('position_ladies=1').first
       when :bikes
-        "Dean Cup"
-      when :spirit
-        "Rhino Charge Trophy"
+        self.entries.where('position_bikes=1').first
+      when :new
+        self.entries.where('position_newcomer=1').first
+      when :international
+        self.entries.where('position_international=1').first
       else
-        ''
+        nil
     end
+  end
+
+  def self.awards_list
+    {
+        :net_distance=>['Country Choice Trophy','Shortest Net Distance'],
+        :raised=>['Sausage Tree Trophy','Highest Sponsorship Raised'],
+        :distance=>['Castle Fleming Trophy','Shortest Overall Distance'],
+        :gauntlet=>['Bowden Trophy','Shortest Gauntlet Distance'],
+        :tsetse1=>['Sanctuary Trophy','Shortest Distance on Tsetse Line 1'],
+        :tsetse2=>['Khal Amazi Trophy','Shortest Distance on Tsetse Line 2'],
+        :ladies=>['Silky Cup','Shortest Distance by a Ladies Team'],
+        :new=>['','Shortest Distance New Team'],
+        :international=>['','Shortest Distance International Team'],
+        :bikes=>['Dean Cup','Shortest Distance by a Bike Team'],
+        :spirit=>['Rhino Charge Trophy','Spirit of the Charge']
+
+    }
+  end
+
+  def self.awards ref
+    self.awards_list[ref][0].html_safe
+  end
+  def self.awards_desc ref
+    self.awards_list[ref][1].html_safe
   end
 
 
@@ -140,7 +167,7 @@ class Charge < ApplicationRecord
     end
 
     #gauntlet
-    entries=self.entries.order(result_gauntlet_guards: :desc, dist_withpentalty_gauntlet: :asc, car_no: :asc)
+    entries=self.entries.where(is_bikes: false).order(result_gauntlet_guards: :desc, dist_withpentalty_gauntlet: :asc, car_no: :asc)
     entries.each_with_index do |p,i|
       p.position_gauntlet=i+1
       p.save!
@@ -168,7 +195,7 @@ class Charge < ApplicationRecord
     end
 
     #position_newcomer
-    entries=self.entries.where(is_newcomer: true).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
+    entries=self.entries.where(is_newcomer: true, is_bikes: false).order(result_guards: :desc, dist_competition: :asc, car_no: :asc)
     entries.each_with_index do |p,i|
       p.position_newcomer=i+1
       p.save!
@@ -181,10 +208,15 @@ class Charge < ApplicationRecord
   def update_tsetse_positions!
 
       unless self.tsetse1_leg.nil?
-        entrylegs1=self.tsetse1_leg.entry_legs.order(distance_m: :asc)
+        pos=1
+        entrylegs1=self.tsetse1_leg.entry_legs.order(distance_m: :asc)#
+
         entrylegs1.each_with_index do |p,i|
-          p.entry.position_tsetse1=i+1
-          p.entry.save!
+          unless p.entry.is_bikes
+            p.entry.position_tsetse1=pos
+            p.entry.save!
+            pos+=1
+          end
         end
       end
 

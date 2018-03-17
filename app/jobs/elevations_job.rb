@@ -15,7 +15,7 @@ class ElevationsJob< ActiveJob::Base
 
       req+=points.map {|p| h.number_with_precision(p.location.y,precision:7) + ',' + h.number_with_precision(p.location.x,precision:7)}.join('|')
 
-      req+='&key=' + 'AIzaSyDJPh4R_01s3cOxGqcB6GZfpsPrhSEIrtk'
+      req+='&key=' + 'AIzaSyBlq7bI5FV9UjOPKJUftrkwV6QF8JULoCc' #AIzaSyDJPh4R_01s3cOxGqcB6GZfpsPrhSEIrtk'
       puts(req)
       uri = URI(req)
       res = Net::HTTP.get(uri)

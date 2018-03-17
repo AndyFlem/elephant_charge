@@ -3,6 +3,15 @@ xml.kml do
   xml.Document do
     xml.name(@charge.name)
 
+    xml.Style(id: 'cab') do
+      xml.IconStyle do
+        xml.scale(0.7)
+        xml.Icon do
+          xml.href('http://maps.google.com/mapfiles/kml/shapes/cabs.png')
+        end
+      end
+    end
+
     xml.Folder do
       xml.name('Checkpoints')
       xml.visibility(1)

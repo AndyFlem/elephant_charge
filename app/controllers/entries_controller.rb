@@ -41,6 +41,8 @@ class EntriesController < ApplicationController
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
     @entry.reset_clean!
+    #@entry.reset_raw!
+
     redirect_to charge_entry_path @entry.charge,@entry
   end
 
@@ -82,9 +84,13 @@ class EntriesController < ApplicationController
   def import
     @charge = Charge.find(params[:charge_id])
     @entry = @charge.entries.find(params[:id])
-    unless params[:historic_team]==''
-      RawImports.import_historic(@entry,params[:historic_team])
+    #unless params[:historic_team]==''
+    #  RawImports.import_historic(@entry,params[:historic_team])
+    #end
+    unless params[:geotab_vehicle]==''
+      RawImports.import_geotab(@entry,params[:geotab_vehicle])
     end
+
     unless params[:gpxfile].nil?
       uploaded_io = params[:gpxfile]
       RawImports.import_gpx(@entry,uploaded_io)
@@ -100,6 +106,8 @@ class EntriesController < ApplicationController
 
     teams=ActiveRecord::Base.connection.exec_query("SELECT DISTINCT teamname FROM gps_historic WHERE charge=#{@charge.ref}")
     @historicteams=teams.rows.collect{|p| [p[0],p[0]]}
+
+    @geotabvehicles=RawImports.geotab_vehicles
 
     @photos=@entry.photos
   end

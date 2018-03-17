@@ -15,20 +15,23 @@ module GpsProcessor
       end
       c.leg_distance_m=leg_dist
 
-      if c.elevation<elev_min
-        elev_min=c.elevation
-      end
-      if c.elevation>elev_max
-        elev_max=c.elevation
-      end
-      unless last_elevation==nil
-        if c.elevation>last_elevation
-          ascent+=(c.elevation-last_elevation)
-        else
-          descent+=(last_elevation-c.elevation)
+      unless c.elevation==nil
+        if c.elevation<elev_min
+          elev_min=c.elevation
         end
+        if c.elevation>elev_max
+          elev_max=c.elevation
+        end
+        unless last_elevation==nil
+          if c.elevation>last_elevation
+            ascent+=(c.elevation-last_elevation)
+          else
+            descent+=(last_elevation-c.elevation)
+          end
+        end
+        last_elevation=c.elevation
       end
-      last_elevation=c.elevation
+
       c.entry_leg=entry_leg
       c.save!
     end

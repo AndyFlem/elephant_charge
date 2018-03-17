@@ -1,9 +1,43 @@
+<div class="col-sm-9" style="margin-bottom: 10px;">
+  <div class="heading-bar">
+    <h3><%= @charge.name %> <%= @charge.location%></h3>
+  </div>
+  <h5><%= @charge.entries.count %> entries raised <b>$<%= number_with_precision(@charge.raised_dollars, precision: 0,delimiter: ',') %></b>
+  for conservation in Zambia.</h5>
+  <br>
+  <h5>The Spirit of the Charge was won by <b><%= @charge.spirit_name%></b> <%= @charge.spirit_description%></h5>
+  <br>
+  <h5>The Properly Shafted award was won by <b><%= @charge.shafted_entry.name%></b></h5>
+  <% if @charge.best_guard %>
+      <br>
+
+      <h5> The award for the best checkpoint was given to <b><%= @charge.best_guard.sponsor.name%></b></h5>
+  <% end %>
+
+</div>
+
+<div class="col-sm-9" style="margin-bottom: 10px;">
+  <div class="heading-bar">
+    <h3>Awards</h3>
+  </div>
+  <% Charge.awards_list.each do |aw| %>
+    <h5>
+      <% if @charge.award_winner(aw[0]) %>
+        <%= aw[1][1]%>
+        <% if aw[1][0]!='' %> - <i><%= aw[1][0]%></i><% end %>
+        : <b><%=@charge.award_winner(aw[0]).name %></b><br>
+      <% end %>
+  <% end %>
+  </h5>
+</div>
+
+
 <div class="col-sm-6">
   <div class="heading-bar">
-    <h3>Pledge</h3>
+    <h4>Pledge</h4>
   </div>
   <table class="table table-sm">
-    <thead class="thead-inverse">
+    <thead class="sdf">
     <tr>
       <th>Position</th>
       <th>Team No</th>
@@ -22,15 +56,25 @@
           <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha/@charge.exchange_rate, precision: 0,delimiter: ',') %></td>
         </tr>
     <% end %>
+    <thead class="sdf">
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>K<%= number_with_precision(@charge.raised_kwacha, precision: 0,delimiter: ',') %></th>
+        <th>$<%= number_with_precision(@charge.raised_dollars, precision: 0,delimiter: ',') %></th>
+      </tr>
+
+    </thead>
   </table>
 </div>
 
 <div class="col-sm-7">
   <div class="heading-bar">
-    <h3>Net Distance</h3>
+    <h4>Net Distance</h4>
   </div>
   <table class="table table-sm">
-    <thead class="thead-inverse">
+    <thead class="sdf">
     <tr>
       <th>Position</th>
       <th>Team No</th>
@@ -63,13 +107,51 @@
   </table>
 </div>
 
+<div class="col-sm-7">
+  <div class="heading-bar">
+    <h4>Net Distance - Bike Team</h4>
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Kwacha</th>
+      <th>Dollars</th>
+      <th>Competition Distance</th>
+      <th>Distance for Pledge</th>
+      <th>Net Distance</th>
+    </tr>
+    </thead>
+
+    <% @net_bikes.each do |entry| %>
+        <tr>
+          <td><%= entry.position_net_bikes%></td>
+          <td><%= entry.car_no %> </td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td>K<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_kwacha, precision: 0, delimiter: ',') %></td>
+          <td>$<%= entry.raised_kwacha.nil? ? '  -' : number_with_precision(entry.raised_dollars, precision: 0, delimiter: ',') %></td>
+          <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
+          <% if entry.dist_net.nil? %>
+              <td>n/a</td>
+              <td>n/a</td>
+          <% else %>
+              <td><%= number_with_precision(-entry.raised_kwacha*entry.charge.m_per_kwacha/1000, precision: 2) %>km</td>
+              <td><%= number_with_precision(entry.dist_net/1000.0, precision: 2) %>km</td>
+          <% end %>
+        </tr>
+    <% end %>
+  </table>
+</div>
+
 
 <div class="col-sm-9">
   <div class="heading-bar">
-    <h3>Shortest Distance</h3>
+    <h4>Shortest Distance</h4>
   </div>
   <table class="table table-sm">
-    <thead class="thead-inverse">
+    <thead class="sdf">
     <tr>
       <th>Position</th>
       <th>Team No</th>
@@ -84,6 +166,7 @@
     </thead>
 
     <% @shortest_dist.each do |entry| %>
+      <% if entry.result_state_ref=='PROCESSED' %>
         <tr>
           <td><%= entry.position_distance %></td>
           <td><%= entry.car_no %> </td>
@@ -97,15 +180,132 @@
           <td><%= number_with_precision(entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
         </tr>
+        <% else %>
+          <% if entry.result_state_ref=='NOSHOW' %>
+            <tr>
+              <td></td>
+              <td><%= entry.car_no %> </td>
+              <td><%= link_to entry.name,team_path(entry.team) %></td>
+              <td>No Start</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          <% else %>
+            <tr>
+              <td></td>
+              <td><%= entry.car_no %> </td>
+              <td><%= link_to entry.name,team_path(entry.team) %></td>
+              <td>No GPS</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          <% end %>
+        <% end %>
     <% end %>
   </table>
 </div>
-<div class="col-sm-7">
+
+
+<div class="col-sm-9">
   <div class="heading-bar">
-    <h3>Gauntlet</h3>
+    <h4>Shortest Distance - Ladies Team</h4>
   </div>
   <table class="table table-sm">
-    <thead class="thead-inverse">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Result</th>
+      <th>Competition Distance</th>
+    </tr>
+    </thead>
+
+    <% @shortest_dist_ladies.each do |entry| %>
+        <tr>
+          <td><%= entry.position_ladies%></td>
+          <td><%= entry.car_no %> </td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td>
+            <%= entry.result %>
+          </td>
+          <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="col-sm-9">
+  <div class="heading-bar">
+    <h4>Shortest Distance - Bike Team</h4>
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Result</th>
+      <th>Competition Distance</th>
+    </tr>
+    </thead>
+
+    <% @shortest_dist_bikes.each do |entry| %>
+        <tr>
+          <td><%= entry.position_bikes %></td>
+          <td><%= entry.car_no %> </td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td>
+            <%= entry.result %>
+          </td>
+          <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="col-sm-9">
+  <div class="heading-bar">
+    <h4>Shortest Distance - New Team</h4>
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Result</th>
+
+      <th>Competition Distance</th>
+    </tr>
+    </thead>
+
+    <% @shortest_dist_new.each do |entry| %>
+        <tr>
+          <td><%= entry.position_newcomer%></td>
+          <td><%= entry.car_no %> </td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td>
+            <%= entry.result %>
+          </td>
+          <td><%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km</td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+
+
+<div class="col-sm-7">
+  <div class="heading-bar">
+    <h4>Gauntlet</h4>
+    <%=@gauntlet_dist%>
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
     <tr>
       <th>Position</th>
       <th>Team No</th>
@@ -131,35 +331,59 @@
   </table>
 </div>
 
-<% @tsetselegs.each do |leg| %>
-    <div class="col-sm-7">
-      <div class="heading-bar">
-        <h3><%= leg.guard1.sponsor.name %> to <%= leg.guard2.sponsor.name %> <%= leg.is_gauntlet ? '(Gauntlet)' : '' %><%= leg.is_tsetse ? '(Tsetse line)' : '' %></h3>
-        <%=number_with_precision( leg.distance_m/1000.0, precision: 2) %>km
-      </div>
-      <table class="table table-sm">
-        <thead class="thead-inverse">
+<div class="col-sm-7">
+  <div class="heading-bar">
+    <h4>Tsetse line 1 - <%= @charge.tsetse1_leg.guard1.sponsor.name %> to <%= @charge.tsetse1_leg.guard2.sponsor.name %></h4>
+    <%=number_with_precision( @charge.tsetse1_leg.distance_m/1000.0, precision: 2) %>km
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Distance</th>
+      <th>Multiple</th>
+    </tr>
+    </thead>
+
+    <% @tsetse1.each do |entry| %>
         <tr>
-          <th>Position</th>
-          <th>Team No</th>
-          <th>Team</th>
-          <th>Distance</th>
-          <th>Multiple</th>
-          <th>Time</th>
+          <td><%= entry.position_tsetse1 %></td>
+          <td><%= entry.car_no %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td><%= number_with_precision(entry.dist_tsetse1/1000.0, precision: 2) %>km</td>
+          <td><%= number_with_precision(entry.dist_tsetse1 / parse_float(@charge.tsetse1_leg.distance_m,false),precision:2) %>x</td>
+          <td></td>
         </tr>
-        </thead>
+    <% end %>
+  </table>
+</div>
+<div class="col-sm-7">
+  <div class="heading-bar">
+    <h4>Tsetse line 2 - <%= @charge.tsetse2_leg.guard1.sponsor.name %> to <%= @charge.tsetse2_leg.guard2.sponsor.name %></h4>
+    <%=number_with_precision( @charge.tsetse2_leg.distance_m/1000.0, precision: 2) %>km
+  </div>
+  <table class="table table-sm">
+    <thead class="sdf">
+    <tr>
+      <th>Position</th>
+      <th>Team No</th>
+      <th>Team</th>
+      <th>Distance</th>
+      <th>Multiple</th>
+    </tr>
+    </thead>
 
-        <% leg.entry_legs.order(distance_m: :asc).each_with_index do |entry_leg,i| %>
-            <tr>
-              <td><%= i+1 %></td>
-              <td><%= entry_leg.entry.car_no %></td>
-              <td><%= link_to entry_leg.entry.name,team_path(entry_leg.entry.team) %></td>
-              <td><%= number_with_precision(entry_leg.distance_m/1000.0, precision: 2) %>km</td>
-              <td><%= number_with_precision(entry_leg.distance_m / parse_float(leg.distance_m,false),precision:2) %>x</td>
-              <td><%= entry_leg.elapsed_s/60%> min</td>
-            </tr>
-        <% end %>
-
-      </table>
-    </div>
-<% end %>
+    <% @tsetse2.each do |entry| %>
+        <tr>
+          <td><%= entry.position_tsetse2 %></td>
+          <td><%= entry.car_no %></td>
+          <td><%= link_to entry.name,team_path(entry.team) %></td>
+          <td><%= number_with_precision(entry.dist_tsetse2/1000.0, precision: 2) %>km</td>
+          <td><%= number_with_precision(entry.dist_tsetse2 / parse_float(@charge.tsetse2_leg.distance_m,false),precision:2) %>x</td>
+          <td></td>
+        </tr>
+    <% end %>
+  </table>
+</div>
