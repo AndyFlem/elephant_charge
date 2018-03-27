@@ -3,7 +3,7 @@ class MailchimpJob < ActiveJob::Base
 
   def perform
     gibbon = Gibbon::Request.new
-    cs=gibbon.campaigns.retrieve(params: {"list_id":"6bc75fe5f2","status":"sent","sort_field":"send_time","sort_dir":"desc","count":"100"})
+    cs=gibbon.campaigns.retrieve(params: {"list_id":"25eacd4a95","status":"sent","sort_field":"send_time","sort_dir":"desc","count":"100"})
 
     camps=cs.body["campaigns"]
 
