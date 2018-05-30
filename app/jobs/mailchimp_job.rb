@@ -2,7 +2,7 @@ class MailchimpJob < ActiveJob::Base
   queue_as :default
 
   def perform
-    gibbon = Gibbon::Request.new
+    gibbon = Gibbon::Request.new(api_key: "1acaa7c449a8bfb78ffa6fca4c6e5821-us12")
     cs=gibbon.campaigns.retrieve(params: {"list_id":"25eacd4a95","status":"sent","sort_field":"send_time","sort_dir":"desc","count":"100"})
 
     camps=cs.body["campaigns"]
