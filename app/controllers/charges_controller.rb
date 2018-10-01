@@ -143,6 +143,11 @@ class ChargesController < ApplicationController
     @newgrant=@charge.grants.new()
   end
 
+  def scrut
+    @charge = Charge.find(params[:id])
+    @entries=@charge.entries.includes([{:car => :make},:team]).order(car_no: :asc)
+  end
+
   def grantspost
     @charge = Charge.find(params[:id])
     grants_params=params[:post][:grant]

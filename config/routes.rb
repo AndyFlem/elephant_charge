@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       post 'recalc_distances'
       post 'generate_xlsx'
       post 'generate_kml'
+      get 'scrut'
     end
     resources :guards
     resources :entries do

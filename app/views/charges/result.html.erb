@@ -7,7 +7,9 @@
   <br>
   <h5>The Spirit of the Charge was won by <b><%= @charge.spirit_name%></b> <%= @charge.spirit_description%></h5>
   <br>
+  <% if @charge.shafted_entry %>
   <h5>The Properly Shafted award was won by <b><%= @charge.shafted_entry.name%></b></h5>
+    <% end %>
   <% if @charge.best_guard %>
       <br>
 

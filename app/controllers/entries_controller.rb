@@ -107,7 +107,7 @@ class EntriesController < ApplicationController
     teams=ActiveRecord::Base.connection.exec_query("SELECT DISTINCT teamname FROM gps_historic WHERE charge=#{@charge.ref}")
     @historicteams=teams.rows.collect{|p| [p[0],p[0]]}
 
-    @geotabvehicles=[]#RawImports.geotab_vehicles
+    @geotabvehicles=RawImports.geotab_vehicles
 
     @photos=@entry.photos
   end

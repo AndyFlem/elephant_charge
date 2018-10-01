@@ -1,0 +1,80 @@
+<div class="col-sm-12">
+
+    <table class="table  table-bordered">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Team No</th>
+        <th scope="col">Name</th>
+        <th scope="col">-------------------------------</th>
+        <th scope="col">-------------------------------</th>
+        <th scope="col">-------------------</th>
+        <th scope="col">-------------------</th>
+
+      </tr>
+      </thead>
+      <% @entries.each_with_index do |entry,i|%>
+        <tr>
+          <td><%= i %></td>
+          <td><%= entry.car_no %></td>
+          <td><%= entry.name %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+
+        </tr>
+      <% end %>
+    </table>
+
+  <P style="page-break-before: always">
+
+    <% @entries.each_with_index do |entry,i|%>
+<% if i>0 %>
+    <P style="page-break-before: always">
+<% end %>
+  <div class="col-sm-12 heading-bar">
+    <h3><%= entry.car_no %> - <%= entry.name %></h3>
+  </div>
+
+    <div class="col-sm-6">
+      <table class="table">
+        <tr><td><h5>Team Captain: </h5></td><td><%= entry.captain%></td></tr>
+        <tr><td><h5>Team Members: </h5></td><td><%= entry.members%></td></tr>
+        <tr><td><h5>&nbsp; </h5></td><td>&nbsp;</td></tr>
+
+        <tr><td><h5>Car Name: </h5></td><td><%= entry.car.name%></td></tr>
+        <tr><td><h5>Car Make: </h5></td><td><% if entry.car.make %><%= entry.car.make.name %><% end %></td></tr>
+        <tr><td><h5>Car Model: </h5></td><td><%= entry.car.car_model%></td></tr>
+        <tr><td><h5>Car Year: </h5></td><td><%= entry.car.year%></td></tr>
+        <tr><td><h5>Car Colour: </h5></td><td><%= entry.car.colour%></td></tr>
+        <tr><td><h5>New Team</h5></td><td><%= if entry.is_newcomer then 'YES' else 'NO' end %></td></tr>
+        <tr><td><h5>Ladies Team</h5></td><td><%= if entry.is_ladies then 'YES' else 'NO' end %></td></tr>
+        <tr><td><h5>International Team</h5></td><td><%= if entry.is_international then 'YES' else 'NO' end %></td></tr>
+        <tr><td><h5>Bike Team</h5></td><td><%= if entry.is_bikes then 'YES' else 'NO' end %></td></tr>
+      </table>
+    </div>
+    <div class="col-sm-6">
+      <table class="table">
+        <tr><td><h5>Front Seat Belts</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Fire Extibguisher</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>First Aid Kit</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Drinking Water</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Fly Spray</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Number Stickers</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Sponsor Stickers</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Pledge Submitted</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td><h5>GPS Serial</h5></td><td></td></tr>
+        <tr><td></td><td></td></tr>
+        <tr><td><h5>Harnesses</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+        <tr><td><h5>Roll Cage</h5></td><td><span style="color: #999999;font-size: larger">yes&nbsp;&nbsp;/&nbsp;&nbsp;no</span></td></tr>
+      </table>
+    </div>
+
+
+
+
+<% end %>
+
+</div>
