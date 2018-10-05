@@ -9,13 +9,11 @@
 <table class="table table-sm  table-striped sortable">
   <thead class="thead-inverse">
   <tr>
+    <th></th>
     <th>Name</th>
     <th>Captain</th>
-    <th>Car</th>
-    <th>Website Ref</th>
-    <th>Badge</th>
-    <th>Paypal Button</th>
     <th>Charges</th>
+    <th>Completed</th>
     <th>Kwacha</th>
     <th>Dollars</th>
     <th></th>
@@ -25,17 +23,21 @@
   <%
     sum_k=0
     sum_d=0
-    @teams.each do |team|
+    @teams.each_with_index do |team,i|
       sum_d+=team.raised_dollars
       sum_k+=team.raised_kwacha
   %>
       <tr>
+        <td><%= i+1%></td>
         <td><%= team.entries.count>0 ? link_to(team.name, team_path(team)) : team.name%></td>
         <td><%= team.captain %></td>
-        <td><%= team.ref %></td>
-        <td><%= team.badge.exists? ? 'Yes':'No' %></td>
-        <td><%= team.paypal_button ? 'Yes':'No' %></td>
-        <td><%= team.entries.count %></td>
+        <td><%= team.entries_complete.count %></td>
+        <td>
+          <%= team.finish_count %>
+          <% if team.entries_complete.count>0 %>
+            &nbsp;(<%= number_with_precision(Float(team.finish_count)/team.entries_complete.count*100,precision:0)%>%)
+          <% end %>
+        </td>
 
         <td>K<%= number_with_precision(team.raised_kwacha, precision: 0, delimiter: ',') %></td>
         <td>$<%= number_with_precision(team.raised_dollars, precision: 0, delimiter: ',') %></td>
@@ -46,6 +48,8 @@
       </tr>
   <% end %>
   <tr class="bg-inverse">
+    <td></td>
+    <td></td>
     <td></td>
     <td></td>
     <td></td>

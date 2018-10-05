@@ -1,16 +1,13 @@
 <% @entries.each do |entry| %>
     <div class="col-sm-8">
-      <div class="heading-bar" style="<%= entry.result_guards<11 ? 'background-color:#f2dede; color:#818a91;' : 'background-color:#dff0d8; color:#818a91;'%>">
-        <h3><%= entry.car_no %>. <%= entry.team.name %>
-        </h3>
-        <% if entry.result_guards==11 %>
-            Completed
-        <% else %>
-            DNF <%= entry.result_guards %>
-        <% end %>
-        <br/>
-        <%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km (<%= number_with_precision(entry.dist_real/1000.0, precision: 2) %>km)
-
+      <div class="heading-bar" style="<%= entry.result_description=='Complete' ? 'background-color:#dff0d8; color:#818a91;' : 'background-color:#f2dede; color:#818a91;'%>">
+        <h3><%= entry.car_no %>. <%= entry.name %></h3>
+        <p style="margin-bottom: 5px;"><%= entry.car.description %></p>
+        <p style="margin-bottom: 5px;">
+        <%= entry.result_description %>,
+        <% if entry.dist_competition %>
+        Distance: <%= number_with_precision(entry.dist_competition/1000.0, precision: 2) %>km
+        <% end  %></p>
       </div>
       <table class="table table-sm">
         <thead class="thead-inverse">
@@ -18,7 +15,7 @@
           <th>No.</th>
           <th>From</th>
           <th>To</th>
-          <th>Gauntlet</th>
+          <th></th>
           <th>Out</th>
           <th>In</th>
           <th>Time</th>
@@ -31,7 +28,7 @@
               <td><%= entry_leg.leg_number %></td>
               <td><%= entry_leg.checkin1.guard.name %></td>
               <td><%= entry_leg.checkin2.guard.name %></td>
-              <td><%= entry_leg.leg.is_gauntlet ? 'yes' : '' %></td>
+              <td><%= entry_leg.leg.is_gauntlet ? 'gauntlet' : '' %><%= entry_leg.leg.is_tsetse ? 'tsetse' : '' %></td>
               <td><%= formattime(entry_leg.checkin1.checkin_timestamp) %></td>
               <td><%= formattime(entry_leg.checkin2.checkin_timestamp) %></td>
               <td><%= entry_leg.elapsed_s/60 %>min</td>

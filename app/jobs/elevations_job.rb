@@ -7,15 +7,17 @@ class ElevationsJob< ActiveJob::Base
   def perform
     h=Helpers.new
 
-    points=GpsClean.where("elevation is null").order(:id).limit(30)
+    points=GpsClean.where("elevation is null").order(id: :desc).limit(200)
 
-    while points.count>0
+    i=0
 
+    while points.count>0 and i<100
+      i=i+1
       req="https://maps.googleapis.com/maps/api/elevation/json?locations="
 
       req+=points.map {|p| h.number_with_precision(p.location.y,precision:7) + ',' + h.number_with_precision(p.location.x,precision:7)}.join('|')
 
-      req+='&key=' + 'AIzaSyBlq7bI5FV9UjOPKJUftrkwV6QF8JULoCc' #AIzaSyDJPh4R_01s3cOxGqcB6GZfpsPrhSEIrtk'
+      req+='&key=AIzaSyANJSGBmelMOFrVk17rq8998UL2QyapfLk'
       puts(req)
       uri = URI(req)
       res = Net::HTTP.get(uri)
@@ -28,7 +30,7 @@ class ElevationsJob< ActiveJob::Base
         points[i].save!
       end
 
-      points=GpsClean.where("elevation is null").order(:id).limit(300)
+      points=GpsClean.where("elevation is null").order(id: :desc).limit(200)
     end
 
 

@@ -9,6 +9,19 @@ class Team < ApplicationRecord
 
   validates :name, presence: true
 
+  def finish_count
+    self.entries.where("result_description='Complete'").count
+  end
+
+  def entries_complete
+    self.entries.includes(:charge).references(:charge).where("charges.state_ref='RESULT'")
+  end
+
+  def entries_incomplete
+    self.entries.includes(:charge).references(:charge).where("charges.state_ref!='RESULT'")
+  end
+
+
   def long_name
     unless self.prefix.blank?
       self.prefix + ' ' + self.name
