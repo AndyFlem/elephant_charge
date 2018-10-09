@@ -9,11 +9,7 @@
     <th>Date</th>
     <th>Teams</th>
     <th>Raised</th>
-    <th>Grant</th>
-    <th>Exchange</th>
-    <th>Raised</th>
     <th>Grants</th>
-    <th></th>
   </tr>
   </thead>
 
@@ -33,23 +29,16 @@
         <td><%= charge.location %></td>
         <td><%= charge.charge_date.strftime("%a %-d %b %Y") %></td>
         <td><%= charge.entries_count %></td>
-        <td>K<%= number_with_precision(charge.raised_kwacha, precision: 0, delimiter: ',')%></td>
-        <td>K<%= number_with_precision(charge.grant_kwacha, precision: 0, delimiter: ',')%></td>
-        <td>K<%= number_with_precision(charge.exchange_rate, precision: 2, delimiter: ',')%></td>
         <td>$<%= number_with_precision(charge.raised_dollars, precision: 0, delimiter: ',')%></td>
         <td>$<%= number_with_precision(charge.grant_dollars, precision: 0, delimiter: ',')%></td>
-        <td><%= link_to 'Result', result_charge_path(charge) %></td>
+
       </tr>
   <% end %>
   <tr class="bg-inverse">
     <td colspan="4"></td>
-    <td>K<%= number_with_precision(raised_sum, precision: 0, delimiter: ',')%></td>
-    <td>K<%= number_with_precision(kgrant_sum, precision: 0, delimiter: ',')%></td>
-    <td></td>
     <td>$<%= number_with_precision(dollar_sum, precision: 0, delimiter: ',')%></td>
     <td>$<%= number_with_precision(grant_sum, precision: 0, delimiter: ',')%></td>
 
-    <td></td>
   </tr>
 </table>
 

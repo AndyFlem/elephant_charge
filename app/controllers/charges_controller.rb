@@ -342,8 +342,8 @@ class ChargesController < ApplicationController
   private
   def charge_params
     params.require(:charge).permit(:name, :charge_date,:location,:map_scale,
-                                   :start_time,:end_time,:entries_expected,:gauntlet_multiplier,
-                                   :exchange_rate, :m_per_kwacha, :guards_expected,
+                                   :start_time,:end_time,:gauntlet_multiplier,
+                                   :exchange_rate, :m_per_kwacha,
                                    :spirit_description,:spirit_name,:spirit_entry_id,
                                    :shafted_entry_id,:shafted_description,:best_guard_id)
   end

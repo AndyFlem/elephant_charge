@@ -27,10 +27,8 @@ class Charge < ApplicationRecord
   validates :name, presence: true
   validates :charge_date, presence: true
   validates :gauntlet_multiplier, numericality: {only_integer: true}
-  validates :entries_expected, numericality: {only_integer: true,allow_nil: true }
   validates :exchange_rate, numericality: {allow_nil: true }
   validates :m_per_kwacha, numericality: {allow_nil: true }
-  validates :guards_expected, numericality: {only_integer: true,allow_nil: false }
 
 
   after_initialize :init
@@ -122,18 +120,6 @@ class Charge < ApplicationRecord
   end
   def end_datetime
     self.charge_date + self.end_time.seconds_since_midnight.seconds
-  end
-
-  def state_description
-    if self.state_ref=="NOT_SETUP"
-      "Not setup"
-    end
-    if self.state_ref=="READY"
-      "Ready to process result"
-    end
-    if self.state_ref=="RESULT"
-      "Result ready"
-    end
   end
 
   def update_positions!
@@ -238,71 +224,15 @@ class Charge < ApplicationRecord
     self.map_scale||=12
     self.guards_count||=0
     self.entries_count||=0
-    self.entries_expected||=0
     self.guards_located_count||=0
     self.state_ref||='NOT_SETUP'
     self.gauntlet_multiplier||=0
     self.m_per_kwacha||=0.5
-    self.guards_expected||=10
   end
 
   def process_updates
     update_counts!
     update_map_center!
-    update_state!
-  end
-
-
-  def update_state!
-
-    state_messages=[]
-    state_ref="RESULT"
-
-    gauntlet_count=self.guards.where(is_gauntlet: true).count
-    if gauntlet_count!=3
-      state_messages<<"Wrong number of gauntlet checkpoints (#{gauntlet_count} of 3)"
-      state_ref="NOT_SETUP"
-    end
-    if self.guards_count!=self.guards_expected
-      state_messages<<"Not all checkpoints defined (#{self.guards_count} of #{self.guards_expected})"
-      state_ref="NOT_SETUP"
-    end
-    if self.guards_located_count!=self.guards_expected
-      state_messages<<"Not all checkpoints located (#{self.guards_located_count} of #{self.guards_expected})"
-      state_ref="NOT_SETUP"
-    end
-    if self.entries_count!=self.entries_expected
-      state_messages<<"No of teams not equal to expected (#{self.entries_count} for #{self.entries_expected} )"
-      state_ref="NOT_SETUP"
-    end
-    if self.start_time.nil?
-      state_messages<<"Start time not defined"
-      state_ref="NOT_SETUP"
-    end
-    if self.end_time.nil?
-      state_messages<<"End time not defined"
-      state_ref="NOT_SETUP"
-    end
-    with_start=0
-    self.entries.each do |entry|
-      with_start+=1 unless entry.start_guard.nil?
-    end
-    if self.entries_count!=with_start
-      state_messages<<"Not all teams have starting CP (#{with_start} of #{self.entries_count} )"
-      state_ref="NOT_SETUP"
-    end
-
-    if state_ref=="RESULT"
-      self.entries.each do |entry|
-        unless entry.result_state_ref=='PROCESSED'
-          state_ref=="READY"
-        end
-      end
-    end
-
-    update_column(:state_ref,state_ref)
-    update_column(:state_messages,state_messages)
-
   end
 
   def update_counts!

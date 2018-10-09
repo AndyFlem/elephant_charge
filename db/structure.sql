@@ -2,13 +2,14 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.6
--- Dumped by pg_dump version 9.5.6
+-- Dumped from database version 9.5.14
+-- Dumped by pg_dump version 9.5.14
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
@@ -41,13 +42,11 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
-SET search_path = public, pg_catalog;
-
 --
 -- Name: ec_chargecentroidfromguards(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_chargecentroidfromguards(chargeid integer) RETURNS text
+CREATE FUNCTION public.ec_chargecentroidfromguards(chargeid integer) RETURNS text
     LANGUAGE sql
     AS $$
 SELECT ST_AsText(st_centroid(st_union(location))) as centroid
@@ -60,7 +59,7 @@ $$;
 -- Name: ec_entries_update_gps_raws_count(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_entries_update_gps_raws_count() RETURNS void
+CREATE FUNCTION public.ec_entries_update_gps_raws_count() RETURNS void
     LANGUAGE sql
     AS $$
 UPDATE entries e 
@@ -74,7 +73,7 @@ $$;
 -- Name: ec_entrylegcreateline(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_entrylegcreateline(entrylegid integer) RETURNS void
+CREATE FUNCTION public.ec_entrylegcreateline(entrylegid integer) RETURNS void
     LANGUAGE sql
     AS $$
 
@@ -99,7 +98,7 @@ $$;
 -- Name: ec_gps_raws_import(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_gps_raws_import(charge_id integer) RETURNS void
+CREATE FUNCTION public.ec_gps_raws_import(charge_id integer) RETURNS void
     LANGUAGE sql
     AS $$
 INSERT INTO gps_raws (entry_id,gps_timestamp,location,source_ref)
@@ -122,7 +121,7 @@ $$;
 -- Name: ec_gpscleanscreateline(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_gpscleanscreateline(entryid integer) RETURNS void
+CREATE FUNCTION public.ec_gpscleanscreateline(entryid integer) RETURNS void
     LANGUAGE sql
     AS $$
 UPDATE 
@@ -149,7 +148,7 @@ $$;
 -- Name: ec_gpscleansupdatecalcs(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_gpscleansupdatecalcs(entryid integer) RETURNS void
+CREATE FUNCTION public.ec_gpscleansupdatecalcs(entryid integer) RETURNS void
     LANGUAGE sql
     AS $$
 
@@ -193,7 +192,7 @@ $$;
 -- Name: ec_gpsrawscreateline(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_gpsrawscreateline(entryid integer) RETURNS void
+CREATE FUNCTION public.ec_gpsrawscreateline(entryid integer) RETURNS void
     LANGUAGE sql
     AS $$
 UPDATE 
@@ -220,7 +219,7 @@ $$;
 -- Name: ec_gpsrawsupdatecalcs(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_gpsrawsupdatecalcs(entryid integer) RETURNS void
+CREATE FUNCTION public.ec_gpsrawsupdatecalcs(entryid integer) RETURNS void
     LANGUAGE sql
     AS $$
 
@@ -267,7 +266,7 @@ $$;
 -- Name: ec_guardcheckinforentry(integer, integer, timestamp without time zone, timestamp without time zone); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_guardcheckinforentry(entryid integer, guardid integer, from_time timestamp without time zone, to_time timestamp without time zone) RETURNS TABLE(guard_id integer, gps_clean_id integer, gps_timestamp timestamp without time zone, dist_m double precision)
+CREATE FUNCTION public.ec_guardcheckinforentry(entryid integer, guardid integer, from_time timestamp without time zone, to_time timestamp without time zone) RETURNS TABLE(guard_id integer, gps_clean_id integer, gps_timestamp timestamp without time zone, dist_m double precision)
     LANGUAGE sql ROWS 1
     AS $$
 
@@ -295,7 +294,7 @@ $$;
 -- Name: ec_guardsdistance(integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_guardsdistance(guard1id integer, guard2id integer) RETURNS double precision
+CREATE FUNCTION public.ec_guardsdistance(guard1id integer, guard2id integer) RETURNS double precision
     LANGUAGE sql
     AS $$
 
@@ -308,7 +307,7 @@ $$;
 -- Name: ec_linesforleg(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_linesforleg(legid integer) RETURNS TABLE(json text, entry_id integer)
+CREATE FUNCTION public.ec_linesforleg(legid integer) RETURNS TABLE(json text, entry_id integer)
     LANGUAGE sql
     AS $$
 SELECT 
@@ -327,7 +326,7 @@ $$;
 -- Name: ec_pointswithinguardforentry(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_pointswithinguardforentry(entryid integer) RETURNS TABLE(guard_id integer, gps_clean_id integer, gps_timestamp timestamp without time zone, dist_m double precision)
+CREATE FUNCTION public.ec_pointswithinguardforentry(entryid integer) RETURNS TABLE(guard_id integer, gps_clean_id integer, gps_timestamp timestamp without time zone, dist_m double precision)
     LANGUAGE sql
     AS $$
 
@@ -353,7 +352,7 @@ $$;
 -- Name: ec_rawlinesnearguard(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION ec_rawlinesnearguard(guardid integer) RETURNS TABLE(json text, entry_id integer)
+CREATE FUNCTION public.ec_rawlinesnearguard(guardid integer) RETURNS TABLE(json text, entry_id integer)
     LANGUAGE sql
     AS $$
 SELECT 
@@ -377,7 +376,7 @@ SET default_with_oids = false;
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE ar_internal_metadata (
+CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
     created_at timestamp without time zone NOT NULL,
@@ -389,7 +388,7 @@ CREATE TABLE ar_internal_metadata (
 -- Name: beneficiaries; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE beneficiaries (
+CREATE TABLE public.beneficiaries (
     id integer NOT NULL,
     name character varying,
     short_name character varying,
@@ -412,7 +411,7 @@ CREATE TABLE beneficiaries (
 -- Name: beneficeries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE beneficeries_id_seq
+CREATE SEQUENCE public.beneficeries_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -424,14 +423,14 @@ CREATE SEQUENCE beneficeries_id_seq
 -- Name: beneficeries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE beneficeries_id_seq OWNED BY beneficiaries.id;
+ALTER SEQUENCE public.beneficeries_id_seq OWNED BY public.beneficiaries.id;
 
 
 --
 -- Name: campaigns; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE campaigns (
+CREATE TABLE public.campaigns (
     id integer NOT NULL,
     mailchimp_id character varying,
     web_id character varying,
@@ -449,7 +448,7 @@ CREATE TABLE campaigns (
 -- Name: campaigns_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE campaigns_id_seq
+CREATE SEQUENCE public.campaigns_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -461,14 +460,14 @@ CREATE SEQUENCE campaigns_id_seq
 -- Name: campaigns_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE campaigns_id_seq OWNED BY campaigns.id;
+ALTER SEQUENCE public.campaigns_id_seq OWNED BY public.campaigns.id;
 
 
 --
 -- Name: cars; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE cars (
+CREATE TABLE public.cars (
     id integer NOT NULL,
     name character varying,
     make_old character varying,
@@ -485,7 +484,7 @@ CREATE TABLE cars (
 -- Name: cars_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE cars_id_seq
+CREATE SEQUENCE public.cars_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -497,18 +496,18 @@ CREATE SEQUENCE cars_id_seq
 -- Name: cars_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE cars_id_seq OWNED BY cars.id;
+ALTER SEQUENCE public.cars_id_seq OWNED BY public.cars.id;
 
 
 --
 -- Name: charge_help_points; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE charge_help_points (
+CREATE TABLE public.charge_help_points (
     id integer NOT NULL,
     name character varying,
     charge_id integer,
-    location geometry(Point,4326)
+    location public.geometry(Point,4326)
 );
 
 
@@ -516,7 +515,7 @@ CREATE TABLE charge_help_points (
 -- Name: charge_help_points_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE charge_help_points_id_seq
+CREATE SEQUENCE public.charge_help_points_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -528,14 +527,14 @@ CREATE SEQUENCE charge_help_points_id_seq
 -- Name: charge_help_points_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE charge_help_points_id_seq OWNED BY charge_help_points.id;
+ALTER SEQUENCE public.charge_help_points_id_seq OWNED BY public.charge_help_points.id;
 
 
 --
 -- Name: charge_sponsors; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE charge_sponsors (
+CREATE TABLE public.charge_sponsors (
     id integer NOT NULL,
     charge_id integer,
     sponsor_id integer,
@@ -549,7 +548,7 @@ CREATE TABLE charge_sponsors (
 -- Name: charge_sponsors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE charge_sponsors_id_seq
+CREATE SEQUENCE public.charge_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -561,27 +560,24 @@ CREATE SEQUENCE charge_sponsors_id_seq
 -- Name: charge_sponsors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE charge_sponsors_id_seq OWNED BY charge_sponsors.id;
+ALTER SEQUENCE public.charge_sponsors_id_seq OWNED BY public.charge_sponsors.id;
 
 
 --
 -- Name: charges; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE charges (
+CREATE TABLE public.charges (
     id integer NOT NULL,
     name character varying NOT NULL,
     location character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     map_scale integer,
-    map_center geometry(Point,4326),
+    map_center public.geometry(Point,4326),
     entries_count integer DEFAULT 0 NOT NULL,
     guards_count integer DEFAULT 0 NOT NULL,
     guards_located_count integer DEFAULT 0 NOT NULL,
-    state_ref character varying(10) NOT NULL,
-    state_messages character varying(255)[],
-    entries_expected integer DEFAULT 0,
     start_time time without time zone,
     end_time time without time zone,
     charge_date date NOT NULL,
@@ -589,7 +585,6 @@ CREATE TABLE charges (
     gauntlet_multiplier integer NOT NULL,
     exchange_rate double precision,
     m_per_kwacha double precision,
-    guards_expected integer,
     map_file_name character varying,
     map_content_type character varying,
     map_file_size integer,
@@ -603,7 +598,8 @@ CREATE TABLE charges (
     tsetse2_id integer,
     shafted_description character varying,
     elevation_max integer,
-    elevation_min integer
+    elevation_min integer,
+    has_result boolean
 );
 
 
@@ -611,7 +607,7 @@ CREATE TABLE charges (
 -- Name: charges_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE charges_id_seq
+CREATE SEQUENCE public.charges_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -623,14 +619,14 @@ CREATE SEQUENCE charges_id_seq
 -- Name: charges_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE charges_id_seq OWNED BY charges.id;
+ALTER SEQUENCE public.charges_id_seq OWNED BY public.charges.id;
 
 
 --
 -- Name: checkins; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE checkins (
+CREATE TABLE public.checkins (
     id integer NOT NULL,
     entry_id integer NOT NULL,
     guard_id integer NOT NULL,
@@ -645,7 +641,7 @@ CREATE TABLE checkins (
 -- Name: checkins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE checkins_id_seq
+CREATE SEQUENCE public.checkins_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -657,14 +653,14 @@ CREATE SEQUENCE checkins_id_seq
 -- Name: checkins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE checkins_id_seq OWNED BY checkins.id;
+ALTER SEQUENCE public.checkins_id_seq OWNED BY public.checkins.id;
 
 
 --
 -- Name: entries; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entries (
+CREATE TABLE public.entries (
     id integer NOT NULL,
     car_no integer,
     raised_kwacha integer,
@@ -721,7 +717,7 @@ CREATE TABLE entries (
 -- Name: entries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE entries_id_seq
+CREATE SEQUENCE public.entries_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -733,18 +729,18 @@ CREATE SEQUENCE entries_id_seq
 -- Name: entries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entries_id_seq OWNED BY entries.id;
+ALTER SEQUENCE public.entries_id_seq OWNED BY public.entries.id;
 
 
 --
 -- Name: entry_geoms; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entry_geoms (
+CREATE TABLE public.entry_geoms (
     id integer NOT NULL,
     entry_id integer NOT NULL,
-    raw_line geometry(LineString,4326),
-    clean_line geometry(LineString,4326),
+    raw_line public.geometry(LineString,4326),
+    clean_line public.geometry(LineString,4326),
     raw_line_kml text,
     clean_line_kml text,
     raw_line_json text,
@@ -754,7 +750,7 @@ CREATE TABLE entry_geoms (
     stops_count integer,
     raws_from timestamp without time zone,
     raws_to timestamp without time zone,
-    result_line geometry(LineString,4326)
+    result_line public.geometry(LineString,4326)
 );
 
 
@@ -762,7 +758,7 @@ CREATE TABLE entry_geoms (
 -- Name: entry_geoms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE entry_geoms_id_seq
+CREATE SEQUENCE public.entry_geoms_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -774,14 +770,14 @@ CREATE SEQUENCE entry_geoms_id_seq
 -- Name: entry_geoms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entry_geoms_id_seq OWNED BY entry_geoms.id;
+ALTER SEQUENCE public.entry_geoms_id_seq OWNED BY public.entry_geoms.id;
 
 
 --
 -- Name: entry_legs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE entry_legs (
+CREATE TABLE public.entry_legs (
     id integer NOT NULL,
     entry_id integer NOT NULL,
     leg_id integer NOT NULL,
@@ -790,8 +786,8 @@ CREATE TABLE entry_legs (
     elapsed_s integer,
     checkin1_id integer NOT NULL,
     checkin2_id integer NOT NULL,
-    leg_line geometry(LineString,4326),
-    leg_line_proj geometry(LineString,3857),
+    leg_line public.geometry(LineString,4326),
+    leg_line_proj public.geometry(LineString,3857),
     leg_number integer,
     start_time timestamp without time zone,
     elevation_min integer,
@@ -805,7 +801,7 @@ CREATE TABLE entry_legs (
 -- Name: entry_legs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE entry_legs_id_seq
+CREATE SEQUENCE public.entry_legs_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -817,14 +813,14 @@ CREATE SEQUENCE entry_legs_id_seq
 -- Name: entry_legs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entry_legs_id_seq OWNED BY entry_legs.id;
+ALTER SEQUENCE public.entry_legs_id_seq OWNED BY public.entry_legs.id;
 
 
 --
 -- Name: photos; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE photos (
+CREATE TABLE public.photos (
     id integer NOT NULL,
     photo_file_name character varying,
     photo_content_type character varying,
@@ -844,7 +840,7 @@ CREATE TABLE photos (
 -- Name: entry_photos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE entry_photos_id_seq
+CREATE SEQUENCE public.entry_photos_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -856,19 +852,19 @@ CREATE SEQUENCE entry_photos_id_seq
 -- Name: entry_photos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE entry_photos_id_seq OWNED BY photos.id;
+ALTER SEQUENCE public.entry_photos_id_seq OWNED BY public.photos.id;
 
 
 --
 -- Name: gps_cleans; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE gps_cleans (
+CREATE TABLE public.gps_cleans (
     id integer NOT NULL,
     entry_id integer NOT NULL,
     gps_timestamp timestamp without time zone NOT NULL,
-    location geometry(Point,4326),
-    location_prj geometry(Point,3857),
+    location public.geometry(Point,4326),
+    location_prj public.geometry(Point,3857),
     stop_id integer,
     distance_m double precision,
     speed_kmh double precision,
@@ -884,7 +880,7 @@ CREATE TABLE gps_cleans (
 -- Name: gps_cleans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE gps_cleans_id_seq
+CREATE SEQUENCE public.gps_cleans_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -896,14 +892,14 @@ CREATE SEQUENCE gps_cleans_id_seq
 -- Name: gps_cleans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE gps_cleans_id_seq OWNED BY gps_cleans.id;
+ALTER SEQUENCE public.gps_cleans_id_seq OWNED BY public.gps_cleans.id;
 
 
 --
 -- Name: gps_historic; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE gps_historic (
+CREATE TABLE public.gps_historic (
     id integer NOT NULL,
     lat double precision,
     lon double precision,
@@ -917,7 +913,7 @@ CREATE TABLE gps_historic (
 -- Name: gps_historic_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE gps_historic_id_seq
+CREATE SEQUENCE public.gps_historic_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -929,19 +925,19 @@ CREATE SEQUENCE gps_historic_id_seq
 -- Name: gps_historic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE gps_historic_id_seq OWNED BY gps_historic.id;
+ALTER SEQUENCE public.gps_historic_id_seq OWNED BY public.gps_historic.id;
 
 
 --
 -- Name: gps_raws; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE gps_raws (
+CREATE TABLE public.gps_raws (
     id integer NOT NULL,
     entry_id integer NOT NULL,
     gps_timestamp timestamp without time zone NOT NULL,
-    location geometry(Point,4326),
-    location_prj geometry(Point,3857),
+    location public.geometry(Point,4326),
+    location_prj public.geometry(Point,3857),
     distance_m double precision,
     speed_kmh double precision,
     azimuth_deg double precision,
@@ -953,7 +949,7 @@ CREATE TABLE gps_raws (
 -- Name: gps_raws2_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE gps_raws2_id_seq
+CREATE SEQUENCE public.gps_raws2_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -965,20 +961,20 @@ CREATE SEQUENCE gps_raws2_id_seq
 -- Name: gps_raws2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE gps_raws2_id_seq OWNED BY gps_raws.id;
+ALTER SEQUENCE public.gps_raws2_id_seq OWNED BY public.gps_raws.id;
 
 
 --
 -- Name: gps_stops; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE gps_stops (
+CREATE TABLE public.gps_stops (
     id integer NOT NULL,
     entry_id integer NOT NULL,
     start_timestamp timestamp without time zone NOT NULL,
     end_timestamp timestamp without time zone NOT NULL,
-    location geometry(Point,4326),
-    location_prj geometry(Point,3857),
+    location public.geometry(Point,4326),
+    location_prj public.geometry(Point,3857),
     elapsed_s integer
 );
 
@@ -987,7 +983,7 @@ CREATE TABLE gps_stops (
 -- Name: gps_stops_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE gps_stops_id_seq
+CREATE SEQUENCE public.gps_stops_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -999,14 +995,14 @@ CREATE SEQUENCE gps_stops_id_seq
 -- Name: gps_stops_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE gps_stops_id_seq OWNED BY gps_stops.id;
+ALTER SEQUENCE public.gps_stops_id_seq OWNED BY public.gps_stops.id;
 
 
 --
 -- Name: grants; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE grants (
+CREATE TABLE public.grants (
     id integer NOT NULL,
     charge_id integer,
     beneficiary_id integer,
@@ -1019,7 +1015,7 @@ CREATE TABLE grants (
 -- Name: grants_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE grants_id_seq
+CREATE SEQUENCE public.grants_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1031,14 +1027,14 @@ CREATE SEQUENCE grants_id_seq
 -- Name: grants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE grants_id_seq OWNED BY grants.id;
+ALTER SEQUENCE public.grants_id_seq OWNED BY public.grants.id;
 
 
 --
 -- Name: sponsors; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE sponsors (
+CREATE TABLE public.sponsors (
     id integer NOT NULL,
     name character varying,
     created_at timestamp without time zone NOT NULL,
@@ -1060,7 +1056,7 @@ CREATE TABLE sponsors (
 -- Name: guard_sponsors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE guard_sponsors_id_seq
+CREATE SEQUENCE public.guard_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1072,14 +1068,14 @@ CREATE SEQUENCE guard_sponsors_id_seq
 -- Name: guard_sponsors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE guard_sponsors_id_seq OWNED BY sponsors.id;
+ALTER SEQUENCE public.guard_sponsors_id_seq OWNED BY public.sponsors.id;
 
 
 --
 -- Name: guards; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE guards (
+CREATE TABLE public.guards (
     id integer NOT NULL,
     is_gauntlet boolean,
     created_at timestamp without time zone NOT NULL,
@@ -1088,7 +1084,7 @@ CREATE TABLE guards (
     charge_id integer NOT NULL,
     radius_m integer,
     late_start_time time without time zone,
-    location geometry(Point,4326),
+    location public.geometry(Point,4326),
     elevation integer
 );
 
@@ -1097,7 +1093,7 @@ CREATE TABLE guards (
 -- Name: guards_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE guards_id_seq
+CREATE SEQUENCE public.guards_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1109,14 +1105,14 @@ CREATE SEQUENCE guards_id_seq
 -- Name: guards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE guards_id_seq OWNED BY guards.id;
+ALTER SEQUENCE public.guards_id_seq OWNED BY public.guards.id;
 
 
 --
 -- Name: legs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE legs (
+CREATE TABLE public.legs (
     id integer NOT NULL,
     guard1_id integer NOT NULL,
     guard2_id integer NOT NULL,
@@ -1131,7 +1127,7 @@ CREATE TABLE legs (
 -- Name: legs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE legs_id_seq
+CREATE SEQUENCE public.legs_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1143,14 +1139,14 @@ CREATE SEQUENCE legs_id_seq
 -- Name: legs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE legs_id_seq OWNED BY legs.id;
+ALTER SEQUENCE public.legs_id_seq OWNED BY public.legs.id;
 
 
 --
 -- Name: makes; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE makes (
+CREATE TABLE public.makes (
     id integer NOT NULL,
     name character varying,
     ref character varying
@@ -1161,7 +1157,7 @@ CREATE TABLE makes (
 -- Name: makes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE makes_id_seq
+CREATE SEQUENCE public.makes_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1173,14 +1169,14 @@ CREATE SEQUENCE makes_id_seq
 -- Name: makes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE makes_id_seq OWNED BY makes.id;
+ALTER SEQUENCE public.makes_id_seq OWNED BY public.makes.id;
 
 
 --
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE schema_migrations (
+CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
 );
 
@@ -1189,7 +1185,7 @@ CREATE TABLE schema_migrations (
 -- Name: teams; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE teams (
+CREATE TABLE public.teams (
     id integer NOT NULL,
     name character varying,
     captain character varying,
@@ -1212,7 +1208,7 @@ CREATE TABLE teams (
 -- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE teams_id_seq
+CREATE SEQUENCE public.teams_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1224,161 +1220,161 @@ CREATE SEQUENCE teams_id_seq
 -- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
+ALTER SEQUENCE public.teams_id_seq OWNED BY public.teams.id;
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY beneficiaries ALTER COLUMN id SET DEFAULT nextval('beneficeries_id_seq'::regclass);
+ALTER TABLE ONLY public.beneficiaries ALTER COLUMN id SET DEFAULT nextval('public.beneficeries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY campaigns ALTER COLUMN id SET DEFAULT nextval('campaigns_id_seq'::regclass);
+ALTER TABLE ONLY public.campaigns ALTER COLUMN id SET DEFAULT nextval('public.campaigns_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cars ALTER COLUMN id SET DEFAULT nextval('cars_id_seq'::regclass);
+ALTER TABLE ONLY public.cars ALTER COLUMN id SET DEFAULT nextval('public.cars_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_help_points ALTER COLUMN id SET DEFAULT nextval('charge_help_points_id_seq'::regclass);
+ALTER TABLE ONLY public.charge_help_points ALTER COLUMN id SET DEFAULT nextval('public.charge_help_points_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_sponsors ALTER COLUMN id SET DEFAULT nextval('charge_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY public.charge_sponsors ALTER COLUMN id SET DEFAULT nextval('public.charge_sponsors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges ALTER COLUMN id SET DEFAULT nextval('charges_id_seq'::regclass);
+ALTER TABLE ONLY public.charges ALTER COLUMN id SET DEFAULT nextval('public.charges_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY checkins ALTER COLUMN id SET DEFAULT nextval('checkins_id_seq'::regclass);
+ALTER TABLE ONLY public.checkins ALTER COLUMN id SET DEFAULT nextval('public.checkins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries ALTER COLUMN id SET DEFAULT nextval('entries_id_seq'::regclass);
+ALTER TABLE ONLY public.entries ALTER COLUMN id SET DEFAULT nextval('public.entries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_geoms ALTER COLUMN id SET DEFAULT nextval('entry_geoms_id_seq'::regclass);
+ALTER TABLE ONLY public.entry_geoms ALTER COLUMN id SET DEFAULT nextval('public.entry_geoms_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs ALTER COLUMN id SET DEFAULT nextval('entry_legs_id_seq'::regclass);
+ALTER TABLE ONLY public.entry_legs ALTER COLUMN id SET DEFAULT nextval('public.entry_legs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_cleans ALTER COLUMN id SET DEFAULT nextval('gps_cleans_id_seq'::regclass);
+ALTER TABLE ONLY public.gps_cleans ALTER COLUMN id SET DEFAULT nextval('public.gps_cleans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_historic ALTER COLUMN id SET DEFAULT nextval('gps_historic_id_seq'::regclass);
+ALTER TABLE ONLY public.gps_historic ALTER COLUMN id SET DEFAULT nextval('public.gps_historic_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_raws ALTER COLUMN id SET DEFAULT nextval('gps_raws2_id_seq'::regclass);
+ALTER TABLE ONLY public.gps_raws ALTER COLUMN id SET DEFAULT nextval('public.gps_raws2_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_stops ALTER COLUMN id SET DEFAULT nextval('gps_stops_id_seq'::regclass);
+ALTER TABLE ONLY public.gps_stops ALTER COLUMN id SET DEFAULT nextval('public.gps_stops_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY grants ALTER COLUMN id SET DEFAULT nextval('grants_id_seq'::regclass);
+ALTER TABLE ONLY public.grants ALTER COLUMN id SET DEFAULT nextval('public.grants_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guards ALTER COLUMN id SET DEFAULT nextval('guards_id_seq'::regclass);
+ALTER TABLE ONLY public.guards ALTER COLUMN id SET DEFAULT nextval('public.guards_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY legs ALTER COLUMN id SET DEFAULT nextval('legs_id_seq'::regclass);
+ALTER TABLE ONLY public.legs ALTER COLUMN id SET DEFAULT nextval('public.legs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY makes ALTER COLUMN id SET DEFAULT nextval('makes_id_seq'::regclass);
+ALTER TABLE ONLY public.makes ALTER COLUMN id SET DEFAULT nextval('public.makes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY photos ALTER COLUMN id SET DEFAULT nextval('entry_photos_id_seq'::regclass);
+ALTER TABLE ONLY public.photos ALTER COLUMN id SET DEFAULT nextval('public.entry_photos_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY sponsors ALTER COLUMN id SET DEFAULT nextval('guard_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY public.sponsors ALTER COLUMN id SET DEFAULT nextval('public.guard_sponsors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
+ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_id_seq'::regclass);
 
 
 --
 -- Name: ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY ar_internal_metadata
+ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
 
 
@@ -1386,7 +1382,7 @@ ALTER TABLE ONLY ar_internal_metadata
 -- Name: campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY campaigns
+ALTER TABLE ONLY public.campaigns
     ADD CONSTRAINT campaigns_pkey PRIMARY KEY (id);
 
 
@@ -1394,7 +1390,7 @@ ALTER TABLE ONLY campaigns
 -- Name: cars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cars
+ALTER TABLE ONLY public.cars
     ADD CONSTRAINT cars_pkey PRIMARY KEY (id);
 
 
@@ -1402,7 +1398,7 @@ ALTER TABLE ONLY cars
 -- Name: charge_help_points_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_help_points
+ALTER TABLE ONLY public.charge_help_points
     ADD CONSTRAINT charge_help_points_pkey PRIMARY KEY (id);
 
 
@@ -1410,7 +1406,7 @@ ALTER TABLE ONLY charge_help_points
 -- Name: charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges
+ALTER TABLE ONLY public.charges
     ADD CONSTRAINT charges_pkey PRIMARY KEY (id);
 
 
@@ -1418,7 +1414,7 @@ ALTER TABLE ONLY charges
 -- Name: entries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries
+ALTER TABLE ONLY public.entries
     ADD CONSTRAINT entries_pkey PRIMARY KEY (id);
 
 
@@ -1426,7 +1422,7 @@ ALTER TABLE ONLY entries
 -- Name: entry_geoms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_geoms
+ALTER TABLE ONLY public.entry_geoms
     ADD CONSTRAINT entry_geoms_pkey PRIMARY KEY (id);
 
 
@@ -1434,7 +1430,7 @@ ALTER TABLE ONLY entry_geoms
 -- Name: guard_sponsors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY sponsors
+ALTER TABLE ONLY public.sponsors
     ADD CONSTRAINT guard_sponsors_pkey PRIMARY KEY (id);
 
 
@@ -1442,7 +1438,7 @@ ALTER TABLE ONLY sponsors
 -- Name: guards_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guards
+ALTER TABLE ONLY public.guards
     ADD CONSTRAINT guards_pkey PRIMARY KEY (id);
 
 
@@ -1450,7 +1446,7 @@ ALTER TABLE ONLY guards
 -- Name: pk_beneficeries; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY beneficiaries
+ALTER TABLE ONLY public.beneficiaries
     ADD CONSTRAINT pk_beneficeries PRIMARY KEY (id);
 
 
@@ -1458,7 +1454,7 @@ ALTER TABLE ONLY beneficiaries
 -- Name: pk_charge_sponsors; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_sponsors
+ALTER TABLE ONLY public.charge_sponsors
     ADD CONSTRAINT pk_charge_sponsors PRIMARY KEY (id);
 
 
@@ -1466,7 +1462,7 @@ ALTER TABLE ONLY charge_sponsors
 -- Name: pk_checkins; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY checkins
+ALTER TABLE ONLY public.checkins
     ADD CONSTRAINT pk_checkins PRIMARY KEY (id);
 
 
@@ -1474,7 +1470,7 @@ ALTER TABLE ONLY checkins
 -- Name: pk_entry_legs; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs
+ALTER TABLE ONLY public.entry_legs
     ADD CONSTRAINT pk_entry_legs PRIMARY KEY (id);
 
 
@@ -1482,7 +1478,7 @@ ALTER TABLE ONLY entry_legs
 -- Name: pk_entry_photos; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY photos
+ALTER TABLE ONLY public.photos
     ADD CONSTRAINT pk_entry_photos PRIMARY KEY (id);
 
 
@@ -1490,7 +1486,7 @@ ALTER TABLE ONLY photos
 -- Name: pk_gps_cleans; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_cleans
+ALTER TABLE ONLY public.gps_cleans
     ADD CONSTRAINT pk_gps_cleans PRIMARY KEY (id);
 
 
@@ -1498,7 +1494,7 @@ ALTER TABLE ONLY gps_cleans
 -- Name: pk_gps_histroic; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_historic
+ALTER TABLE ONLY public.gps_historic
     ADD CONSTRAINT pk_gps_histroic PRIMARY KEY (id);
 
 
@@ -1506,7 +1502,7 @@ ALTER TABLE ONLY gps_historic
 -- Name: pk_gps_raws2; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_raws
+ALTER TABLE ONLY public.gps_raws
     ADD CONSTRAINT pk_gps_raws2 PRIMARY KEY (id);
 
 
@@ -1514,7 +1510,7 @@ ALTER TABLE ONLY gps_raws
 -- Name: pk_gps_stops; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_stops
+ALTER TABLE ONLY public.gps_stops
     ADD CONSTRAINT pk_gps_stops PRIMARY KEY (id);
 
 
@@ -1522,7 +1518,7 @@ ALTER TABLE ONLY gps_stops
 -- Name: pk_grants; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY grants
+ALTER TABLE ONLY public.grants
     ADD CONSTRAINT pk_grants PRIMARY KEY (id);
 
 
@@ -1530,7 +1526,7 @@ ALTER TABLE ONLY grants
 -- Name: pk_legs; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY legs
+ALTER TABLE ONLY public.legs
     ADD CONSTRAINT pk_legs PRIMARY KEY (id);
 
 
@@ -1538,7 +1534,7 @@ ALTER TABLE ONLY legs
 -- Name: pk_makes; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY makes
+ALTER TABLE ONLY public.makes
     ADD CONSTRAINT pk_makes PRIMARY KEY (id);
 
 
@@ -1546,7 +1542,7 @@ ALTER TABLE ONLY makes
 -- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY schema_migrations
+ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
 
 
@@ -1554,7 +1550,7 @@ ALTER TABLE ONLY schema_migrations
 -- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY teams
+ALTER TABLE ONLY public.teams
     ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
 
 
@@ -1562,7 +1558,7 @@ ALTER TABLE ONLY teams
 -- Name: unq_entry_geoms_entry_id; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_geoms
+ALTER TABLE ONLY public.entry_geoms
     ADD CONSTRAINT unq_entry_geoms_entry_id UNIQUE (entry_id);
 
 
@@ -1570,319 +1566,319 @@ ALTER TABLE ONLY entry_geoms
 -- Name: index_charge_help_points_on_charge_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_charge_help_points_on_charge_id ON charge_help_points USING btree (charge_id);
+CREATE INDEX index_charge_help_points_on_charge_id ON public.charge_help_points USING btree (charge_id);
 
 
 --
 -- Name: index_entries_on_car_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entries_on_car_id ON entries USING btree (car_id);
+CREATE INDEX index_entries_on_car_id ON public.entries USING btree (car_id);
 
 
 --
 -- Name: index_entries_on_charge_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entries_on_charge_id ON entries USING btree (charge_id);
+CREATE INDEX index_entries_on_charge_id ON public.entries USING btree (charge_id);
 
 
 --
 -- Name: index_entries_on_start_guard_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entries_on_start_guard_id ON entries USING btree (start_guard_id);
+CREATE INDEX index_entries_on_start_guard_id ON public.entries USING btree (start_guard_id);
 
 
 --
 -- Name: index_entries_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_entries_on_team_id ON entries USING btree (team_id);
+CREATE INDEX index_entries_on_team_id ON public.entries USING btree (team_id);
 
 
 --
 -- Name: index_guards_on_charge_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_guards_on_charge_id ON guards USING btree (charge_id);
+CREATE INDEX index_guards_on_charge_id ON public.guards USING btree (charge_id);
 
 
 --
 -- Name: index_guards_on_guard_sponsor_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_guards_on_guard_sponsor_id ON guards USING btree (sponsor_id);
+CREATE INDEX index_guards_on_guard_sponsor_id ON public.guards USING btree (sponsor_id);
 
 
 --
 -- Name: indx_gps_cleans_entry_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX indx_gps_cleans_entry_id ON gps_cleans USING btree (entry_id);
+CREATE INDEX indx_gps_cleans_entry_id ON public.gps_cleans USING btree (entry_id);
 
 
 --
 -- Name: indx_gps_raws_entry_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX indx_gps_raws_entry_id ON gps_raws USING btree (entry_id);
+CREATE INDEX indx_gps_raws_entry_id ON public.gps_raws USING btree (entry_id);
 
 
 --
 -- Name: fk_cars_makes; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY cars
-    ADD CONSTRAINT fk_cars_makes FOREIGN KEY (make_id) REFERENCES makes(id);
+ALTER TABLE ONLY public.cars
+    ADD CONSTRAINT fk_cars_makes FOREIGN KEY (make_id) REFERENCES public.makes(id);
 
 
 --
 -- Name: fk_charge_bestguard; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges
-    ADD CONSTRAINT fk_charge_bestguard FOREIGN KEY (best_guard_id) REFERENCES guards(id);
+ALTER TABLE ONLY public.charges
+    ADD CONSTRAINT fk_charge_bestguard FOREIGN KEY (best_guard_id) REFERENCES public.guards(id);
 
 
 --
 -- Name: fk_charge_sponsors_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_sponsors
-    ADD CONSTRAINT fk_charge_sponsors_charge FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.charge_sponsors
+    ADD CONSTRAINT fk_charge_sponsors_charge FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_charge_sponsors_sponsors; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_sponsors
-    ADD CONSTRAINT fk_charge_sponsors_sponsors FOREIGN KEY (sponsor_id) REFERENCES sponsors(id);
+ALTER TABLE ONLY public.charge_sponsors
+    ADD CONSTRAINT fk_charge_sponsors_sponsors FOREIGN KEY (sponsor_id) REFERENCES public.sponsors(id);
 
 
 --
 -- Name: fk_charges_shaftedentry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges
-    ADD CONSTRAINT fk_charges_shaftedentry FOREIGN KEY (shafted_entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.charges
+    ADD CONSTRAINT fk_charges_shaftedentry FOREIGN KEY (shafted_entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_charges_tsetse1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges
-    ADD CONSTRAINT fk_charges_tsetse1 FOREIGN KEY (tsetse1_id) REFERENCES legs(id);
+ALTER TABLE ONLY public.charges
+    ADD CONSTRAINT fk_charges_tsetse1 FOREIGN KEY (tsetse1_id) REFERENCES public.legs(id);
 
 
 --
 -- Name: fk_charges_tsetse2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charges
-    ADD CONSTRAINT fk_charges_tsetse2 FOREIGN KEY (tsetse2_id) REFERENCES legs(id);
+ALTER TABLE ONLY public.charges
+    ADD CONSTRAINT fk_charges_tsetse2 FOREIGN KEY (tsetse2_id) REFERENCES public.legs(id);
 
 
 --
 -- Name: fk_checkin_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY checkins
-    ADD CONSTRAINT fk_checkin_entry FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.checkins
+    ADD CONSTRAINT fk_checkin_entry FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_checkin_gps_cleans; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY checkins
-    ADD CONSTRAINT fk_checkin_gps_cleans FOREIGN KEY (gps_clean_id) REFERENCES gps_cleans(id);
+ALTER TABLE ONLY public.checkins
+    ADD CONSTRAINT fk_checkin_gps_cleans FOREIGN KEY (gps_clean_id) REFERENCES public.gps_cleans(id);
 
 
 --
 -- Name: fk_checkin_guard; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY checkins
-    ADD CONSTRAINT fk_checkin_guard FOREIGN KEY (guard_id) REFERENCES guards(id);
+ALTER TABLE ONLY public.checkins
+    ADD CONSTRAINT fk_checkin_guard FOREIGN KEY (guard_id) REFERENCES public.guards(id);
 
 
 --
 -- Name: fk_entry_geoms_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_geoms
-    ADD CONSTRAINT fk_entry_geoms_entry FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.entry_geoms
+    ADD CONSTRAINT fk_entry_geoms_entry FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_entry_leg_checkin1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs
-    ADD CONSTRAINT fk_entry_leg_checkin1 FOREIGN KEY (checkin1_id) REFERENCES checkins(id);
+ALTER TABLE ONLY public.entry_legs
+    ADD CONSTRAINT fk_entry_leg_checkin1 FOREIGN KEY (checkin1_id) REFERENCES public.checkins(id);
 
 
 --
 -- Name: fk_entry_leg_checkin2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs
-    ADD CONSTRAINT fk_entry_leg_checkin2 FOREIGN KEY (checkin2_id) REFERENCES checkins(id);
+ALTER TABLE ONLY public.entry_legs
+    ADD CONSTRAINT fk_entry_leg_checkin2 FOREIGN KEY (checkin2_id) REFERENCES public.checkins(id);
 
 
 --
 -- Name: fk_entry_legs_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs
-    ADD CONSTRAINT fk_entry_legs_entry FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.entry_legs
+    ADD CONSTRAINT fk_entry_legs_entry FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_entry_legs_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entry_legs
-    ADD CONSTRAINT fk_entry_legs_leg FOREIGN KEY (leg_id) REFERENCES legs(id);
+ALTER TABLE ONLY public.entry_legs
+    ADD CONSTRAINT fk_entry_legs_leg FOREIGN KEY (leg_id) REFERENCES public.legs(id);
 
 
 --
 -- Name: fk_gps_cleans_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_cleans
-    ADD CONSTRAINT fk_gps_cleans_entries FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.gps_cleans
+    ADD CONSTRAINT fk_gps_cleans_entries FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_gps_cleans_entry_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_cleans
-    ADD CONSTRAINT fk_gps_cleans_entry_leg FOREIGN KEY (entry_leg_id) REFERENCES entry_legs(id);
+ALTER TABLE ONLY public.gps_cleans
+    ADD CONSTRAINT fk_gps_cleans_entry_leg FOREIGN KEY (entry_leg_id) REFERENCES public.entry_legs(id);
 
 
 --
 -- Name: fk_gps_cleans_gps_stops; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_cleans
-    ADD CONSTRAINT fk_gps_cleans_gps_stops FOREIGN KEY (stop_id) REFERENCES gps_stops(id);
+ALTER TABLE ONLY public.gps_cleans
+    ADD CONSTRAINT fk_gps_cleans_gps_stops FOREIGN KEY (stop_id) REFERENCES public.gps_stops(id);
 
 
 --
 -- Name: fk_gps_raws_entries2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_raws
-    ADD CONSTRAINT fk_gps_raws_entries2 FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.gps_raws
+    ADD CONSTRAINT fk_gps_raws_entries2 FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_gps_stops_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY gps_stops
-    ADD CONSTRAINT fk_gps_stops_entries FOREIGN KEY (entry_id) REFERENCES entries(id);
+ALTER TABLE ONLY public.gps_stops
+    ADD CONSTRAINT fk_gps_stops_entries FOREIGN KEY (entry_id) REFERENCES public.entries(id);
 
 
 --
 -- Name: fk_grants_beneficeries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY grants
-    ADD CONSTRAINT fk_grants_beneficeries FOREIGN KEY (beneficiary_id) REFERENCES beneficiaries(id);
+ALTER TABLE ONLY public.grants
+    ADD CONSTRAINT fk_grants_beneficeries FOREIGN KEY (beneficiary_id) REFERENCES public.beneficiaries(id);
 
 
 --
 -- Name: fk_grants_charges; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY grants
-    ADD CONSTRAINT fk_grants_charges FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.grants
+    ADD CONSTRAINT fk_grants_charges FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_legs_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY legs
-    ADD CONSTRAINT fk_legs_charge FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.legs
+    ADD CONSTRAINT fk_legs_charge FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_legs_guards1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY legs
-    ADD CONSTRAINT fk_legs_guards1 FOREIGN KEY (guard1_id) REFERENCES guards(id);
+ALTER TABLE ONLY public.legs
+    ADD CONSTRAINT fk_legs_guards1 FOREIGN KEY (guard1_id) REFERENCES public.guards(id);
 
 
 --
 -- Name: fk_legs_guards2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY legs
-    ADD CONSTRAINT fk_legs_guards2 FOREIGN KEY (guard2_id) REFERENCES guards(id);
+ALTER TABLE ONLY public.legs
+    ADD CONSTRAINT fk_legs_guards2 FOREIGN KEY (guard2_id) REFERENCES public.guards(id);
 
 
 --
 -- Name: fk_rails_41012a5173; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guards
-    ADD CONSTRAINT fk_rails_41012a5173 FOREIGN KEY (sponsor_id) REFERENCES sponsors(id);
+ALTER TABLE ONLY public.guards
+    ADD CONSTRAINT fk_rails_41012a5173 FOREIGN KEY (sponsor_id) REFERENCES public.sponsors(id);
 
 
 --
 -- Name: fk_rails_8069469873; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries
-    ADD CONSTRAINT fk_rails_8069469873 FOREIGN KEY (car_id) REFERENCES cars(id);
+ALTER TABLE ONLY public.entries
+    ADD CONSTRAINT fk_rails_8069469873 FOREIGN KEY (car_id) REFERENCES public.cars(id);
 
 
 --
 -- Name: fk_rails_867149c68d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY guards
-    ADD CONSTRAINT fk_rails_867149c68d FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.guards
+    ADD CONSTRAINT fk_rails_867149c68d FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_rails_9e5fcf2529; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries
-    ADD CONSTRAINT fk_rails_9e5fcf2529 FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.entries
+    ADD CONSTRAINT fk_rails_9e5fcf2529 FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_rails_c72e667370; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY charge_help_points
-    ADD CONSTRAINT fk_rails_c72e667370 FOREIGN KEY (charge_id) REFERENCES charges(id);
+ALTER TABLE ONLY public.charge_help_points
+    ADD CONSTRAINT fk_rails_c72e667370 FOREIGN KEY (charge_id) REFERENCES public.charges(id);
 
 
 --
 -- Name: fk_rails_e278410c5f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries
-    ADD CONSTRAINT fk_rails_e278410c5f FOREIGN KEY (start_guard_id) REFERENCES guards(id);
+ALTER TABLE ONLY public.entries
+    ADD CONSTRAINT fk_rails_e278410c5f FOREIGN KEY (start_guard_id) REFERENCES public.guards(id);
 
 
 --
 -- Name: fk_rails_f0fbcbbb17; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY entries
-    ADD CONSTRAINT fk_rails_f0fbcbbb17 FOREIGN KEY (team_id) REFERENCES teams(id);
+ALTER TABLE ONLY public.entries
+    ADD CONSTRAINT fk_rails_f0fbcbbb17 FOREIGN KEY (team_id) REFERENCES public.teams(id);
 
 
 --
@@ -1891,7 +1887,7 @@ ALTER TABLE ONLY entries
 
 SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES
+INSERT INTO "schema_migrations" (version) VALUES
 ('20161003193839'),
 ('20161003195041'),
 ('20161004045039'),
@@ -1923,6 +1919,10 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170422065712'),
 ('20170422130447'),
 ('20170423182021'),
-('20170506094432');
+('20170506094432'),
+('20181006033021'),
+('20181006033825'),
+('20181006074216'),
+('20181006075344');
 
 
