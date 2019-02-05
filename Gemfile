@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rake'
+gem 'rake','12.0.0'
 
 gem 'gibbon'
 gem 'whenever', :require => false
