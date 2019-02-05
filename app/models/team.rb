@@ -14,11 +14,11 @@ class Team < ApplicationRecord
   end
 
   def entries_complete
-    self.entries.includes(:charge).references(:charge).where("charges.state_ref='RESULT'")
+    self.entries.includes(:charge).references(:charge).where("charges.has_result=true")
   end
 
   def entries_incomplete
-    self.entries.includes(:charge).references(:charge).where("charges.state_ref!='RESULT'")
+    self.entries.includes(:charge).references(:charge).where("charges.has_result=false")
   end
 
 

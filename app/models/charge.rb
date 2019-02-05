@@ -11,6 +11,7 @@ class Charge < ApplicationRecord
   has_many :legs
   has_many :photos, as: :photoable
   has_many :charge_sponsors
+
   belongs_to :best_guard, foreign_key: 'best_guard_id', class_name: 'Guard'
   belongs_to :shafted_entry, foreign_key: 'shafted_entry_id', class_name: 'Entry'
   belongs_to :tsetse1_leg, foreign_key: 'tsetse1_id', class_name: 'Leg'
@@ -225,7 +226,6 @@ class Charge < ApplicationRecord
     self.guards_count||=0
     self.entries_count||=0
     self.guards_located_count||=0
-    self.state_ref||='NOT_SETUP'
     self.gauntlet_multiplier||=0
     self.m_per_kwacha||=0.5
   end

@@ -8,8 +8,9 @@
           <% end %>
       <% end %>
 
-      <%= f.label_text_field "Name",:name, {} %>
+      <%= f.label_check_box "Show Result",:has_result, {} %>
 
+      <%= f.label_text_field "Name",:name, {} %>
 
       <%= f.label_text_field "Location",:location, {} %>
 

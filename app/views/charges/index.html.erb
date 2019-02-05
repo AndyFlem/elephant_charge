@@ -24,21 +24,19 @@
       grant_sum+=charge.grant_dollars
       kgrant_sum+=charge.grant_kwacha
   %>
-      <tr class="<%= charge.state_ref=='NOT_SETUPx' ? 'table-danger' : charge.state_ref='' ? '' : 'table-warning' %>">
+      <tr class="<%= charge.has_result==false ? 'table-danger' : '' %>">
         <td><%= link_to charge.name, charge_path(charge) %></td>
         <td><%= charge.location %></td>
         <td><%= charge.charge_date.strftime("%a %-d %b %Y") %></td>
         <td><%= charge.entries_count %></td>
         <td>$<%= number_with_precision(charge.raised_dollars, precision: 0, delimiter: ',')%></td>
         <td>$<%= number_with_precision(charge.grant_dollars, precision: 0, delimiter: ',')%></td>
-
       </tr>
   <% end %>
   <tr class="bg-inverse">
     <td colspan="4"></td>
     <td>$<%= number_with_precision(dollar_sum, precision: 0, delimiter: ',')%></td>
     <td>$<%= number_with_precision(grant_sum, precision: 0, delimiter: ',')%></td>
-
   </tr>
 </table>
 

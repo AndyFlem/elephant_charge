@@ -345,6 +345,6 @@ class ChargesController < ApplicationController
                                    :start_time,:end_time,:gauntlet_multiplier,
                                    :exchange_rate, :m_per_kwacha,
                                    :spirit_description,:spirit_name,:spirit_entry_id,
-                                   :shafted_entry_id,:shafted_description,:best_guard_id)
+                                   :shafted_entry_id,:shafted_description,:best_guard_id, :has_result)
   end
 end
