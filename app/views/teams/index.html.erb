@@ -11,6 +11,7 @@
   <tr>
     <th></th>
     <th>Name</th>
+    <th>WebRef</th>
     <th>Captain</th>
     <th>Charges</th>
     <th>Completed</th>
@@ -30,6 +31,7 @@
       <tr>
         <td><%= i+1%></td>
         <td><%= team.entries.count>0 ? link_to(team.name, team_path(team)) : team.name%></td>
+        <td><%= team.ref%></td>
         <td><%= team.captain %></td>
         <td><%= team.entries_complete.count %></td>
         <td>

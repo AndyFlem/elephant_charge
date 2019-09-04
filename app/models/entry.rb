@@ -43,7 +43,7 @@ class Entry < ApplicationRecord
 
 
   def is_current?
-    self.charge.state_ref!='RESULT'
+    self.charge.has_result
   end
 
   def start_time

@@ -5,19 +5,19 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rake','12.0.0'
+#gem 'rake','~>12.0.0'
 
 gem 'gibbon'
 gem 'whenever', :require => false
 
 gem 'dotenv-rails'
 
-gem 'unicorn'
+#gem 'unicorn'
 
 gem 'zip-zip'
 gem 'axlsx'
 
-gem 'bcrypt', '3.1.11'
+#gem 'bcrypt', '3.1.11'
 
 gem "paperclip", "~> 5.0.0"
 
@@ -25,7 +25,7 @@ gem 'friendly_id', :git => 'git://github.com/norman/friendly_id.git'
 
 gem 'rubyzip'
 gem 'bootstrap', '= 4.0.0.alpha5'
-source 'https://rails-assets.org' do
+source 'http://insecure.rails-assets.org' do
   gem 'rails-assets-tether', '>= 1.1.0'
 end
 gem 'activerecord-postgis-adapter'
@@ -55,7 +55,7 @@ gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+#gem 'bcrypt-ruby', '3.1.0', :require => 'bcrypt'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
