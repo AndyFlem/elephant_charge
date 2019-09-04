@@ -12,7 +12,7 @@ gem 'whenever', :require => false
 
 gem 'dotenv-rails'
 
-#gem 'unicorn'
+gem 'unicorn'
 
 gem 'zip-zip'
 gem 'axlsx'
