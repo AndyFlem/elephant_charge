@@ -165,19 +165,22 @@ module GpsProcessor
     ActiveRecord::Base.connection.exec_query("SELECT ec_gpsrawscreateline(#{entry.id})")
     entry.state_ref="RAW"
     entry.entry_geom.reload
-    if entry.entry_geom.raws_from>entry.charge.start_datetime
-      if entry.state_messages.nil?
-        entry.state_messages=["Raw track missing start."]
-      else
-        entry.state_messages<<"Raw track missing start."
+    if entry.entry_geom.raws_from 
+      if entry.entry_geom.raws_from>entry.charge.start_datetime
+        if entry.state_messages.nil?
+          entry.state_messages=["Raw track missing start."]
+        else
+          entry.state_messages<<"Raw track missing start."
+        end
       end
-
     end
-    if entry.entry_geom.raws_to<entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
-      if entry.state_messages.nil?
-        entry.state_messages=["Raw track missing end."]
-      else
-        entry.state_messages<<"Raw track missing end."
+    if entry.entry_geom.raws_to 
+      if entry.entry_geom.raws_to<entry.charge.end_datetime + (entry.late_finish_min.nil? ? 0 : entry.late_finish_min).minutes
+        if entry.state_messages.nil?
+          entry.state_messages=["Raw track missing end."]
+        else
+          entry.state_messages<<"Raw track missing end."
+        end
       end
     end
     entry.save!

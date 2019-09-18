@@ -156,7 +156,7 @@ class Entry < ApplicationRecord
     #PROCESSED
     res=[]
     state='NOT_READY'
-    if self.checkins.count>self.charge.guards_expected+1
+    if self.checkins.count>self.charge.guards.count
       res<<"Too many checkpoints #{self.checkins.count}"
     end
     if self.checkins.count==0
