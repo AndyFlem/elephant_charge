@@ -316,7 +316,7 @@ module XlsxGenerator
         end
 
 
-        p.serialize('public/system/charges/xlsx/ElephantCharge_' + charge.ref + '.xlsx')
+        p.serialize('C:\Users\andy\Documents\EC\2019\EC_' + charge.ref + '.xlsx')
 
       end
   end

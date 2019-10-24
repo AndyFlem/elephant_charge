@@ -1,5 +1,5 @@
 <% @entries.each do |entry| %>
-    <div class="col-sm-8">
+    <div class="col-sm-9">
       <div class="heading-bar" style="<%= entry.result_description=='Complete' ? 'background-color:#dff0d8; color:#818a91;' : 'background-color:#f2dede; color:#818a91;'%>">
         <h3><%= entry.car_no %>. <%= entry.name %></h3>
         <p style="margin-bottom: 5px;"><%= entry.car.description %></p>

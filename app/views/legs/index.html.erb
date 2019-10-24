@@ -1,6 +1,6 @@
 
 <% @legs.each do |leg| %>
-<div class="col-sm-8">
+<div class="col-sm-9">
   <div class="heading-bar" style="<%= leg.is_gauntlet ? 'background-color:#f2dede; color:#818a91;' : leg.is_tsetse ? 'background-color:#d8dff0; color:#818a91;' : ''%>">
     <h3><%= leg.guard1.sponsor.name %> to <%= leg.guard2.sponsor.name %> <%= leg.is_gauntlet ? '(Gauntlet)' : '' %><%= leg.is_tsetse ? '(Tsetse line)' : '' %></h3>
     <%=number_with_precision( leg.distance_m/1000.0, precision: 2) %>km

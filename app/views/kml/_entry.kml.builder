@@ -55,25 +55,25 @@
     #  end
 
 
-      xml.Folder do
-        xml.name(entry.team.name + ' Animation')
-        xml.visibility(0)
-        xml.open(0)
+#      xml.Folder do
+ #       xml.name(entry.team.name + ' Animation')
+  #      xml.visibility(0)
+   #     xml.open(0)
 
-        entry.gps_cleans.each do |clean|
-          xml.Placemark do
-            xml.styleUrl('#cab')
-            xml.Point do
-              xml.extrude(1)
-              xml.coordinates(clean.location.x.to_s + ',' + clean.location.y.to_s + ',0')
-            end
-            xml.TimeSpan do
-              xml.begin(clean.gps_timestamp.strftime('%FT%T'))
-              xml.end((clean.gps_timestamp+90.seconds).strftime('%FT%T'))
-            end
-          end
-        end
-      end
+        #entry.gps_cleans.each do |clean|
+#          xml.Placemark do
+ #           xml.styleUrl('#cab')
+  #          xml.Point do
+   #           xml.extrude(1)
+    #          xml.coordinates(clean.location.x.to_s + ',' + clean.location.y.to_s + ',0')
+     #       end
+      #      xml.TimeSpan do
+       #       xml.begin(clean.gps_timestamp.strftime('%FT%T'))
+         #     xml.end((clean.gps_timestamp+90.seconds).strftime('%FT%T'))
+        #    end
+          #end
+#        end
+ #     end
 
 
     end

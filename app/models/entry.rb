@@ -114,7 +114,8 @@ class Entry < ApplicationRecord
     self.dist_best=best_dist_sum
 
     #dist_net;
-    if self.result_guards==self.charge.guards_expected+1
+    
+    if self.result_guards==self.charge.guards.count+1
       unless self.raised_kwacha.nil?
         self.dist_net=self.dist_competition-(self.raised_kwacha*self.charge.m_per_kwacha)
       end
@@ -130,19 +131,19 @@ class Entry < ApplicationRecord
 
   def update_tsetse_distances!
     unless self.charge.tsetse1_leg == nil or self.charge.tsetse1_leg == nil
-    tsetse1=self.entry_legs.where(leg_id: self.charge.tsetse1_leg.id).first
-    tsetse2=self.entry_legs.where(leg_id: self.charge.tsetse2_leg.id).first
-    unless tsetse1.nil?
-      self.dist_tsetse1=tsetse1.distance_m
-    else
-      self.dist_tsetse1=nil
-    end
-    unless tsetse2.nil?
-      self.dist_tsetse2=tsetse2.distance_m
-    else
-      self.dist_tsetse2=nil
-    end
-    #self.save!
+      tsetse1=self.entry_legs.where(leg_id: self.charge.tsetse1_leg.id).first
+      tsetse2=self.entry_legs.where(leg_id: self.charge.tsetse2_leg.id).first
+      unless tsetse1.nil?
+        self.dist_tsetse1=tsetse1.distance_m
+      else
+        self.dist_tsetse1=nil
+      end
+      unless tsetse2.nil?
+        self.dist_tsetse2=tsetse2.distance_m
+      else
+        self.dist_tsetse2=nil
+      end
+      self.save!
     end
   end
 
@@ -156,7 +157,7 @@ class Entry < ApplicationRecord
     #PROCESSED
     res=[]
     state='NOT_READY'
-    if self.checkins.count>self.charge.guards.count
+    if self.checkins.count>self.charge.guards.count+1
       res<<"Too many checkpoints #{self.checkins.count}"
     end
     if self.checkins.count==0
@@ -194,7 +195,8 @@ class Entry < ApplicationRecord
       state='READY'
       if self.result_guards==self.checkins.count
         state='PROCESSED'
-        if self.result_guards==self.charge.guards_expected+1
+        
+        if self.result_guards==self.charge.guards.count+1
           self.result_description='Complete'
         else
           self.result_description='DNF ' + self.result_guards.to_s

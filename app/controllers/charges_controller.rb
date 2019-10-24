@@ -15,7 +15,7 @@ class ChargesController < ApplicationController
 
     @entries = @charge.entries.order(:car_no)
     kml=render_to_string 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
-    File.open('public/system/charges/kml/elephant_charge_' + @charge.ref + '.kml','w'){|f| f << kml}
+    File.open('C:\Users\andy\Documents\EC\2019\EC_' + @charge.ref + '.kml','w'){|f| f << kml}
 
     redirect_to charge_path @charge
   end
@@ -267,20 +267,15 @@ class ChargesController < ApplicationController
     @shortest_dist_ladies=@charge.entries.where("is_ladies=true and result_state_ref='PROCESSED'").order(position_ladies: :asc)
     @shortest_dist_new=@charge.entries.where("is_newcomer=true and result_state_ref='PROCESSED'").order(position_newcomer: :asc)
     @gauntlet=@charge.entries.where("result_state_ref='PROCESSED' and result_gauntlet_guards>0").order(position_gauntlet: :asc)
-    @net=@charge.entries.where("is_bikes=false and result_state_ref='PROCESSED' and result_guards="+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
-    @net_bikes=@charge.entries.where("is_bikes=true and result_state_ref='PROCESSED' and result_guards="+(@charge.guards_expected+1).to_s).order(position_net_distance: :asc)
+    @net=@charge.entries.where("is_bikes=false and result_state_ref='PROCESSED' and result_guards="+(@charge.guards.count+1).to_s).order(position_net_distance: :asc)
+    @net_bikes=@charge.entries.where("is_bikes=true and result_state_ref='PROCESSED' and result_guards="+(@charge.guards.count+1).to_s).order(position_net_distance: :asc)
     @raised=@charge.entries.order(raised_kwacha: :desc)
-    #@tsetselegs=[@charge.tsetse1_leg,@charge.tsetse2_leg]
+    @tsetselegs=[@charge.tsetse1_leg,@charge.tsetse2_leg]
 
     @tsetse1=@charge.entries.where("position_tsetse1 is not null and result_state_ref='PROCESSED'").order(position_tsetse1: :asc)
     @tsetse2=@charge.entries.where("position_tsetse2 is not null and result_state_ref='PROCESSED'").order(position_tsetse2: :asc)
 
-    @gauntlet_dist=0
-    glegs=@charge.legs.where('is_gauntlet=true')
-    glegs.each do |l|
-      @gauntlet_dist+=l.distance_m
-    end
-
+    
   end
 
   def index

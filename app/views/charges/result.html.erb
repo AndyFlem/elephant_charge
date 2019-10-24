@@ -2,8 +2,9 @@
   <div class="heading-bar">
     <h3><%= @charge.name %> <%= @charge.location%></h3>
   </div>
-  <h5><%= @charge.entries.count %> entries raised <b>$<%= number_with_precision(@charge.raised_dollars, precision: 0,delimiter: ',') %></b>
-  for conservation in Zambia.</h5>
+  <h5><b><%= @charge.entries.count %></b> teams entered and raised <b>$<%= number_with_precision(@charge.raised_dollars, precision: 0,delimiter: ',') %></b>
+  for conservation in Zambia.
+  <b><%= @charge.entries.where(result_description: 'Complete').count.to_s %></b> teams completed the course.</h5>
   <br>
   <h5>The Spirit of the Charge was won by <b><%= @charge.spirit_name%></b> <%= @charge.spirit_description%></h5>
   <br>
@@ -34,7 +35,7 @@
 </div>
 
 
-<div class="col-sm-6">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Pledge</h4>
   </div>
@@ -71,7 +72,7 @@
   </table>
 </div>
 
-<div class="col-sm-7">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Net Distance</h4>
   </div>
@@ -109,7 +110,7 @@
   </table>
 </div>
 
-<div class="col-sm-7">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Net Distance - Bike Team</h4>
   </div>
@@ -159,7 +160,7 @@
       <th>Team No</th>
       <th>Team</th>
       <th>Result</th>
-      <th>Best Distance</th>
+      
       <th>Actual Distance</th>
       <th>Gauntlet Distance</th>
       <th>Gauntlet Penalties</th>
@@ -176,7 +177,7 @@
           <td>
             <%= entry.result %>
           </td>
-          <td><%= entry.dist_best.nil? ? '' : number_with_precision(entry.dist_best/1000.0, precision: 2) %>km</td>
+      
           <td><%= number_with_precision(entry.dist_real/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_gauntlet/1000.0, precision: 2) %>km</td>
           <td><%= number_with_precision(entry.dist_penalty_gauntlet/1000.0, precision: 2) %>km</td>
@@ -301,10 +302,10 @@
 </div>
 
 
-<div class="col-sm-7">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Gauntlet</h4>
-    <%=@gauntlet_dist%>
+    
   </div>
   <table class="table table-sm">
     <thead class="sdf">
@@ -333,7 +334,7 @@
   </table>
 </div>
 
-<div class="col-sm-7">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Tsetse line 1 - <%= @charge.tsetse1_leg.guard1.sponsor.name %> to <%= @charge.tsetse1_leg.guard2.sponsor.name %></h4>
     <%=number_with_precision( @charge.tsetse1_leg.distance_m/1000.0, precision: 2) %>km
@@ -354,14 +355,22 @@
           <td><%= entry.position_tsetse1 %></td>
           <td><%= entry.car_no %></td>
           <td><%= link_to entry.name,charge_entry_path(@charge,entry) %></td>
-          <td><%= number_with_precision(entry.dist_tsetse1/1000.0, precision: 2) %>km</td>
-          <td><%= number_with_precision(entry.dist_tsetse1 / parse_float(@charge.tsetse1_leg.distance_m,false),precision:2) %>x</td>
+          <td>
+          <% if entry.dist_tsetse1%>
+          <%= number_with_precision(entry.dist_tsetse1/1000.0, precision: 2) %>km
+          <% end %>
+          </td>
+          <td>
+          <% if entry.dist_tsetse1%>
+          <%= number_with_precision(entry.dist_tsetse1 / parse_float(@charge.tsetse1_leg.distance_m,false),precision:2) %>x
+          <% end %>
+          </td>
           <td></td>
         </tr>
     <% end %>
   </table>
 </div>
-<div class="col-sm-7">
+<div class="col-sm-9">
   <div class="heading-bar">
     <h4>Tsetse line 2 - <%= @charge.tsetse2_leg.guard1.sponsor.name %> to <%= @charge.tsetse2_leg.guard2.sponsor.name %></h4>
     <%=number_with_precision( @charge.tsetse2_leg.distance_m/1000.0, precision: 2) %>km
@@ -382,8 +391,16 @@
           <td><%= entry.position_tsetse2 %></td>
           <td><%= entry.car_no %></td>
           <td><%= link_to entry.name,charge_entry_path(@charge,entry) %></td>
-          <td><%= number_with_precision(entry.dist_tsetse2/1000.0, precision: 2) %>km</td>
-          <td><%= number_with_precision(entry.dist_tsetse2 / parse_float(@charge.tsetse2_leg.distance_m,false),precision:2) %>x</td>
+          <td>
+            <% if entry.dist_tsetse2%>
+            <%= number_with_precision(entry.dist_tsetse2/1000.0, precision: 2) %>km
+            <% end %>
+          </td>
+          <td>
+          <% if entry.dist_tsetse2%>
+            <%= number_with_precision(entry.dist_tsetse2 / parse_float(@charge.tsetse2_leg.distance_m,false),precision:2) %>x
+            <% end %>
+          </td>
           <td></td>
         </tr>
     <% end %>
