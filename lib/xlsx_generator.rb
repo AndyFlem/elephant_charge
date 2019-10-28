@@ -305,6 +305,7 @@ module XlsxGenerator
                 h.number_with_precision(entry_leg.distance_m/1000.0, precision: 2).to_s,
                 h.number_with_precision(entry_leg.distance_m / (1.0 * leg.distance_m),precision:2).to_s + 'x',
                 formattime(entry_leg.checkin1.checkin_timestamp),
+
                 formattime(entry_leg.checkin2.checkin_timestamp),
                 (entry_leg.elapsed_s/60).to_s
               ],:style=>main_cell
@@ -316,7 +317,7 @@ module XlsxGenerator
         end
 
 
-        p.serialize('C:\Users\andy\Documents\EC\2019\EC_' + charge.ref + '.xlsx')
+        p.serialize('public/system/charges/xlsx/ElephantCharge_' + charge.ref + '.xlsx')
 
       end
   end

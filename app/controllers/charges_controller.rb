@@ -15,7 +15,7 @@ class ChargesController < ApplicationController
 
     @entries = @charge.entries.order(:car_no)
     kml=render_to_string 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
-    File.open('C:\Users\andy\Documents\EC\2019\EC_' + @charge.ref + '.kml','w'){|f| f << kml}
+    File.open('public/system/charges/kml/elephant_charge_' + @charge.ref + '.kml','w'){|f| f << kml}
 
     redirect_to charge_path @charge
   end
