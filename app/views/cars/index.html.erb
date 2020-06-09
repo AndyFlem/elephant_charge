@@ -13,6 +13,7 @@
     <th>Make</th>
     <th>Model</th>
     <th>Colour</th>
+    <th>Entries</th>
     <th>Year</th>
     <th></th>
     <th></th>
@@ -21,10 +22,11 @@
 
   <% @cars.each do |car| %>
       <tr>
-        <td><%= car.name %></td>
+        <td><%= link_to car.name, edit_car_path(car) %></td>
         <td><%= car.make.blank? ? '' : car.make.name %> </td>
         <td><%= car.car_model %></td>
         <td><%= car.colour %></td>
+        <td><%= car.entries.count %></td>
         <td><%= car.year %></td>
         <td><%= link_to 'Edit', edit_car_path(car) %></td>
         <td><%= link_to 'Delete', car_path(car), method: :delete%></td>
