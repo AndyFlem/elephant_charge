@@ -2,6 +2,8 @@ class Car < ApplicationRecord
   has_many :entries
   has_many :charges, through: :entries
   has_many :teams, through: :entries
+  has_many :photos, -> { where is_car: true }, through: :entries
+  
   belongs_to :make
 
   validates :name, presence: true

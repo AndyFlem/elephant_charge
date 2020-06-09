@@ -15,6 +15,8 @@ class CarsController < ApplicationController
   def edit
     @car = Car.find(params[:id])
     @makes=Make.all.collect{|p| [ p.name, p.id ] }
+    @entries=@car.entries
+    @photos=@car.photos
   end
 
   def create
