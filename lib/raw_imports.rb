@@ -13,7 +13,7 @@ module RawImports
     #results = client.execute("SELECT iID,sDescription FROM Vehicle order by sDescription")
 
     #results.collect{|p| [p["sDescription"],p["iID"]]}
-   #[]
+   []
   end
 
   def self.import_geotab(entry,iVehicleID)
