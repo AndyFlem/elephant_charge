@@ -15,6 +15,7 @@ class Entry < ApplicationRecord
   has_many :checkins
   has_many :entry_legs
   has_many :photos, as: :photoable
+  has_many :car_photos, -> { where is_car: true },class_name: "Photo" ,as: :photoable
 
   validates :car_no, numericality: { only_integer: true }
   validates :car_no, uniqueness: { scope: :charge_id}
