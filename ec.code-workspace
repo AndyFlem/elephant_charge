@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\elephant_charge_public"
+		},
+		{
+			"path": "..\\ec_api"
+		}
+	],
+	"settings": {}
+}
