@@ -2,12 +2,11 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.6 (Ubuntu 10.6-1.pgdg18.04+1)
--- Dumped by pg_dump version 10.6 (Ubuntu 10.6-1.pgdg18.04+1)
+-- Dumped from database version 9.5.14
+-- Dumped by pg_dump version 9.5.14
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -1225,154 +1224,154 @@ ALTER SEQUENCE public.teams_id_seq OWNED BY public.teams.id;
 
 
 --
--- Name: beneficiaries id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.beneficiaries ALTER COLUMN id SET DEFAULT nextval('public.beneficeries_id_seq'::regclass);
 
 
 --
--- Name: campaigns id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.campaigns ALTER COLUMN id SET DEFAULT nextval('public.campaigns_id_seq'::regclass);
 
 
 --
--- Name: cars id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cars ALTER COLUMN id SET DEFAULT nextval('public.cars_id_seq'::regclass);
 
 
 --
--- Name: charge_help_points id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_help_points ALTER COLUMN id SET DEFAULT nextval('public.charge_help_points_id_seq'::regclass);
 
 
 --
--- Name: charge_sponsors id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_sponsors ALTER COLUMN id SET DEFAULT nextval('public.charge_sponsors_id_seq'::regclass);
 
 
 --
--- Name: charges id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges ALTER COLUMN id SET DEFAULT nextval('public.charges_id_seq'::regclass);
 
 
 --
--- Name: checkins id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.checkins ALTER COLUMN id SET DEFAULT nextval('public.checkins_id_seq'::regclass);
 
 
 --
--- Name: entries id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries ALTER COLUMN id SET DEFAULT nextval('public.entries_id_seq'::regclass);
 
 
 --
--- Name: entry_geoms id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_geoms ALTER COLUMN id SET DEFAULT nextval('public.entry_geoms_id_seq'::regclass);
 
 
 --
--- Name: entry_legs id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs ALTER COLUMN id SET DEFAULT nextval('public.entry_legs_id_seq'::regclass);
 
 
 --
--- Name: gps_cleans id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_cleans ALTER COLUMN id SET DEFAULT nextval('public.gps_cleans_id_seq'::regclass);
 
 
 --
--- Name: gps_historic id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_historic ALTER COLUMN id SET DEFAULT nextval('public.gps_historic_id_seq'::regclass);
 
 
 --
--- Name: gps_raws id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_raws ALTER COLUMN id SET DEFAULT nextval('public.gps_raws2_id_seq'::regclass);
 
 
 --
--- Name: gps_stops id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_stops ALTER COLUMN id SET DEFAULT nextval('public.gps_stops_id_seq'::regclass);
 
 
 --
--- Name: grants id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grants ALTER COLUMN id SET DEFAULT nextval('public.grants_id_seq'::regclass);
 
 
 --
--- Name: guards id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.guards ALTER COLUMN id SET DEFAULT nextval('public.guards_id_seq'::regclass);
 
 
 --
--- Name: legs id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.legs ALTER COLUMN id SET DEFAULT nextval('public.legs_id_seq'::regclass);
 
 
 --
--- Name: makes id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.makes ALTER COLUMN id SET DEFAULT nextval('public.makes_id_seq'::regclass);
 
 
 --
--- Name: photos id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.photos ALTER COLUMN id SET DEFAULT nextval('public.entry_photos_id_seq'::regclass);
 
 
 --
--- Name: sponsors id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.sponsors ALTER COLUMN id SET DEFAULT nextval('public.guard_sponsors_id_seq'::regclass);
 
 
 --
--- Name: teams id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.teams ALTER COLUMN id SET DEFAULT nextval('public.teams_id_seq'::regclass);
 
 
 --
--- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ar_internal_metadata
@@ -1380,7 +1379,7 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
--- Name: campaigns campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: campaigns_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.campaigns
@@ -1388,7 +1387,7 @@ ALTER TABLE ONLY public.campaigns
 
 
 --
--- Name: cars cars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: cars_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cars
@@ -1396,7 +1395,7 @@ ALTER TABLE ONLY public.cars
 
 
 --
--- Name: charge_help_points charge_help_points_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: charge_help_points_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_help_points
@@ -1404,7 +1403,7 @@ ALTER TABLE ONLY public.charge_help_points
 
 
 --
--- Name: charges charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: charges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
@@ -1412,7 +1411,7 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: entries entries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries
@@ -1420,7 +1419,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- Name: entry_geoms entry_geoms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: entry_geoms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_geoms
@@ -1428,7 +1427,7 @@ ALTER TABLE ONLY public.entry_geoms
 
 
 --
--- Name: sponsors guard_sponsors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: guard_sponsors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.sponsors
@@ -1436,7 +1435,7 @@ ALTER TABLE ONLY public.sponsors
 
 
 --
--- Name: guards guards_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: guards_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.guards
@@ -1444,7 +1443,7 @@ ALTER TABLE ONLY public.guards
 
 
 --
--- Name: beneficiaries pk_beneficeries; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_beneficeries; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.beneficiaries
@@ -1452,7 +1451,7 @@ ALTER TABLE ONLY public.beneficiaries
 
 
 --
--- Name: charge_sponsors pk_charge_sponsors; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_charge_sponsors; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_sponsors
@@ -1460,7 +1459,7 @@ ALTER TABLE ONLY public.charge_sponsors
 
 
 --
--- Name: checkins pk_checkins; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_checkins; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.checkins
@@ -1468,7 +1467,7 @@ ALTER TABLE ONLY public.checkins
 
 
 --
--- Name: entry_legs pk_entry_legs; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_entry_legs; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs
@@ -1476,7 +1475,7 @@ ALTER TABLE ONLY public.entry_legs
 
 
 --
--- Name: photos pk_entry_photos; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_entry_photos; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.photos
@@ -1484,7 +1483,7 @@ ALTER TABLE ONLY public.photos
 
 
 --
--- Name: gps_cleans pk_gps_cleans; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_gps_cleans; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_cleans
@@ -1492,7 +1491,7 @@ ALTER TABLE ONLY public.gps_cleans
 
 
 --
--- Name: gps_historic pk_gps_histroic; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_gps_histroic; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_historic
@@ -1500,7 +1499,7 @@ ALTER TABLE ONLY public.gps_historic
 
 
 --
--- Name: gps_raws pk_gps_raws2; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_gps_raws2; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_raws
@@ -1508,7 +1507,7 @@ ALTER TABLE ONLY public.gps_raws
 
 
 --
--- Name: gps_stops pk_gps_stops; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_gps_stops; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_stops
@@ -1516,7 +1515,7 @@ ALTER TABLE ONLY public.gps_stops
 
 
 --
--- Name: grants pk_grants; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_grants; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grants
@@ -1524,7 +1523,7 @@ ALTER TABLE ONLY public.grants
 
 
 --
--- Name: legs pk_legs; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_legs; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.legs
@@ -1532,7 +1531,7 @@ ALTER TABLE ONLY public.legs
 
 
 --
--- Name: makes pk_makes; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pk_makes; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.makes
@@ -1540,7 +1539,7 @@ ALTER TABLE ONLY public.makes
 
 
 --
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
@@ -1548,7 +1547,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: teams teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.teams
@@ -1556,7 +1555,7 @@ ALTER TABLE ONLY public.teams
 
 
 --
--- Name: entry_geoms unq_entry_geoms_entry_id; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: unq_entry_geoms_entry_id; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_geoms
@@ -1627,7 +1626,7 @@ CREATE INDEX indx_gps_raws_entry_id ON public.gps_raws USING btree (entry_id);
 
 
 --
--- Name: cars fk_cars_makes; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_cars_makes; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cars
@@ -1635,7 +1634,7 @@ ALTER TABLE ONLY public.cars
 
 
 --
--- Name: charges fk_charge_bestguard; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charge_bestguard; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
@@ -1643,7 +1642,7 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: charge_sponsors fk_charge_sponsors_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charge_sponsors_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_sponsors
@@ -1651,7 +1650,7 @@ ALTER TABLE ONLY public.charge_sponsors
 
 
 --
--- Name: charge_sponsors fk_charge_sponsors_sponsors; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charge_sponsors_sponsors; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_sponsors
@@ -1659,7 +1658,7 @@ ALTER TABLE ONLY public.charge_sponsors
 
 
 --
--- Name: charges fk_charges_shaftedentry; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charges_shaftedentry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
@@ -1667,7 +1666,7 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: charges fk_charges_tsetse1; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charges_tsetse1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
@@ -1675,7 +1674,7 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: charges fk_charges_tsetse2; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_charges_tsetse2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charges
@@ -1683,7 +1682,7 @@ ALTER TABLE ONLY public.charges
 
 
 --
--- Name: checkins fk_checkin_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_checkin_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.checkins
@@ -1691,7 +1690,7 @@ ALTER TABLE ONLY public.checkins
 
 
 --
--- Name: checkins fk_checkin_gps_cleans; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_checkin_gps_cleans; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.checkins
@@ -1699,7 +1698,7 @@ ALTER TABLE ONLY public.checkins
 
 
 --
--- Name: checkins fk_checkin_guard; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_checkin_guard; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.checkins
@@ -1707,7 +1706,7 @@ ALTER TABLE ONLY public.checkins
 
 
 --
--- Name: entry_geoms fk_entry_geoms_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_entry_geoms_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_geoms
@@ -1715,7 +1714,7 @@ ALTER TABLE ONLY public.entry_geoms
 
 
 --
--- Name: entry_legs fk_entry_leg_checkin1; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_entry_leg_checkin1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs
@@ -1723,7 +1722,7 @@ ALTER TABLE ONLY public.entry_legs
 
 
 --
--- Name: entry_legs fk_entry_leg_checkin2; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_entry_leg_checkin2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs
@@ -1731,7 +1730,7 @@ ALTER TABLE ONLY public.entry_legs
 
 
 --
--- Name: entry_legs fk_entry_legs_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_entry_legs_entry; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs
@@ -1739,7 +1738,7 @@ ALTER TABLE ONLY public.entry_legs
 
 
 --
--- Name: entry_legs fk_entry_legs_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_entry_legs_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entry_legs
@@ -1747,7 +1746,7 @@ ALTER TABLE ONLY public.entry_legs
 
 
 --
--- Name: gps_cleans fk_gps_cleans_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_gps_cleans_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_cleans
@@ -1755,7 +1754,7 @@ ALTER TABLE ONLY public.gps_cleans
 
 
 --
--- Name: gps_cleans fk_gps_cleans_entry_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_gps_cleans_entry_leg; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_cleans
@@ -1763,7 +1762,7 @@ ALTER TABLE ONLY public.gps_cleans
 
 
 --
--- Name: gps_cleans fk_gps_cleans_gps_stops; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_gps_cleans_gps_stops; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_cleans
@@ -1771,7 +1770,7 @@ ALTER TABLE ONLY public.gps_cleans
 
 
 --
--- Name: gps_raws fk_gps_raws_entries2; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_gps_raws_entries2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_raws
@@ -1779,7 +1778,7 @@ ALTER TABLE ONLY public.gps_raws
 
 
 --
--- Name: gps_stops fk_gps_stops_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_gps_stops_entries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.gps_stops
@@ -1787,7 +1786,7 @@ ALTER TABLE ONLY public.gps_stops
 
 
 --
--- Name: grants fk_grants_beneficeries; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_grants_beneficeries; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grants
@@ -1795,7 +1794,7 @@ ALTER TABLE ONLY public.grants
 
 
 --
--- Name: grants fk_grants_charges; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_grants_charges; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grants
@@ -1803,7 +1802,7 @@ ALTER TABLE ONLY public.grants
 
 
 --
--- Name: legs fk_legs_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_legs_charge; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.legs
@@ -1811,7 +1810,7 @@ ALTER TABLE ONLY public.legs
 
 
 --
--- Name: legs fk_legs_guards1; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_legs_guards1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.legs
@@ -1819,7 +1818,7 @@ ALTER TABLE ONLY public.legs
 
 
 --
--- Name: legs fk_legs_guards2; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_legs_guards2; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.legs
@@ -1827,7 +1826,7 @@ ALTER TABLE ONLY public.legs
 
 
 --
--- Name: guards fk_rails_41012a5173; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_41012a5173; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.guards
@@ -1835,7 +1834,7 @@ ALTER TABLE ONLY public.guards
 
 
 --
--- Name: entries fk_rails_8069469873; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_8069469873; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries
@@ -1843,7 +1842,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- Name: guards fk_rails_867149c68d; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_867149c68d; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.guards
@@ -1851,7 +1850,7 @@ ALTER TABLE ONLY public.guards
 
 
 --
--- Name: entries fk_rails_9e5fcf2529; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_9e5fcf2529; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries
@@ -1859,7 +1858,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- Name: charge_help_points fk_rails_c72e667370; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_c72e667370; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.charge_help_points
@@ -1867,7 +1866,7 @@ ALTER TABLE ONLY public.charge_help_points
 
 
 --
--- Name: entries fk_rails_e278410c5f; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_e278410c5f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries
@@ -1875,7 +1874,7 @@ ALTER TABLE ONLY public.entries
 
 
 --
--- Name: entries fk_rails_f0fbcbbb17; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: fk_rails_f0fbcbbb17; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entries
