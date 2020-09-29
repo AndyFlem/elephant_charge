@@ -35,7 +35,10 @@
           xml.tesselate(1)
           xml.extrude(1)
           unless entry.entry_geom.nil?
-            xml.coordinates(entry.entry_geom.clean_line_kml)
+            coords=entry.entry_legs.order(:leg_number).map do |entry_leg|
+              entry_leg.leg_line_kml
+            end
+            xml.coordinates(coords.join(' '))
           end
         end
       end
