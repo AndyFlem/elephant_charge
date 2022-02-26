@@ -15,7 +15,7 @@
       <div class="card-block text-success">
         <h3 class="card-title">Result</h3>
         <p><b><%= @entry.result %></b></p>
-
+<p><%= @entry.entry_geom.cleans_count.nil? ? 0 : @entry.entry_geom.cleans_count %> clean points.</p>
         <p>Best possible distance: <b><%= @entry.dist_best.nil? ? '-' : number_with_precision(@entry.dist_best/1000.0, precision: 2) %>km</b> </p>
 
         <p>Actual distance: <b><%= number_with_precision(@entry.dist_real/1000.0, precision: 2) %>km</b>(<%= @entry.dist_best.nil? ? '-' : number_with_precision(@entry.dist_real*1.0/@entry.dist_best*1.0, precision: 2)  %>x) of which gauntlet <b><%= number_with_precision(@entry.dist_gauntlet/1000.0, precision: 2) %>km</b></p>

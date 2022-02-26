@@ -133,7 +133,9 @@ class Entry < ApplicationRecord
   def update_tsetse_distances!
     unless self.charge.tsetse1_leg == nil or self.charge.tsetse1_leg == nil
       tsetse1=self.entry_legs.where(leg_id: self.charge.tsetse1_leg.id).first
+      #unless self.charge.tsetse2_leg.nil?
       tsetse2=self.entry_legs.where(leg_id: self.charge.tsetse2_leg.id).first
+      #end
       unless tsetse1.nil?
         self.dist_tsetse1=tsetse1.distance_m
       else
