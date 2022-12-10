@@ -11,12 +11,12 @@
   <tr>
     <th></th>
     <th>Name</th>
-    <th>WebRef</th>
     <th>Captain</th>
     <th>Charges</th>
-    <th>Completed</th>
-    <th>Kwacha</th>
+    <th><a href="?sort=<%= @sort=='' ? 'charge' : '' %>">Last Charge</a></th>
     <th>Dollars</th>
+    <th>Dollars per Entry</th>
+    <th>Dollars Last Entry</th>
     <th></th>
   </tr>
   </thead>
@@ -31,18 +31,12 @@
       <tr>
         <td><%= i+1%></td>
         <td><%= team.entries.count>0 ? link_to(team.name, team_path(team)) : team.name%></td>
-        <td><%= team.ref%></td>
         <td><%= team.captain %></td>
         <td><%= team.entries_complete.count %></td>
-        <td>
-          <%= team.finish_count %>
-          <% if team.entries_complete.count>0 %>
-            &nbsp;(<%= number_with_precision(Float(team.finish_count)/team.entries_complete.count*100,precision:0)%>%)
-          <% end %>
-        </td>
-
-        <td>K<%= number_with_precision(team.raised_kwacha, precision: 0, delimiter: ',') %></td>
+        <td><%= team.last_charge.ref %></td>
         <td>$<%= number_with_precision(team.raised_dollars, precision: 0, delimiter: ',') %></td>
+        <td>$<%= number_with_precision(team.raised_dollars/team.entries.count, precision: 0, delimiter: ',') %></td>
+        <td>$<%= number_with_precision(team.entries_complete.last.raised_dollars, precision: 0, delimiter: ',') %></td>
         <td>
           <%= link_to 'Edit', edit_team_path(team) %>
           <%= link_to 'Delete', team_path(team), method: :delete%>
@@ -55,9 +49,10 @@
     <td></td>
     <td></td>
     <td></td>
-    <td>K<%= number_with_precision(sum_k, precision: 0, delimiter: ',') %></td>
     <td>$<%= number_with_precision(sum_d, precision: 0, delimiter: ',') %></td>
     <td></td>
+    <td></td>
+    
   </tr>
 </table>
 <%= link_to 'New team', new_team_path,class: "btn btn-primary" %>

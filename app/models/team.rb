@@ -21,6 +21,10 @@ class Team < ApplicationRecord
     self.entries.includes(:charge).references(:charge).where("charges.has_result=false")
   end
 
+  def last_charge
+    @entries = self.entries_complete
+    @entries.sort_by{|entry| entry.charge.ref}.last.charge
+  end
 
   def long_name
     unless self.prefix.blank?

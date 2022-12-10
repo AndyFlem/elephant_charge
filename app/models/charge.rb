@@ -39,7 +39,16 @@ class Charge < ApplicationRecord
     self.name + (self.location=='' ? '' : ' - ' + self.location)
   end
 
+  def entries_complete
+    self.entries.where(result_description: 'Complete').count
+  end
+  def entries_complete_percent
+    self.entries_complete.to_f/self.entries_count.to_f*100
+  end
 
+  def winning_entry
+    self.entries.order(position_distance: :asc).first
+  end
 
   def award_winner ref
     case ref

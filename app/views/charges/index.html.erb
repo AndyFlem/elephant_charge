@@ -8,9 +8,10 @@
     <th>Location</th>
     <th>Date</th>
     <th>Teams</th>
-    <th style="text-align:right;">Raised</th>
-    <th style="text-align:right;">Rate K/$</th>
+    <th>Finishers %</th>
+    <th>Winning Distance</th>
     <th style="text-align:right;">Raised</th>    
+    <th style="text-align:right;">Raised per team</th>    
     <th style="text-align:right;">Grants</th>
   </tr>
   </thead>
@@ -31,15 +32,18 @@
         <td><%= charge.location %></td>
         <td><%= charge.charge_date.strftime("%a %-d %b %Y") %></td>
         <td><%= charge.entries_count %></td>
-        <td style="text-align:right;">K<%= number_with_precision(charge.raised_kwacha, precision: 0, delimiter: ',')%></td>
-        <td style="text-align:right;"><%= number_with_precision(charge.exchange_rate, precision: 2, delimiter: ',')%></td>
+        <td><%= number_with_precision(charge.entries_complete_percent, precision: 0, delimiter: ',')%>%</td>
+        <td><%= number_with_precision(charge.winning_entry.dist_real/1000, precision: 0, delimiter: ',')%>km</td>
+        
         <td style="text-align:right;">$<%= number_with_precision(charge.raised_dollars, precision: 0, delimiter: ',')%></td>
+        <td style="text-align:right;">$<%= number_with_precision(charge.raised_dollars/charge.entries_count, precision: 0, delimiter: ',')%></td>
         <td style="text-align:right;">$<%= number_with_precision(charge.grant_dollars, precision: 0, delimiter: ',')%></td>
       </tr>
   <% end %>
   <tr class="bg-inverse">
     <td colspan="6"></td>
     <td style="text-align:right;">$<%= number_with_precision(dollar_sum, precision: 0, delimiter: ',')%></td>
+    <td></td>
     <td style="text-align:right;">$<%= number_with_precision(grant_sum, precision: 0, delimiter: ',')%></td>
   </tr>
 </table>

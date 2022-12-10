@@ -15,7 +15,7 @@ class ChargesController < ApplicationController
 
     @entries = @charge.entries.order(:car_no)
     kml=render_to_string 'kml/kml.kml',{type: :builder,formats: [:xml],layout: false}
-    File.open('/home/andy/elephant_charge_' + @charge.ref + '.kml','w'){|f| f << kml}
+    File.open('C:\\Work\\EC\\2022\\elephant_charge_' + @charge.ref + '.kml','w'){|f| f << kml}
 
     redirect_to charge_path @charge
   end
@@ -218,7 +218,7 @@ class ChargesController < ApplicationController
     entry.is_newcomer=ent_params[:is_newcomer]
     entry.is_bikes=ent_params[:is_bikes]
     entry.start_guard_id=ent_params[:start_guard_id]
-    entry.raised_kwacha=ent_params[:raised_kwacha]
+    entry.raised_kwacha=ent_params[:raised_kwacha].to_i()
     entry.dist_penalty_gauntlet=ent_params[:dist_penalty_gauntlet]
     entry.dist_penalty_nongauntlet=ent_params[:dist_penalty_nongauntlet]
   end

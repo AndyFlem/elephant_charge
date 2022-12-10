@@ -8,19 +8,19 @@ module RawImports
 
   def self.geotab_vehicles()
     #client = TinyTds::Client.new username: 'sa', password: 'extramild20',
-    #                             host: 'localhost', port: 1433,
-    #                             database: 'GEOTAB1', azure:false
+     #                            host: 'localhost', port: 1433,
+    #                             database: 'GEOTAB2', azure:false
     #results = client.execute("SELECT iID,sDescription FROM Vehicle order by sDescription")
 
     #results.collect{|p| [p["sDescription"],p["iID"]]}
-   []
+   #[]
   end
 
   def self.import_geotab(entry,iVehicleID)
     #entry.reset_raw!
     #client = TinyTds::Client.new username: 'sa', password: 'extramild20',
     #                             host: 'localhost', port: 1433,
-    #                            database: 'GEOTAB1', azure:false
+    #                            database: 'GEOTAB2', azure:false
 
     #qry="SELECT iID,CONVERT(VARCHAR(33), dtDateTime, 127)+'Z' AS sDateTime,fLatitude,fLongitude FROM GPSData WHERE iVehicleID=" + iVehicleID.to_s + " ORDER BY dtDateTime"
     #results = client.execute(qry)

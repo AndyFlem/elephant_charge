@@ -1,6 +1,16 @@
 class TeamsController < ApplicationController
   def index
+
+    @sort=params[:sort]?params[:sort]:''
+
     @teams = Team.order(:name)
+
+    if @sort
+      @teams = @teams.sort_by do |team|
+        [(@sort.include?('charge') ? -team.last_charge.ref.to_i() : ''),(@sort.include?('raised') ? team.raised_dollars : '')]
+
+      end
+    end
   end
 
   def photos
@@ -21,14 +31,12 @@ class TeamsController < ApplicationController
       end
     end
 
-
     redirect_to edit_team_path(@team)
   end
 
   def show
     @team = Team.find(params[:id])
     @entries=@team.entries.includes(:charge).order('charges.charge_date').references(:charges)
-
   end
 
   def new
